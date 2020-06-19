@@ -1,0 +1,388 @@
+# HELP jmx_config_reload_failure_total Number of times configuration have failed to be reloaded.
+# TYPE jmx_config_reload_failure_total counter
+jmx_config_reload_failure_total 0.0
+# HELP jvm_classes_loaded The number of classes that are currently loaded in the JVM
+# TYPE jvm_classes_loaded gauge
+jvm_classes_loaded 12837.0
+# HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
+# TYPE jvm_classes_loaded_total counter
+jvm_classes_loaded_total 12839.0
+# HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
+# TYPE jvm_classes_unloaded_total counter
+jvm_classes_unloaded_total 2.0
+# HELP jmx_config_reload_success_total Number of times configuration have successfully been reloaded.
+# TYPE jmx_config_reload_success_total counter
+jmx_config_reload_success_total 0.0
+# HELP jvm_info JVM version info
+# TYPE jvm_info gauge
+jvm_info{version="1.8.0_252-b09",vendor="Oracle Corporation",runtime="OpenJDK Runtime Environment",} 1.0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 17.09
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.592522947178E9
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 47.0
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1048576.0
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 8.9240576E9
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 2.36199936E8
+# HELP jvm_memory_bytes_used Used bytes of a given JVM memory area.
+# TYPE jvm_memory_bytes_used gauge
+jvm_memory_bytes_used{area="heap",} 4.4156256E7
+jvm_memory_bytes_used{area="nonheap",} 9.4262352E7
+# HELP jvm_memory_bytes_committed Committed (bytes) of a given JVM memory area.
+# TYPE jvm_memory_bytes_committed gauge
+jvm_memory_bytes_committed{area="heap",} 4.9283072E7
+jvm_memory_bytes_committed{area="nonheap",} 9.8041856E7
+# HELP jvm_memory_bytes_max Max (bytes) of a given JVM memory area.
+# TYPE jvm_memory_bytes_max gauge
+jvm_memory_bytes_max{area="heap",} 9.54728448E8
+jvm_memory_bytes_max{area="nonheap",} -1.0
+# HELP jvm_memory_bytes_init Initial bytes of a given JVM memory area.
+# TYPE jvm_memory_bytes_init gauge
+jvm_memory_bytes_init{area="heap",} 3.3554432E7
+jvm_memory_bytes_init{area="nonheap",} 2555904.0
+# HELP jvm_memory_pool_bytes_used Used bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_used gauge
+jvm_memory_pool_bytes_used{pool="Code Cache",} 1.6313536E7
+jvm_memory_pool_bytes_used{pool="Metaspace",} 6.9169784E7
+jvm_memory_pool_bytes_used{pool="Compressed Class Space",} 8779032.0
+jvm_memory_pool_bytes_used{pool="PS Eden Space",} 8278024.0
+jvm_memory_pool_bytes_used{pool="PS Survivor Space",} 999472.0
+jvm_memory_pool_bytes_used{pool="PS Old Gen",} 3.487876E7
+# HELP jvm_memory_pool_bytes_committed Committed bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_committed gauge
+jvm_memory_pool_bytes_committed{pool="Code Cache",} 1.6777216E7
+jvm_memory_pool_bytes_committed{pool="Metaspace",} 7.1958528E7
+jvm_memory_pool_bytes_committed{pool="Compressed Class Space",} 9306112.0
+jvm_memory_pool_bytes_committed{pool="PS Eden Space",} 1.048576E7
+jvm_memory_pool_bytes_committed{pool="PS Survivor Space",} 1048576.0
+jvm_memory_pool_bytes_committed{pool="PS Old Gen",} 3.7748736E7
+# HELP jvm_memory_pool_bytes_max Max bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_max gauge
+jvm_memory_pool_bytes_max{pool="Code Cache",} 2.5165824E8
+jvm_memory_pool_bytes_max{pool="Metaspace",} -1.0
+jvm_memory_pool_bytes_max{pool="Compressed Class Space",} 1.073741824E9
+jvm_memory_pool_bytes_max{pool="PS Eden Space",} 3.55467264E8
+jvm_memory_pool_bytes_max{pool="PS Survivor Space",} 1048576.0
+jvm_memory_pool_bytes_max{pool="PS Old Gen",} 7.16177408E8
+# HELP jvm_memory_pool_bytes_init Initial bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_init gauge
+jvm_memory_pool_bytes_init{pool="Code Cache",} 2555904.0
+jvm_memory_pool_bytes_init{pool="Metaspace",} 0.0
+jvm_memory_pool_bytes_init{pool="Compressed Class Space",} 0.0
+jvm_memory_pool_bytes_init{pool="PS Eden Space",} 8912896.0
+jvm_memory_pool_bytes_init{pool="PS Survivor Space",} 1048576.0
+jvm_memory_pool_bytes_init{pool="PS Old Gen",} 2.2544384E7
+# HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
+# TYPE jvm_gc_collection_seconds summary
+jvm_gc_collection_seconds_count{gc="PS Scavenge",} 234.0
+jvm_gc_collection_seconds_sum{gc="PS Scavenge",} 0.517
+jvm_gc_collection_seconds_count{gc="PS MarkSweep",} 5.0
+jvm_gc_collection_seconds_sum{gc="PS MarkSweep",} 0.474
+# HELP jvm_threads_current Current thread count of a JVM
+# TYPE jvm_threads_current gauge
+jvm_threads_current 82.0
+# HELP jvm_threads_daemon Daemon thread count of a JVM
+# TYPE jvm_threads_daemon gauge
+jvm_threads_daemon 75.0
+# HELP jvm_threads_peak Peak thread count of a JVM
+# TYPE jvm_threads_peak gauge
+jvm_threads_peak 86.0
+# HELP jvm_threads_started_total Started thread count of a JVM
+# TYPE jvm_threads_started_total counter
+jvm_threads_started_total 118.0
+# HELP jvm_threads_deadlocked Cycles of JVM-threads that are in deadlock waiting to acquire object monitors or ownable synchronizers
+# TYPE jvm_threads_deadlocked gauge
+jvm_threads_deadlocked 0.0
+# HELP jvm_threads_deadlocked_monitor Cycles of JVM-threads that are in deadlock waiting to acquire object monitors
+# TYPE jvm_threads_deadlocked_monitor gauge
+jvm_threads_deadlocked_monitor 0.0
+# HELP org_apache_camel_MeanDuration Mean Duration
+# TYPE org_apache_camel_MeanDuration gauge
+org_apache_camel_MeanDuration{context="kafka-load-producer",service="DefaultAsyncProcessorAwaitManager",type="services",} 0.0
+# HELP org_apache_camel_ExternalRedeliveries External Redeliveries
+# TYPE org_apache_camel_ExternalRedeliveries counter
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_ExternalRedeliveries{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_TotalDuration Total Duration
+# TYPE org_apache_camel_TotalDuration gauge
+org_apache_camel_TotalDuration{context="kafka-load-producer",service="DefaultAsyncProcessorAwaitManager",type="services",} 0.0
+# HELP org_apache_camel_ThreadsBlocked Threads Blocked
+# TYPE org_apache_camel_ThreadsBlocked gauge
+org_apache_camel_ThreadsBlocked{context="kafka-load-producer",service="DefaultAsyncProcessorAwaitManager",type="services",} 0.0
+# HELP org_apache_camel_FailuresHandled Failures Handled
+# TYPE org_apache_camel_FailuresHandled counter
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_FailuresHandled{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_MaxProcessingTime Maximum Processing Time
+# TYPE org_apache_camel_MaxProcessingTime gauge
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_MaxProcessingTime{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_TotalProcessingTime Total Processing Time
+# TYPE org_apache_camel_TotalProcessingTime gauge
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_TotalProcessingTime{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_ExchangesCompleted Exchanges Completed
+# TYPE org_apache_camel_ExchangesCompleted counter
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_ExchangesCompleted{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_ExchangesFailed Exchanges Failed
+# TYPE org_apache_camel_ExchangesFailed counter
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_ExchangesFailed{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_MinProcessingTime Minimum Processing Time
+# TYPE org_apache_camel_MinProcessingTime gauge
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_MinProcessingTime{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_ThreadsInterrupted Threads Interrupted
+# TYPE org_apache_camel_ThreadsInterrupted gauge
+org_apache_camel_ThreadsInterrupted{context="kafka-load-producer",service="DefaultAsyncProcessorAwaitManager",type="services",} 0.0
+# HELP org_apache_camel_MaxDuration Maximum Duration
+# TYPE org_apache_camel_MaxDuration gauge
+org_apache_camel_MaxDuration{context="kafka-load-producer",service="DefaultAsyncProcessorAwaitManager",type="services",} 0.0
+# HELP org_apache_camel_Redeliveries Redeliveries
+# TYPE org_apache_camel_Redeliveries gauge
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_Redeliveries{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_MinDuration Minimum Duration
+# TYPE org_apache_camel_MinDuration gauge
+org_apache_camel_MinDuration{context="kafka-load-producer",service="DefaultAsyncProcessorAwaitManager",type="services",} 0.0
+# HELP org_apache_camel_DeltaProcessingTime Delta Processing Time
+# TYPE org_apache_camel_DeltaProcessingTime gauge
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_DeltaProcessingTime{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_ExchangesInflight Exchanges Inflight
+# TYPE org_apache_camel_ExchangesInflight counter
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_ExchangesInflight{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_MeanProcessingTime Mean Processing Time
+# TYPE org_apache_camel_MeanProcessingTime gauge
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"to2\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"to4\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"to6\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",route="\"route1\"",type="routes",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",type="context",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"to5\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"to3\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",route="\"route2\"",type="routes",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"to1\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"bean1\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} -1.0
+org_apache_camel_MeanProcessingTime{context="kafka-load-producer",processor="\"loop1\"",type="processors",} -1.0
+# HELP org_apache_camel_ExchangesTotal Exchanges Total
+# TYPE org_apache_camel_ExchangesTotal counter
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"to2\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"to4\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"to6\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"to5\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"to3\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"to1\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"bean1\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} 0.0
+org_apache_camel_ExchangesTotal{context="kafka-load-producer",processor="\"loop1\"",type="processors",} 0.0
+# HELP org_apache_camel_LastProcessingTime Last Processing Time
+# TYPE org_apache_camel_LastProcessingTime gauge
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"to2\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"to4\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"to6\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",route="\"route1\"",type="routes",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",type="context",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"removeHeaders1\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"setHeader1\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"to5\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"to3\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",route="\"route2\"",type="routes",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"to1\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"bean1\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"setBody1\"",type="processors",} -1.0
+org_apache_camel_LastProcessingTime{context="kafka-load-producer",processor="\"loop1\"",type="processors",} -1.0
+# HELP org_apache_camel_InflightExchanges Inflight Exchanges
+# TYPE org_apache_camel_InflightExchanges gauge
+org_apache_camel_InflightExchanges{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",route="\"http-receiver\"",type="routes",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",route="\"route1\"",type="routes",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",route="\"get-start-sending-route\"",type="routes",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",route="\"route2\"",type="routes",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",type="context",} 0.0
+org_apache_camel_InflightExchanges{context="kafka-load-producer",type="context",} 0.0
+# HELP jmx_scrape_duration_seconds Time this JMX scrape took, in seconds.
+# TYPE jmx_scrape_duration_seconds gauge
+jmx_scrape_duration_seconds 0.398841379
+# HELP jmx_scrape_error Non-zero if this scrape failed.
+# TYPE jmx_scrape_error gauge
+jmx_scrape_error 0.0
+# HELP jvm_buffer_pool_used_bytes Used bytes of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_used_bytes gauge
+jvm_buffer_pool_used_bytes{pool="direct",} 155492.0
+jvm_buffer_pool_used_bytes{pool="mapped",} 0.0
+# HELP jvm_buffer_pool_capacity_bytes Bytes capacity of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_capacity_bytes gauge
+jvm_buffer_pool_capacity_bytes{pool="direct",} 155491.0
+jvm_buffer_pool_capacity_bytes{pool="mapped",} 0.0
+# HELP jvm_buffer_pool_used_buffers Used buffers of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_used_buffers gauge
+jvm_buffer_pool_used_buffers{pool="direct",} 14.0
+jvm_buffer_pool_used_buffers{pool="mapped",} 0.0

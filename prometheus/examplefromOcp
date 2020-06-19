@@ -1,0 +1,234 @@
+# HELP jvm_buffer_pool_used_bytes Used bytes of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_used_bytes gauge
+jvm_buffer_pool_used_bytes{pool="direct",} 303841.0
+jvm_buffer_pool_used_bytes{pool="mapped",} 0.0
+# HELP jvm_buffer_pool_capacity_bytes Bytes capacity of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_capacity_bytes gauge
+jvm_buffer_pool_capacity_bytes{pool="direct",} 303841.0
+jvm_buffer_pool_capacity_bytes{pool="mapped",} 0.0
+# HELP jvm_buffer_pool_used_buffers Used buffers of a given JVM buffer pool.
+# TYPE jvm_buffer_pool_used_buffers gauge
+jvm_buffer_pool_used_buffers{pool="direct",} 14.0
+jvm_buffer_pool_used_buffers{pool="mapped",} 0.0
+# HELP jvm_gc_collection_seconds Time spent in a given JVM garbage collector in seconds.
+# TYPE jvm_gc_collection_seconds summary
+jvm_gc_collection_seconds_count{gc="G1 Young Generation",} 252.0
+jvm_gc_collection_seconds_sum{gc="G1 Young Generation",} 0.498
+jvm_gc_collection_seconds_count{gc="G1 Old Generation",} 0.0
+jvm_gc_collection_seconds_sum{gc="G1 Old Generation",} 0.0
+# HELP jvm_threads_current Current thread count of a JVM
+# TYPE jvm_threads_current gauge
+jvm_threads_current 38.0
+# HELP jvm_threads_daemon Daemon thread count of a JVM
+# TYPE jvm_threads_daemon gauge
+jvm_threads_daemon 22.0
+# HELP jvm_threads_peak Peak thread count of a JVM
+# TYPE jvm_threads_peak gauge
+jvm_threads_peak 42.0
+# HELP jvm_threads_started_total Started thread count of a JVM
+# TYPE jvm_threads_started_total counter
+jvm_threads_started_total 49.0
+# HELP jvm_threads_deadlocked Cycles of JVM-threads that are in deadlock waiting to acquire object monitors or ownable synchronizers
+# TYPE jvm_threads_deadlocked gauge
+jvm_threads_deadlocked 0.0
+# HELP jvm_threads_deadlocked_monitor Cycles of JVM-threads that are in deadlock waiting to acquire object monitors
+# TYPE jvm_threads_deadlocked_monitor gauge
+jvm_threads_deadlocked_monitor 0.0
+# HELP jmx_config_reload_success_total Number of times configuration have successfully been reloaded.
+# TYPE jmx_config_reload_success_total counter
+jmx_config_reload_success_total 0.0
+# HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
+# TYPE process_cpu_seconds_total counter
+process_cpu_seconds_total 355.89
+# HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
+# TYPE process_start_time_seconds gauge
+process_start_time_seconds 1.592321519607E9
+# HELP process_open_fds Number of open file descriptors.
+# TYPE process_open_fds gauge
+process_open_fds 156.0
+# HELP process_max_fds Maximum number of open file descriptors.
+# TYPE process_max_fds gauge
+process_max_fds 1048576.0
+# HELP process_virtual_memory_bytes Virtual memory size in bytes.
+# TYPE process_virtual_memory_bytes gauge
+process_virtual_memory_bytes 6.071672832E9
+# HELP process_resident_memory_bytes Resident memory size in bytes.
+# TYPE process_resident_memory_bytes gauge
+process_resident_memory_bytes 6.4720896E8
+# HELP jvm_memory_bytes_used Used bytes of a given JVM memory area.
+# TYPE jvm_memory_bytes_used gauge
+jvm_memory_bytes_used{area="heap",} 2.19761496E8
+jvm_memory_bytes_used{area="nonheap",} 3.3344192E7
+# HELP jvm_memory_bytes_committed Committed (bytes) of a given JVM memory area.
+# TYPE jvm_memory_bytes_committed gauge
+jvm_memory_bytes_committed{area="heap",} 8.388608E8
+jvm_memory_bytes_committed{area="nonheap",} 3.5586048E7
+# HELP jvm_memory_bytes_max Max (bytes) of a given JVM memory area.
+# TYPE jvm_memory_bytes_max gauge
+jvm_memory_bytes_max{area="heap",} 8.388608E8
+jvm_memory_bytes_max{area="nonheap",} -1.0
+# HELP jvm_memory_bytes_init Initial bytes of a given JVM memory area.
+# TYPE jvm_memory_bytes_init gauge
+jvm_memory_bytes_init{area="heap",} 8.388608E8
+jvm_memory_bytes_init{area="nonheap",} 2555904.0
+# HELP jvm_memory_pool_bytes_used Used bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_used gauge
+jvm_memory_pool_bytes_used{pool="Code Cache",} 1.1556608E7
+jvm_memory_pool_bytes_used{pool="Metaspace",} 1.97626E7
+jvm_memory_pool_bytes_used{pool="Compressed Class Space",} 2024984.0
+jvm_memory_pool_bytes_used{pool="G1 Eden Space",} 2.03423744E8
+jvm_memory_pool_bytes_used{pool="G1 Survivor Space",} 1048576.0
+jvm_memory_pool_bytes_used{pool="G1 Old Gen",} 1.5289176E7
+# HELP jvm_memory_pool_bytes_committed Committed bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_committed gauge
+jvm_memory_pool_bytes_committed{pool="Code Cache",} 1.2517376E7
+jvm_memory_pool_bytes_committed{pool="Metaspace",} 2.0709376E7
+jvm_memory_pool_bytes_committed{pool="Compressed Class Space",} 2359296.0
+jvm_memory_pool_bytes_committed{pool="G1 Eden Space",} 5.27433728E8
+jvm_memory_pool_bytes_committed{pool="G1 Survivor Space",} 1048576.0
+jvm_memory_pool_bytes_committed{pool="G1 Old Gen",} 3.10378496E8
+# HELP jvm_memory_pool_bytes_max Max bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_max gauge
+jvm_memory_pool_bytes_max{pool="Code Cache",} 2.5165824E8
+jvm_memory_pool_bytes_max{pool="Metaspace",} -1.0
+jvm_memory_pool_bytes_max{pool="Compressed Class Space",} 1.073741824E9
+jvm_memory_pool_bytes_max{pool="G1 Eden Space",} -1.0
+jvm_memory_pool_bytes_max{pool="G1 Survivor Space",} -1.0
+jvm_memory_pool_bytes_max{pool="G1 Old Gen",} 8.388608E8
+# HELP jvm_memory_pool_bytes_init Initial bytes of a given JVM memory pool.
+# TYPE jvm_memory_pool_bytes_init gauge
+jvm_memory_pool_bytes_init{pool="Code Cache",} 2555904.0
+jvm_memory_pool_bytes_init{pool="Metaspace",} 0.0
+jvm_memory_pool_bytes_init{pool="Compressed Class Space",} 0.0
+jvm_memory_pool_bytes_init{pool="G1 Eden Space",} 4.4040192E7
+jvm_memory_pool_bytes_init{pool="G1 Survivor Space",} 0.0
+jvm_memory_pool_bytes_init{pool="G1 Old Gen",} 7.94820608E8
+# HELP jvm_classes_loaded The number of classes that are currently loaded in the JVM
+# TYPE jvm_classes_loaded gauge
+jvm_classes_loaded 3087.0
+# HELP jvm_classes_loaded_total The total number of classes that have been loaded since the JVM has started execution
+# TYPE jvm_classes_loaded_total counter
+jvm_classes_loaded_total 3087.0
+# HELP jvm_classes_unloaded_total The total number of classes that have been unloaded since the JVM has started execution
+# TYPE jvm_classes_unloaded_total counter
+jvm_classes_unloaded_total 0.0
+# HELP jvm_info JVM version info
+# TYPE jvm_info gauge
+jvm_info{version="1.8.0_252-b09",vendor="Oracle Corporation",runtime="OpenJDK Runtime Environment",} 1.0
+# HELP zookeeper_initlimit InitLimit (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1><>InitLimit)
+# TYPE zookeeper_initlimit untyped
+zookeeper_initlimit{replicaId="1",} 5.0
+# HELP zookeeper_inmemorydatatree_watchcount WatchCount (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower, name3=InMemoryDataTree><>WatchCount)
+# TYPE zookeeper_inmemorydatatree_watchcount untyped
+zookeeper_inmemorydatatree_watchcount{memberType="Follower",replicaId="1",} 2.0
+# HELP zookeeper_electiontype ElectionType (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1><>ElectionType)
+# TYPE zookeeper_electiontype untyped
+zookeeper_electiontype{replicaId="1",} 3.0
+# HELP zookeeper_jutemaxbuffersize JuteMaxBufferSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>JuteMaxBufferSize)
+# TYPE zookeeper_jutemaxbuffersize untyped
+zookeeper_jutemaxbuffersize{memberType="Follower",replicaId="1",} 1048575.0
+# HELP zookeeper_outstandingrequests OutstandingRequests (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>OutstandingRequests)
+# TYPE zookeeper_outstandingrequests untyped
+zookeeper_outstandingrequests{memberType="Follower",replicaId="1",} 0.0
+# HELP zookeeper_inmemorydatatree_nodecount NodeCount (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower, name3=InMemoryDataTree><>NodeCount)
+# TYPE zookeeper_inmemorydatatree_nodecount untyped
+zookeeper_inmemorydatatree_nodecount{memberType="Follower",replicaId="1",} 192.0
+# HELP zookeeper_lastclientresponsesize LastClientResponseSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>LastClientResponseSize)
+# TYPE zookeeper_lastclientresponsesize untyped
+zookeeper_lastclientresponsesize{memberType="Follower",replicaId="1",} 16.0
+# HELP zookeeper_packetssent PacketsSent (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>PacketsSent)
+# TYPE zookeeper_packetssent untyped
+zookeeper_packetssent{memberType="Follower",replicaId="1",} 180367.0
+# HELP zookeeper_electiontimetaken ElectionTimeTaken (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>ElectionTimeTaken)
+# TYPE zookeeper_electiontimetaken untyped
+zookeeper_electiontimetaken{memberType="Follower",replicaId="1",} 8.0
+# HELP zookeeper_fsyncthresholdexceedcount FsyncThresholdExceedCount (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>FsyncThresholdExceedCount)
+# TYPE zookeeper_fsyncthresholdexceedcount untyped
+zookeeper_fsyncthresholdexceedcount{memberType="Follower",replicaId="1",} 0.0
+# HELP zookeeper_leader Leader (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.2><>Leader)
+# TYPE zookeeper_leader untyped
+zookeeper_leader{replicaId="2",} 0.0
+zookeeper_leader{replicaId="1",} 0.0
+zookeeper_leader{replicaId="3",} 1.0
+# HELP zookeeper_partofensemble PartOfEnsemble (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1><>PartOfEnsemble)
+# TYPE zookeeper_partofensemble untyped
+zookeeper_partofensemble{replicaId="1",} 1.0
+# HELP zookeeper_pendingrevalidationcount PendingRevalidationCount (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>PendingRevalidationCount)
+# TYPE zookeeper_pendingrevalidationcount untyped
+zookeeper_pendingrevalidationcount{memberType="Follower",replicaId="1",} 0.0
+# HELP zookeeper_txnlogelapsedsynctime TxnLogElapsedSyncTime (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>TxnLogElapsedSyncTime)
+# TYPE zookeeper_txnlogelapsedsynctime untyped
+zookeeper_txnlogelapsedsynctime{memberType="Follower",replicaId="1",} 0.0
+# HELP zookeeper_tick Tick (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1><>Tick)
+# TYPE zookeeper_tick untyped
+zookeeper_tick{replicaId="1",} 0.0
+# HELP zookeeper_sslquorum SslQuorum (org.apache.ZooKeeperService<name0=ReplicatedServer_id1><>SslQuorum)
+# TYPE zookeeper_sslquorum untyped
+zookeeper_sslquorum 0.0
+# HELP zookeeper_minclientresponsesize MinClientResponseSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MinClientResponseSize)
+# TYPE zookeeper_minclientresponsesize untyped
+zookeeper_minclientresponsesize{memberType="Follower",replicaId="1",} 16.0
+# HELP zookeeper_ticktime TickTime (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>TickTime)
+# TYPE zookeeper_ticktime untyped
+zookeeper_ticktime{memberType="Follower",replicaId="1",} 2000.0
+zookeeper_ticktime{replicaId="1",} 2000.0
+# HELP zookeeper_synclimit SyncLimit (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1><>SyncLimit)
+# TYPE zookeeper_synclimit untyped
+zookeeper_synclimit{replicaId="1",} 2.0
+# HELP zookeeper_avgrequestlatency AvgRequestLatency (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>AvgRequestLatency)
+# TYPE zookeeper_avgrequestlatency untyped
+zookeeper_avgrequestlatency{memberType="Follower",replicaId="1",} 0.0
+# HELP zookeeper_maxrequestlatency MaxRequestLatency (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MaxRequestLatency)
+# TYPE zookeeper_maxrequestlatency untyped
+zookeeper_maxrequestlatency{memberType="Follower",replicaId="1",} 5.0
+# HELP zookeeper_portunification PortUnification (org.apache.ZooKeeperService<name0=ReplicatedServer_id1><>PortUnification)
+# TYPE zookeeper_portunification untyped
+zookeeper_portunification 0.0
+# HELP zookeeper_maxsessiontimeout MaxSessionTimeout (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MaxSessionTimeout)
+# TYPE zookeeper_maxsessiontimeout untyped
+zookeeper_maxsessiontimeout{memberType="Follower",replicaId="1",} 40000.0
+zookeeper_maxsessiontimeout{replicaId="1",} 40000.0
+# HELP zookeeper_datadirsize DataDirSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>DataDirSize)
+# TYPE zookeeper_datadirsize untyped
+zookeeper_datadirsize{memberType="Follower",replicaId="1",} 6.7109492E7
+# HELP zookeeper_minrequestlatency MinRequestLatency (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MinRequestLatency)
+# TYPE zookeeper_minrequestlatency untyped
+zookeeper_minrequestlatency{memberType="Follower",replicaId="1",} 0.0
+# HELP zookeeper_packetsreceived PacketsReceived (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>PacketsReceived)
+# TYPE zookeeper_packetsreceived untyped
+zookeeper_packetsreceived{memberType="Follower",replicaId="1",} 180364.0
+# HELP zookeeper_minsessiontimeout MinSessionTimeout (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MinSessionTimeout)
+# TYPE zookeeper_minsessiontimeout untyped
+zookeeper_minsessiontimeout{memberType="Follower",replicaId="1",} 4000.0
+zookeeper_minsessiontimeout{replicaId="1",} 4000.0
+# HELP zookeeper_numaliveconnections NumAliveConnections (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>NumAliveConnections)
+# TYPE zookeeper_numaliveconnections untyped
+zookeeper_numaliveconnections{memberType="Follower",replicaId="1",} 2.0
+# HELP zookeeper_configversion ConfigVersion (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1><>ConfigVersion)
+# TYPE zookeeper_configversion untyped
+zookeeper_configversion{replicaId="1",} 4.294967296E9
+# HELP zookeeper_maxclientresponsesize MaxClientResponseSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MaxClientResponseSize)
+# TYPE zookeeper_maxclientresponsesize untyped
+zookeeper_maxclientresponsesize{memberType="Follower",replicaId="1",} 403.0
+# HELP zookeeper_logdirsize LogDirSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>LogDirSize)
+# TYPE zookeeper_logdirsize untyped
+zookeeper_logdirsize{memberType="Follower",replicaId="1",} 6.7109492E7
+# HELP zookeeper_quorumsize QuorumSize (org.apache.ZooKeeperService<name0=ReplicatedServer_id1><>QuorumSize)
+# TYPE zookeeper_quorumsize untyped
+zookeeper_quorumsize 3.0
+# HELP zookeeper_maxclientcnxnsperhost MaxClientCnxnsPerHost (org.apache.ZooKeeperService<name0=ReplicatedServer_id1, name1=replica.1, name2=Follower><>MaxClientCnxnsPerHost)
+# TYPE zookeeper_maxclientcnxnsperhost untyped
+zookeeper_maxclientcnxnsperhost{memberType="Follower",replicaId="1",} 60.0
+zookeeper_maxclientcnxnsperhost{replicaId="1",} 60.0
+# HELP jmx_scrape_duration_seconds Time this JMX scrape took, in seconds.
+# TYPE jmx_scrape_duration_seconds gauge
+jmx_scrape_duration_seconds 0.011357877
+# HELP jmx_scrape_error Non-zero if this scrape failed.
+# TYPE jmx_scrape_error gauge
+jmx_scrape_error 0.0
+# HELP jmx_exporter_build_info A metric with a constant '1' value labeled with the version of the JMX exporter.
+# TYPE jmx_exporter_build_info gauge
+jmx_exporter_build_info{version="0.12.0.redhat-00001",name="jmx_prometheus_javaagent",} 1.0
+# HELP jmx_config_reload_failure_total Number of times configuration have failed to be reloaded.
+# TYPE jmx_config_reload_failure_total counter
+jmx_config_reload_failure_total 0.0

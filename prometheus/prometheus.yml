@@ -1,0 +1,39 @@
+# my global config
+global:
+  scrape_interval: 10s 
+  evaluation_interval: 10s 
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'kafka'
+    static_configs:
+      - targets: 
+          - "kafka:9404"
+        labels:
+          namespace: "kafka"
+          strimzi_io_cluster: "kafka-cluster"
+          strimzi_io_name: "kafka-cluster-kafka"
+          kubernetes_pod_name: "kafka-cluster-kafka-0"
+          statefulset_kubernetes_io_pod_name: "kafka-cluster-kafka-0"
+      - targets: 
+          - "zookeeper:9404"
+        labels:
+          namespace: "kafka"
+          strimzi_io_cluster: "kafka-cluster"
+          strimzi_io_name: "kafka-cluster-zookeeper"
+          kubernetes_pod_name: "kafka-cluster-zookeeper-0"
+          statefulset_kubernetes_io_pod_name: "kafka-cluster-zookeeper-0"
+
+  - job_name: 'camel'
+    static_configs:
+      - targets: 
+          - "camel-kafka-load-producer:9779"
+        labels:
+          namespace: "camel"
+          kubernetes_pod_name: "camel-kafka-load-producer-0"
+          node_name: "localhost"
+      - targets: 
+          - "camel-kafka-load-producer-1:9779"
+        labels:
+          namespace: "camel"
+          kubernetes_pod_name: "camel-kafka-load-producer-1"
+          node_name: "localhost"

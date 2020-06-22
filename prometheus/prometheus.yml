@@ -37,3 +37,15 @@ scrape_configs:
           namespace: "camel"
           kubernetes_pod_name: "camel-kafka-load-producer-1"
           node_name: "localhost"
+      - targets: 
+          - "camel-kafka-consumer-0:9779"
+        labels:
+          namespace: "camel"
+          kubernetes_pod_name: "camel-kafka-consumer-0"
+          node_name: "localhost"
+      - targets: 
+          - "camel-kafka-consumer-1:9779"
+        labels:
+          namespace: "camel"
+          kubernetes_pod_name: "camel-kafka-consumer-1"
+          node_name: "localhost"

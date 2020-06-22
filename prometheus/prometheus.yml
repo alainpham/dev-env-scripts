@@ -26,7 +26,7 @@ scrape_configs:
   - job_name: 'camel'
     static_configs:
       - targets: 
-          - "camel-kafka-load-producer:9779"
+          - "camel-kafka-load-producer-0:9779"
         labels:
           namespace: "camel"
           kubernetes_pod_name: "camel-kafka-load-producer-0"

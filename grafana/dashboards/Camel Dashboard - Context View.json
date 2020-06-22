@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 5,
-  "iteration": 1592583133411,
+  "iteration": 1592843046746,
   "links": [],
   "panels": [
     {
@@ -369,7 +369,7 @@
         "#d44a3a"
       ],
       "description": "Shows completed exchanges of the camel context",
-      "format": "none",
+      "format": "short",
       "gauge": {
         "maxValue": 100,
         "minValue": 0,
@@ -1126,7 +1126,7 @@
         "x": 0,
         "y": 9
       },
-      "id": 192,
+      "id": 213,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -1157,13 +1157,13 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "sparkline": {
@@ -1203,7 +1203,7 @@
         "x": 2,
         "y": 9
       },
-      "id": 194,
+      "id": 218,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1224,13 +1224,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "seriesOverrides": [],
@@ -1299,7 +1299,7 @@
         "x": 7,
         "y": 9
       },
-      "id": 196,
+      "id": 223,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1322,13 +1322,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "seriesOverrides": [],
@@ -1409,7 +1409,7 @@
         "x": 12,
         "y": 9
       },
-      "id": 198,
+      "id": 228,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -1439,13 +1439,13 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "sparkline": {
@@ -1490,7 +1490,7 @@
         "x": 14,
         "y": 9
       },
-      "id": 200,
+      "id": 233,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1513,13 +1513,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "seriesOverrides": [],
@@ -1588,7 +1588,7 @@
         "x": 19,
         "y": 9
       },
-      "id": 202,
+      "id": 238,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1611,13 +1611,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "seriesOverrides": [],
@@ -1699,7 +1699,7 @@
         "x": 0,
         "y": 13
       },
-      "id": 193,
+      "id": 214,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -1730,7 +1730,1153 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 12,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "Value",
+      "targets": [
+        {
+          "expr": "sum(irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s]))",
+          "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Ex/sec $route",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 2,
+        "y": 13
+      },
+      "id": 219,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 16,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (context) (irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{context}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Exchanges/sec - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 7,
+        "y": 13
+      },
+      "id": 224,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 27,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route  Exchanges/sec - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Current number of inflight exchanges",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 12,
+        "y": 13
+      },
+      "id": 229,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 35,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "sum (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Inflight $route",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 13
+      },
+      "id": 234,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 44,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (context)  (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{context}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Inflight  - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 13
+      },
+      "id": 239,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 55,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (kubernetes_pod_name) (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Inflight  - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Show the numbers of exchanges per second for a camel route",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 17
+      },
+      "id": 215,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "minSpan": 6,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 12,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "Value",
+      "targets": [
+        {
+          "expr": "sum(irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s]))",
+          "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Ex/sec $route",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 2,
+        "y": 17
+      },
+      "id": 220,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 16,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (context) (irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{context}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Exchanges/sec - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 7,
+        "y": 17
+      },
+      "id": 225,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 27,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route  Exchanges/sec - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Current number of inflight exchanges",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 12,
+        "y": 17
+      },
+      "id": 230,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 35,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "sum (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Inflight $route",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 17
+      },
+      "id": 235,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 44,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (context)  (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{context}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Inflight  - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 17
+      },
+      "id": 240,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 55,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (kubernetes_pod_name) (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Inflight  - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Show the numbers of exchanges per second for a camel route",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 21
+      },
+      "id": 216,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "minSpan": 6,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
@@ -1774,9 +2920,9 @@
         "h": 4,
         "w": 5,
         "x": 2,
-        "y": 13
+        "y": 21
       },
-      "id": 195,
+      "id": 221,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1797,7 +2943,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
@@ -1870,9 +3016,9 @@
         "h": 4,
         "w": 5,
         "x": 7,
-        "y": 13
+        "y": 21
       },
-      "id": 197,
+      "id": 226,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -1895,7 +3041,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
@@ -1980,9 +3126,9 @@
         "h": 4,
         "w": 2,
         "x": 12,
-        "y": 13
+        "y": 21
       },
-      "id": 199,
+      "id": 231,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2012,7 +3158,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
@@ -2061,9 +3207,9 @@
         "h": 4,
         "w": 5,
         "x": 14,
-        "y": 13
+        "y": 21
       },
-      "id": 201,
+      "id": 236,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -2086,7 +3232,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
@@ -2159,9 +3305,9 @@
         "h": 4,
         "w": 5,
         "x": 19,
-        "y": 13
+        "y": 21
       },
-      "id": 203,
+      "id": 241,
       "legend": {
         "alignAsTable": false,
         "avg": false,
@@ -2184,7 +3330,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
@@ -2248,12 +3394,585 @@
       }
     },
     {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Show the numbers of exchanges per second for a camel route",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 0,
+        "y": 25
+      },
+      "id": 217,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "minSpan": 6,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 12,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "Value",
+      "targets": [
+        {
+          "expr": "sum(irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s]))",
+          "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Ex/sec $route",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 2,
+        "y": 25
+      },
+      "id": 222,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 16,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (context) (irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s]))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{context}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Exchanges/sec - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 7,
+        "y": 25
+      },
+      "id": 227,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 27,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "irate(org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"}[30s])",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route  Exchanges/sec - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Current number of inflight exchanges",
+      "format": "none",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 2,
+        "x": 12,
+        "y": 25
+      },
+      "id": 232,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 35,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "",
+      "targets": [
+        {
+          "expr": "sum (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "title": "Inflight $route",
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [
+        {
+          "op": "=",
+          "text": "N/A",
+          "value": "null"
+        }
+      ],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 14,
+        "y": 25
+      },
+      "id": 237,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 44,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (context)  (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{context}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Inflight  - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 19,
+        "y": 25
+      },
+      "id": 242,
+      "legend": {
+        "alignAsTable": false,
+        "avg": false,
+        "current": false,
+        "hideEmpty": false,
+        "max": false,
+        "min": false,
+        "rightSide": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 55,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "sum by (kubernetes_pod_name) (org_apache_camel_ExchangesInflight{namespace=\"$namespace\",context=\"$context\",route=~\"$route\",type=\"routes\"})",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "$route Inflight  - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
       "collapsed": false,
       "gridPos": {
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 29
       },
       "id": 69,
       "panels": [],
@@ -2283,7 +4002,7 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 18
+        "y": 30
       },
       "id": 96,
       "interval": null,
@@ -2342,7 +4061,7 @@
       ],
       "thresholds": "",
       "timeFrom": null,
-      "title": "Exec time $route",
+      "title": "Avg Exec time $route",
       "transparent": false,
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -2359,7 +4078,7 @@
         "h": 4,
         "w": 5,
         "x": 4,
-        "y": 18
+        "y": 30
       },
       "id": 112,
       "legend": {
@@ -2404,7 +4123,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Exec time $route - all instances",
+      "title": "Avg Exec time $route - all instances",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2451,7 +4170,7 @@
         "h": 4,
         "w": 5,
         "x": 9,
-        "y": 18
+        "y": 30
       },
       "id": 181,
       "legend": {
@@ -2498,7 +4217,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Exec time $route - per instances",
+      "title": "Avg Exec time $route - per instances",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2542,7 +4261,7 @@
         "h": 4,
         "w": 10,
         "x": 14,
-        "y": 18
+        "y": 30
       },
       "id": 189,
       "interval": "",
@@ -2622,7 +4341,7 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
+          "decimals": 1,
           "mappingType": 1,
           "pattern": "Value #C",
           "thresholds": [],
@@ -2699,9 +4418,9 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 22
+        "y": 34
       },
-      "id": 204,
+      "id": 243,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -2732,13 +4451,13 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "sparkline": {
@@ -2760,7 +4479,7 @@
       ],
       "thresholds": "",
       "timeFrom": null,
-      "title": "Exec time $route",
+      "title": "Avg Exec time $route",
       "transparent": false,
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -2777,9 +4496,9 @@
         "h": 4,
         "w": 5,
         "x": 4,
-        "y": 22
+        "y": 34
       },
-      "id": 206,
+      "id": 248,
       "legend": {
         "avg": false,
         "current": false,
@@ -2799,13 +4518,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "seriesOverrides": [],
@@ -2824,7 +4543,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Exec time $route - all instances",
+      "title": "Avg Exec time $route - all instances",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2871,9 +4590,9 @@
         "h": 4,
         "w": 5,
         "x": 9,
-        "y": 22
+        "y": 34
       },
-      "id": 208,
+      "id": 253,
       "legend": {
         "avg": false,
         "current": false,
@@ -2893,13 +4612,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "seriesOverrides": [],
@@ -2920,7 +4639,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Exec time $route - per instances",
+      "title": "Avg Exec time $route - per instances",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -2964,21 +4683,21 @@
         "h": 4,
         "w": 10,
         "x": 14,
-        "y": 22
+        "y": 34
       },
-      "id": 210,
+      "id": 258,
       "interval": "",
       "links": [],
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "get-ping-route",
-          "value": "get-ping-route"
+          "text": "data-generation-route",
+          "value": "data-generation-route"
         }
       },
       "scroll": true,
@@ -3046,7 +4765,7 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
-          "decimals": 0,
+          "decimals": 1,
           "mappingType": 1,
           "pattern": "Value #C",
           "thresholds": [],
@@ -3123,9 +4842,9 @@
         "h": 4,
         "w": 4,
         "x": 0,
-        "y": 26
+        "y": 38
       },
-      "id": 205,
+      "id": 244,
       "interval": null,
       "links": [],
       "mappingType": 1,
@@ -3156,13 +4875,13 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "http-receiver",
-          "value": "http-receiver"
+          "text": "get-pring-route",
+          "value": "get-pring-route"
         }
       },
       "sparkline": {
@@ -3184,7 +4903,7 @@
       ],
       "thresholds": "",
       "timeFrom": null,
-      "title": "Exec time $route",
+      "title": "Avg Exec time $route",
       "transparent": false,
       "type": "singlestat",
       "valueFontSize": "80%",
@@ -3201,9 +4920,9 @@
         "h": 4,
         "w": 5,
         "x": 4,
-        "y": 26
+        "y": 38
       },
-      "id": 207,
+      "id": 249,
       "legend": {
         "avg": false,
         "current": false,
@@ -3223,13 +4942,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "http-receiver",
-          "value": "http-receiver"
+          "text": "get-pring-route",
+          "value": "get-pring-route"
         }
       },
       "seriesOverrides": [],
@@ -3248,7 +4967,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Exec time $route - all instances",
+      "title": "Avg Exec time $route - all instances",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -3295,9 +5014,9 @@
         "h": 4,
         "w": 5,
         "x": 9,
-        "y": 26
+        "y": 38
       },
-      "id": 209,
+      "id": 254,
       "legend": {
         "avg": false,
         "current": false,
@@ -3317,13 +5036,13 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
           "selected": false,
-          "text": "http-receiver",
-          "value": "http-receiver"
+          "text": "get-pring-route",
+          "value": "get-pring-route"
         }
       },
       "seriesOverrides": [],
@@ -3344,7 +5063,7 @@
       "timeFrom": null,
       "timeRegions": [],
       "timeShift": null,
-      "title": "Exec time $route - per instances",
+      "title": "Avg Exec time $route - per instances",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -3388,15 +5107,863 @@
         "h": 4,
         "w": 10,
         "x": 14,
-        "y": 26
+        "y": 38
       },
-      "id": 211,
+      "id": 259,
       "interval": "",
       "links": [],
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592583133411,
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 189,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-pring-route",
+          "value": "get-pring-route"
+        }
+      },
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Time",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Processor",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "processor",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Average Execution Time",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Value #A",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        },
+        {
+          "alias": "Total Executions",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 1,
+          "mappingType": 1,
+          "pattern": "Value #C",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Total Execution TIme",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "Value #B",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}) / sum by (processor) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "A"
+        },
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "B"
+        },
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "C"
+        }
+      ],
+      "title": "Processor Execution Times - $route",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Average execution time for a route",
+      "format": "ms",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 42
+      },
+      "id": 245,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "minSpan": 6,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 96,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "Value",
+      "targets": [
+        {
+          "expr": "(sum by (route) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "Avg Exec time $route",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 4,
+        "y": 42
+      },
+      "id": 250,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 112,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum by (route) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Avg Exec time $route - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 9,
+        "y": 42
+      },
+      "id": 255,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 181,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum by (route,kubernetes_pod_name) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route,kubernetes_pod_name) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "time_series",
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Avg Exec time $route - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 4,
+        "w": 10,
+        "x": 14,
+        "y": 42
+      },
+      "id": 260,
+      "interval": "",
+      "links": [],
+      "pageSize": null,
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 189,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "get-start-sending-route",
+          "value": "get-start-sending-route"
+        }
+      },
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Time",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Processor",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "processor",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Average Execution Time",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Value #A",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        },
+        {
+          "alias": "Total Executions",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 1,
+          "mappingType": 1,
+          "pattern": "Value #C",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Total Execution TIme",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 0,
+          "mappingType": 1,
+          "pattern": "Value #B",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}) / sum by (processor) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "A"
+        },
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "B"
+        },
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "C"
+        }
+      ],
+      "title": "Processor Execution Times - $route",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Average execution time for a route",
+      "format": "ms",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 46
+      },
+      "id": 246,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "minSpan": 6,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 96,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "http-receiver",
+          "value": "http-receiver"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "Value",
+      "targets": [
+        {
+          "expr": "(sum by (route) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "Avg Exec time $route",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 4,
+        "y": 46
+      },
+      "id": 251,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 112,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "http-receiver",
+          "value": "http-receiver"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum by (route) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Avg Exec time $route - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 9,
+        "y": 46
+      },
+      "id": 256,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 181,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "http-receiver",
+          "value": "http-receiver"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum by (route,kubernetes_pod_name) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route,kubernetes_pod_name) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "time_series",
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Avg Exec time $route - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 4,
+        "w": 10,
+        "x": 14,
+        "y": 46
+      },
+      "id": 261,
+      "interval": "",
+      "links": [],
+      "pageSize": null,
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
@@ -3470,7 +6037,431 @@
             "rgba(50, 172, 45, 0.97)"
           ],
           "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 1,
+          "mappingType": 1,
+          "pattern": "Value #C",
+          "thresholds": [],
+          "type": "number",
+          "unit": "short"
+        },
+        {
+          "alias": "Total Execution TIme",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
           "decimals": 0,
+          "mappingType": 1,
+          "pattern": "Value #B",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        }
+      ],
+      "targets": [
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}) / sum by (processor) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "A"
+        },
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "B"
+        },
+        {
+          "expr": "min by (processor,route) (org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=\"$route\",type=\"processormappings\",processor=~\"$processor\"}) * on(processor) (sum by (processor) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"processors\",processor=~\"$processor\"}))",
+          "format": "table",
+          "hide": false,
+          "instant": true,
+          "intervalFactor": 1,
+          "refId": "C"
+        }
+      ],
+      "title": "Processor Execution Times - $route",
+      "transform": "table",
+      "type": "table"
+    },
+    {
+      "cacheTimeout": null,
+      "colorBackground": false,
+      "colorPrefix": false,
+      "colorValue": false,
+      "colors": [
+        "#299c46",
+        "rgba(237, 129, 40, 0.89)",
+        "#d44a3a"
+      ],
+      "description": "Average execution time for a route",
+      "format": "ms",
+      "gauge": {
+        "maxValue": 100,
+        "minValue": 0,
+        "show": false,
+        "thresholdLabels": false,
+        "thresholdMarkers": true
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 50
+      },
+      "id": 247,
+      "interval": null,
+      "links": [],
+      "mappingType": 1,
+      "mappingTypes": [
+        {
+          "name": "value to text",
+          "value": 1
+        },
+        {
+          "name": "range to text",
+          "value": 2
+        }
+      ],
+      "maxDataPoints": 100,
+      "minSpan": 6,
+      "nullPointMode": "connected",
+      "nullText": null,
+      "postfix": "",
+      "postfixFontSize": "50%",
+      "prefix": "",
+      "prefixFontSize": "50%",
+      "rangeMaps": [
+        {
+          "from": "null",
+          "text": "N/A",
+          "to": "null"
+        }
+      ],
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 96,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "sparkline": {
+        "fillColor": "rgba(31, 118, 189, 0.18)",
+        "full": false,
+        "lineColor": "rgb(31, 120, 193)",
+        "show": false
+      },
+      "tableColumn": "Value",
+      "targets": [
+        {
+          "expr": "(sum by (route) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "table",
+          "instant": true,
+          "intervalFactor": 1,
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "thresholds": "",
+      "timeFrom": null,
+      "title": "Avg Exec time $route",
+      "transparent": false,
+      "type": "singlestat",
+      "valueFontSize": "80%",
+      "valueMaps": [],
+      "valueName": "avg"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 4,
+        "y": 50
+      },
+      "id": 252,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 112,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum by (route) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "time_series",
+          "intervalFactor": 1,
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Avg Exec time $route - all instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fill": 1,
+      "gridPos": {
+        "h": 4,
+        "w": 5,
+        "x": 9,
+        "y": 50
+      },
+      "id": 257,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": false,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "links": [],
+      "nullPointMode": "null",
+      "percentage": false,
+      "pointradius": 5,
+      "points": false,
+      "renderer": "flot",
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 181,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "expr": "(sum by (route,kubernetes_pod_name) (org_apache_camel_TotalProcessingTime{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}) / sum by (route,kubernetes_pod_name) (org_apache_camel_ExchangesTotal{namespace=\"$namespace\",context=\"$context\",type=\"routes\",route=~\"$route\"}))",
+          "format": "time_series",
+          "instant": false,
+          "intervalFactor": 1,
+          "legendFormat": "{{kubernetes_pod_name}}",
+          "refId": "A"
+        }
+      ],
+      "thresholds": [],
+      "timeFrom": null,
+      "timeRegions": [],
+      "timeShift": null,
+      "title": "Avg Exec time $route - per instances",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "buckets": null,
+        "mode": "time",
+        "name": null,
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        },
+        {
+          "format": "short",
+          "label": null,
+          "logBase": 1,
+          "max": null,
+          "min": null,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false,
+        "alignLevel": null
+      }
+    },
+    {
+      "columns": [],
+      "fontSize": "100%",
+      "gridPos": {
+        "h": 4,
+        "w": 10,
+        "x": 14,
+        "y": 50
+      },
+      "id": 262,
+      "interval": "",
+      "links": [],
+      "pageSize": null,
+      "repeat": null,
+      "repeatDirection": "v",
+      "repeatIteration": 1592843046746,
+      "repeatPanelId": 189,
+      "scopedVars": {
+        "route": {
+          "selected": false,
+          "text": "send-to-kafka-route",
+          "value": "send-to-kafka-route"
+        }
+      },
+      "scroll": true,
+      "showHeader": true,
+      "sort": {
+        "col": 2,
+        "desc": false
+      },
+      "styles": [
+        {
+          "alias": "",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Time",
+          "thresholds": [],
+          "type": "hidden",
+          "unit": "short"
+        },
+        {
+          "alias": "Processor",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "link": false,
+          "mappingType": 1,
+          "pattern": "processor",
+          "thresholds": [],
+          "type": "string",
+          "unit": "short"
+        },
+        {
+          "alias": "Average Execution Time",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 2,
+          "mappingType": 1,
+          "pattern": "Value #A",
+          "thresholds": [],
+          "type": "number",
+          "unit": "ms"
+        },
+        {
+          "alias": "Total Executions",
+          "colorMode": null,
+          "colors": [
+            "rgba(245, 54, 54, 0.9)",
+            "rgba(237, 129, 40, 0.89)",
+            "rgba(50, 172, 45, 0.97)"
+          ],
+          "dateFormat": "YYYY-MM-DD HH:mm:ss",
+          "decimals": 1,
           "mappingType": 1,
           "pattern": "Value #C",
           "thresholds": [],
@@ -3534,7 +6525,6 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
           "text": "camel",
           "value": "camel"
         },
@@ -3560,7 +6550,6 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
           "text": "camel-kafka-load-producer",
           "value": "camel-kafka-load-producer"
         },
@@ -3586,8 +6575,6 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "tags": [],
           "text": "All",
           "value": [
             "$__all"
@@ -3616,9 +6603,7 @@
         "allValue": null,
         "current": {
           "text": "All",
-          "value": [
-            "$__all"
-          ]
+          "value": "$__all"
         },
         "datasource": "Prometheus",
         "definition": "label_values(org_apache_camel_Processor{namespace=\"$namespace\",context=\"$context\",route=~\"$route\"},processor)",
@@ -3673,5 +6658,5 @@
   "timezone": "",
   "title": "Camel Dashboard - Context View",
   "uid": "SH3hq4ZGz",
-  "version": 51
+  "version": 56
 }

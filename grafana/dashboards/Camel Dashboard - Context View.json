@@ -16,7 +16,7 @@
   "gnetId": null,
   "graphTooltip": 0,
   "id": 5,
-  "iteration": 1592845941550,
+  "iteration": 1592846887953,
   "links": [],
   "panels": [
     {
@@ -1157,7 +1157,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
@@ -1224,7 +1224,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
@@ -1322,7 +1322,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
@@ -1439,7 +1439,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
@@ -1513,7 +1513,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
@@ -1611,7 +1611,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
@@ -1730,7 +1730,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
@@ -1797,7 +1797,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
@@ -1895,7 +1895,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
@@ -2012,7 +2012,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
@@ -2086,7 +2086,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
@@ -2184,7 +2184,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
@@ -2303,7 +2303,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
@@ -2370,7 +2370,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
@@ -2468,7 +2468,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
@@ -2585,7 +2585,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
@@ -2659,7 +2659,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
@@ -2757,7 +2757,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
@@ -2876,7 +2876,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
@@ -2943,7 +2943,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
@@ -3041,7 +3041,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
@@ -3158,7 +3158,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
@@ -3232,7 +3232,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
@@ -3330,7 +3330,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
@@ -3449,7 +3449,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 12,
       "scopedVars": {
         "route": {
@@ -3516,7 +3516,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 16,
       "scopedVars": {
         "route": {
@@ -3614,7 +3614,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 27,
       "scopedVars": {
         "route": {
@@ -3731,7 +3731,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 35,
       "scopedVars": {
         "route": {
@@ -3805,7 +3805,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 44,
       "scopedVars": {
         "route": {
@@ -3903,7 +3903,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 55,
       "scopedVars": {
         "route": {
@@ -4451,7 +4451,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
@@ -4518,7 +4518,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
@@ -4612,7 +4612,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
@@ -4691,7 +4691,7 @@
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
@@ -4875,7 +4875,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
@@ -4942,7 +4942,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
@@ -5036,7 +5036,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
@@ -5115,7 +5115,7 @@
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
@@ -5299,7 +5299,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
@@ -5366,7 +5366,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
@@ -5460,7 +5460,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
@@ -5539,7 +5539,7 @@
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
@@ -5723,7 +5723,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
@@ -5790,7 +5790,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
@@ -5884,7 +5884,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
@@ -5963,7 +5963,7 @@
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
@@ -6147,7 +6147,7 @@
       ],
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 96,
       "scopedVars": {
         "route": {
@@ -6214,7 +6214,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 112,
       "scopedVars": {
         "route": {
@@ -6308,7 +6308,7 @@
       "renderer": "flot",
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 181,
       "scopedVars": {
         "route": {
@@ -6387,7 +6387,7 @@
       "pageSize": null,
       "repeat": null,
       "repeatDirection": "v",
-      "repeatIteration": 1592845941550,
+      "repeatIteration": 1592846887953,
       "repeatPanelId": 189,
       "scopedVars": {
         "route": {
@@ -6525,7 +6525,6 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
           "text": "camel",
           "value": "camel"
         },
@@ -6551,8 +6550,6 @@
       {
         "allValue": null,
         "current": {
-          "selected": true,
-          "tags": [],
           "text": "camel-kafka-load-producer",
           "value": "camel-kafka-load-producer"
         },
@@ -6578,9 +6575,10 @@
       {
         "allValue": null,
         "current": {
-          "selected": false,
           "text": "All",
-          "value": "$__all"
+          "value": [
+            "$__all"
+          ]
         },
         "datasource": "Prometheus",
         "definition": "label_values(org_apache_camel_ExchangesCompleted{namespace=\"$namespace\",context=\"$context\",type=\"routes\"},route)",

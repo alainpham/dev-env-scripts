@@ -19,6 +19,7 @@ docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.
 172.18.0.50 mysql
 172.18.0.51 oracle
 172.18.0.52 couchbase
+172.18.0.53 infinispan
 
 172.18.0.60 artemis
 172.18.0.61 zookeeper
@@ -89,6 +90,20 @@ docker run \
 ```
 
 Goto http://couchbase:8091/ for admin console
+
+## Infinispan
+
+```
+
+docker stop infinispan
+docker rm infinispan
+
+docker run \
+    -e USER="user" -e PASS="password" \
+    -d --name infinispan  \
+    -d --net primenet --ip 172.18.0.53 \
+    infinispan/server:11.0.0.Final-2
+```
 
 # Messaging
 

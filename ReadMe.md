@@ -1,3 +1,5 @@
+
+
 # Purpose of this repo
 
 This is a script to setup what I commonly use in a dev environement to build PoCs.
@@ -20,13 +22,18 @@ docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.
 172.18.0.51 oracle
 172.18.0.52 couchbase
 172.18.0.53 infinispan
+172.18.0.54 datagrid
+172.18.0.55 postgres
 
 172.18.0.60 artemis
 172.18.0.61 zookeeper
 172.18.0.62 kafka
+172.18.0.64 dbz
 
 172.18.0.70 prometheus
 172.18.0.71 grafana
+
+172.18.0.80 schemareg
 
 ```
 
@@ -105,6 +112,25 @@ docker run \
     infinispan/server:11.0.0.Final-2
 ```
 
+## Enterprise image of Datagrid
+```
+docker run \
+    -e USER="user" -e PASS="password" \
+    -d --name datagrid  \
+    -d --net primenet --ip 172.18.0.54 \
+    registry.redhat.io/datagrid/datagrid-8-rhel8:latest
+```
+
+## Postgres Database
+
+```
+docker run \
+    -e POSTGRES_USER="user" -e POSTGRES_PASSWORD="password" -e POSTGRES_DB="db" \
+    -d --name postgres  \
+    -d --net primenet --ip 172.18.0.55 \
+    postgres:12.3
+```
+
 # Messaging
 
 ## Artemis
@@ -152,6 +178,44 @@ docker run -d --name kafdrop --net primenet --ip 172.18.0.63 \
 
 Goto http://kafdrop:9000 for admin console
 
+## Debezium Change Data Capture
+
+```
+docker run -d --name dbz --net primenet --ip 172.18.0.64 \
+   -e GROUP_ID="dbz" \
+   -e CONFIG_STORAGE_TOPIC="dbz-config" \
+   -e OFFSET_STORAGE_TOPIC="dbz-offset" \
+   -e STATUS_STORAGE_TOPIC="dbz-status" \
+   -e BOOTSTRAP_SERVERS="kafka:9092" \
+   debezium/connect:1.2
+```
+
+http://dbz:8083
+
+Create connector
+```
+curl -X POST \
+    -H "Accept:application/json" \
+    -H "Content-Type:application/json" \
+    http://dbz:8083/connectors -d @- <<'EOF'
+{
+    "name": "mysqldb-connector",
+    "config": {
+        "connector.class": "io.debezium.connector.mysql.MySqlConnector",
+        "tasks.max": "1",
+        "database.hostname": "mysql",
+        "database.port": "3306",
+        "database.user": "user",
+        "database.password": "password",
+        "database.server.id": "1000",
+        "database.server.name": "mysqldbsvr",
+        "database.whitelist": "mysqldb",
+        "database.history.kafka.bootstrap.servers": "kafka:9092",
+        "database.history.kafka.topic": "schema-changes.mysqldb"
+    }
+}
+EOF
+```
 
 # Monitoring
 
@@ -188,3 +252,18 @@ cd ..
 ```
 
 Goto http://grafana:3000 for admin console
+
+# Management
+
+## Apicurio Schema Registry
+
+```
+docker run -d --name schemareg --net primenet --ip 172.18.0.80 \
+    -e QUARKUS_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db \
+    -e QUARKUS_DATASOURCE_USERNAME=user \
+    -e QUARKUS_DATASOURCE_PASSWORD=password \
+    apicurio/apicurio-registry-jpa:1.2.2.Final
+```
+Console 
+http://schemareg:8080/ui/artifacts
+http://schemareg:8080/api

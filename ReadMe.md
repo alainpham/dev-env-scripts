@@ -13,7 +13,9 @@ Create a network called primenet
 docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet 
 ```
 
-# Hosts file
+# Hosts /etc/hosts
+
+This is to have some static name resolution docker containers we run locally
 
 ```
 172.18.0.40 portainer

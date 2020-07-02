@@ -50,7 +50,7 @@ scrape_configs:
           kubernetes_pod_name: "camel-kafka-consumer-1"
           node_name: "localhost"
       - targets: 
-          - "localhost:9779"
+          - "172.18.0.1:9779"
         labels:
           namespace: "camel"
           kubernetes_pod_name: "camel-local"

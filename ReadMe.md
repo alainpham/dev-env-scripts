@@ -2,7 +2,7 @@
 
 # Purpose of this repo
 
-This is a script to setup what I commonly use in a dev environement to build PoCs.
+This is a script to setup what I commonly use in a dev environement to build PoCs. It allows you to mainly build/run docker images on your workstation to avoid having to provision a whole Kubernetes cluster for dev purposes. It requires much less resources than a full blown container platform.
 
 # Prereqs
 
@@ -286,8 +286,20 @@ http://schemareg:8080/api
 
 ## EAP
 
+Place the installation packages form access.redhat.com in the folder `eap/.packages`
+
+You should have :
+```
+├── .packages
+│   ├── fuse-eap-installer-7.6.0-1.jar
+│   ├── jbeap-19359.zip
+│   ├── jboss-eap-7.2.0.zip
+│   └── jboss-eap-7.2.8-patch.zi
 ```
 
+Run these commands to build and run the container
+
+```
 docker stop eap
 docker rm eap
 docker rmi eap:7.2

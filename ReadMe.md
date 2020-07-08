@@ -37,6 +37,8 @@ This is to have some static name resolution docker containers we run locally
 
 172.18.0.80 schemareg
 
+172.18.0.90 eap
+
 ```
 
 # Portainer
@@ -138,11 +140,20 @@ docker run \
 ## Artemis
 
 ```
+docker stop artemis
+docker rm artemis
+docker rmi artemis-broker:2.13.0-alpine
+
+cd artemis
+docker build -t artemis-broker:2.13.0-alpine .
+cd ..
+
+
 docker run -d --name artemis --net primenet --ip 172.18.0.60  \
   -e ARTEMIS_USERNAME=artemis \
   -e ARTEMIS_PASSWORD=password \
   -e ENABLE_JMX_EXPORTER=true \
-  vromero/activemq-artemis:2.13.0-alpine
+  artemis-broker:2.13.0-alpine
 ```
 
 Goto http://artemis:8161/console for admin console
@@ -269,3 +280,24 @@ docker run -d --name schemareg --net primenet --ip 172.18.0.80 \
 Console 
 http://schemareg:8080/ui/artifacts
 http://schemareg:8080/api
+
+
+# Application Servers
+
+## EAP
+
+```
+
+docker stop eap
+docker rm eap
+docker rmi eap:7.2
+
+cd eap
+docker build -t eap:7.2 .
+cd ..
+
+
+docker run -d --name eap --net primenet --ip 172.18.0.90 \
+    eap:7.2
+
+```

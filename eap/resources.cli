@@ -1,0 +1,17 @@
+embed-server --std-out=echo
+
+/subsystem=datasources/jdbc-driver=mysql:add(driver-class-name=com.mysql.cj.jdbc.Driver,xa-datasource-class=com.mysql.cj.jdbc.MysqlXADataSource,driver-name=mysql,driver-module-name=com.mysql)
+data-source add --name=mysqlds --driver-name=mysql --connection-url=jdbc:mysql://mysql:3306/mysqldb --user-name=user --password=password --initial-pool-size=3 --max-pool-size=8 --jndi-name=java:jboss/datasources/mysqlds
+
+/subsystem=datasources/jdbc-driver=postgresql:add(driver-class-name=org.postgresql.Driver,xa-datasource-class=org.postgresql.xa.PGXADataSource,driver-name=postgresql,driver-module-name=org.postgresql)
+data-source add --name=postgresqlds --driver-name=postgresql --connection-url=jdbc:postgresql://postgres:5432/db --user-name=user --password=password --initial-pool-size=3 --max-pool-size=8 --jndi-name=java:jboss/datasources/postgresqlds
+
+/extension=org.wildfly.extension.messaging-activemq:add
+/subsystem=messaging-activemq:add
+/socket-binding-group=standard-sockets/remote-destination-outbound-socket-binding=messaging-remote-artemis:add(host=artemis,port=61616)
+/subsystem=messaging-activemq/remote-connector=messaging-remote-artemis-connector:add(socket-binding=messaging-remote-artemis)
+/subsystem=messaging-activemq/pooled-connection-factory=simple-jms-remote:add(entries=["java:/JmsConnectionFactory"],connectors=[messaging-remote-artemis-connector],ha=true,user=artemis,password=password,allow-local-transactions=true)
+
+
+
+stop-embedded-server

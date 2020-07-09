@@ -55,3 +55,9 @@ scrape_configs:
           namespace: "camel"
           kubernetes_pod_name: "camel-local"
           node_name: "localhost"
+      - targets: 
+          - "eap:9779"
+        labels:
+          namespace: "camel"
+          kubernetes_pod_name: "eap"
+          node_name: "localhost"

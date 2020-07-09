@@ -19,6 +19,7 @@ This is to have some static name resolution docker containers we run locally
 
 ```
 172.18.0.40 portainer
+172.18.0.41 nexus
 
 172.18.0.50 mysql
 172.18.0.51 oracle
@@ -26,6 +27,8 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.53 infinispan
 172.18.0.54 datagrid
 172.18.0.55 postgres
+172.18.0.56 elastic
+172.18.0.57 kibana
 
 172.18.0.60 artemis
 172.18.0.61 zookeeper
@@ -45,6 +48,15 @@ This is to have some static name resolution docker containers we run locally
 
 ```
 docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer:linux-amd64-1.20.2
+```
+
+# Nexus
+
+```
+
+docker run --name nexus \
+    -d --net primenet --ip 172.18.0.41 \
+	sonatype/nexus3:3.24.0
 ```
 
 # Databases
@@ -134,6 +146,35 @@ docker run \
     -d --net primenet --ip 172.18.0.55 \
     postgres:12.3
 ```
+
+## Elastic & Kibana
+
+
+```
+docker run \
+    -e discovery.type=single-node \
+    -d --name elastic  \
+    -d --net primenet --ip 172.18.0.56 \
+    elasticsearch:7.8.0
+```
+
+Ports : 9200 and 9300
+goto http://elastic:9200/
+
+```
+
+docker stop kibana
+docker rm kibana
+
+docker run \
+    -e "ELASTICSEARCH_HOSTS=http://elastic:9200" \
+    -e "monitoring.ui.container.elasticsearch.enabled=false" \
+    -d --name kibana  \
+    --net primenet --ip 172.18.0.57 \
+    kibana:7.8.0
+```
+
+got to http://kibana:5601
 
 # Messaging
 

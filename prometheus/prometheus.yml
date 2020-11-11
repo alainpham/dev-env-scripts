@@ -61,3 +61,10 @@ scrape_configs:
           namespace: "camel"
           kubernetes_pod_name: "eap"
           node_name: "localhost"
+
+  - job_name: 'node'
+    static_configs:
+      - targets: 
+          - "172.18.0.1:9100"
+        labels:
+          node_name: "localhost"

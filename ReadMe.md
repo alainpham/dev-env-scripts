@@ -47,7 +47,7 @@ This is to have some static name resolution docker containers we run locally
 # Portainer
 
 ```
-docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer:linux-amd64-1.20.2
+docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer:linux-amd64-1.24.1
 ```
 
 # Nexus
@@ -56,7 +56,7 @@ docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docke
 
 docker run --name nexus \
     -d --net primenet --ip 172.18.0.41 \
-	sonatype/nexus3:3.24.0
+	sonatype/nexus3:3.28.1
 ```
 
 # Databases
@@ -297,11 +297,11 @@ Goto http://prometheus:9000 for admin console
 ```
 docker stop grafana
 docker rm grafana
-docker rmi graf:5.4.3
+docker rmi graf:7.0.6
 
 cd grafana
-docker build -t graf:5.4.3 .
-docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:5.4.3
+docker build -t graf:7.0.6 .
+docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:7.0.6
 cd ..
 ```
 
@@ -335,7 +335,7 @@ You should have :
 │   ├── fuse-eap-installer-7.6.0-1.jar
 │   ├── jbeap-19359.zip
 │   ├── jboss-eap-7.2.0.zip
-│   └── jboss-eap-7.2.8-patch.zi
+│   └── jboss-eap-7.2.8-patch.zip
 ```
 
 Run these commands to build and run the container

@@ -34,6 +34,10 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.61 zookeeper
 172.18.0.62 kafka
 172.18.0.64 dbz
+172.18.0.65 amqbroker
+172.18.0.66 amqbroker-mirror
+172.18.0.67 interconnect
+
 
 172.18.0.70 prometheus
 172.18.0.71 grafana
@@ -197,7 +201,236 @@ docker run -d --name artemis --net primenet --ip 172.18.0.60  \
   artemis-broker:2.13.0-alpine
 ```
 
-Goto http://artemis:8161/console for admin console
+## AMQ Broker (enterprise version)
+
+amqbroker
+
+```
+docker run \
+    -e AMQ_USER="adm" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_NAME="amqbroker" \
+    -e AMQ_TRANSPORTS="openwire,amqp,stomp,mqtt,hornetq" \
+    -e AMQ_QUEUES="app.queue" \
+    -e AMQ_ADDRESSES="app.addr" \
+    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
+    -e AMQ_JOURNAL_TYPE="nio" \
+    -e AMQ_DATA_DIR="/opt/amq/data" \
+    -e AMQ_DATA_DIR_LOGGING="true" \
+    -e AMQ_CLUSTERED="false" \
+    -e AMQ_REPLICAS="0" \
+    -e AMQ_CLUSTER_USER="amq-cluster-user" \
+    -e AMQ_CLUSTER_PASSWORD="password" \
+    -e AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" \
+    -e AMQ_TRUSTSTORE="broker-truststore.p12" \
+    -e AMQ_TRUSTSTORE_PASSWORD="password" \
+    -e AMQ_KEYSTORE="broker-keystore.p12" \
+    -e AMQ_KEYSTORE_PASSWORD="password" \
+    -e AMQ_SSL_PROVIDER="JDK" \
+    -e BROKER_XML="$(cat amqbroker/broker.xml)" \
+    -d --name amqbroker  \
+    -d --net primenet --ip 172.18.0.65 \
+    registry.redhat.io/amq7/amq-broker:latest
+```
+
+ssl no custom
+
+Generate keystores
+```
+keytool -genkey \
+    -alias broker  \
+    -storepass password \
+    -keyalg RSA \
+    -storetype PKCS12 \
+    -dname "cn=amqbroker" \
+    -validity 365000 \
+    -keystore amqbroker/tls/broker-keystore.p12
+
+keytool -export \
+    -alias broker \
+    -rfc \
+    -storepass password \
+    -keystore amqbroker/tls/broker-keystore.p12 \
+    -file amqbroker/tls/broker_public_cert.pem
+
+openssl pkcs12 -in amqbroker/tls/broker-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/broker_public_cert_openssl.pem
+openssl pkcs12 -in amqbroker/tls/broker-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/broker_private_key.key
+
+keytool -import \
+    -alias broker \
+    -storepass password\
+    -storetype PKCS12 \
+    -noprompt \
+    -keystore amqbroker/tls/client-truststore.p12 \
+    -file amqbroker/tls/broker_public_cert.pem
+
+keytool -import \
+    -alias broker \
+    -storepass password\
+    -storetype PKCS12 \
+    -noprompt \
+    -keystore amqbroker/tls/broker-truststore.p12 \
+    -file amqbroker/tls/broker_public_cert.pem
+
+keytool -list -storepass password -keystore amqbroker/tls/broker-keystore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/client-truststore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/broker-truststore.p12 -v
+
+```
+
+ssl no custom
+```
+docker run \
+    -e AMQ_USER="adm" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_NAME="amqbroker" \
+    -e AMQ_TRANSPORTS="openwire,amqp,stomp,mqtt,hornetq" \
+    -e AMQ_QUEUES="app.queue" \
+    -e AMQ_ADDRESSES="app.addr" \
+    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
+    -e AMQ_JOURNAL_TYPE="nio" \
+    -e AMQ_DATA_DIR="/opt/amq/data" \
+    -e AMQ_DATA_DIR_LOGGING="true" \
+    -e AMQ_CLUSTERED="false" \
+    -e AMQ_REPLICAS="0" \
+    -e AMQ_CLUSTER_USER="amq-cluster-user" \
+    -e AMQ_CLUSTER_PASSWORD="password" \
+    -e AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" \
+    -e AMQ_TRUSTSTORE="broker-truststore.p12" \
+    -e AMQ_TRUSTSTORE_PASSWORD="password" \
+    -e AMQ_KEYSTORE="broker-keystore.p12" \
+    -e AMQ_KEYSTORE_PASSWORD="password" \
+    -e AMQ_SSL_PROVIDER="JDK" \
+    -d --name amqbroker  \
+    -d --net primenet --ip 172.18.0.65 \
+    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
+    registry.redhat.io/amq7/amq-broker:latest
+```
+
+ssl custom : MOST flexible confguration
+```
+
+export AMQ_NAME="amqbroker" 
+export AMQ_JOURNAL_TYPE="nio" 
+export AMQ_DATA_DIR="/opt/amq/data" 
+export AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" 
+export AMQ_TRUSTSTORE="broker-truststore.p12" 
+export AMQ_TRUSTSTORE_PASSWORD="password" 
+export AMQ_KEYSTORE="broker-keystore.p12" 
+export AMQ_KEYSTORE_PASSWORD="password" 
+export AMQ_SSL_PROVIDER="JDK" 
+
+export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
+
+envsubst '\
+    $AMQ_NAME,\
+    $AMQ_JOURNAL_TYPE_UPPER,\
+    $AMQ_DATA_DIR,\
+    $AMQ_KEYSTORE_TRUSTSTORE_DIR,\
+    $AMQ_TRUSTSTORE,\
+    $AMQ_TRUSTSTORE_PASSWORD,\
+    $AMQ_KEYSTORE,\
+    $AMQ_KEYSTORE_PASSWORD,\
+    $AMQ_SSL_PROVIDER\
+    ' < amqbroker/broker-template.xml > amqbroker/broker.xml
+
+docker run \
+    -e AMQ_USER="admin" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_NAME=$AMQ_NAME \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_JOURNAL_TYPE=$AMQ_JOURNAL_TYPE \
+    -e AMQ_DATA_DIR=$AMQ_DATA_DIR \
+    -e AMQ_DATA_DIR_LOGGING="true" \
+    -e AMQ_KEYSTORE_TRUSTSTORE_DIR=$AMQ_KEYSTORE_TRUSTSTORE_DIR \
+    -e AMQ_TRUSTSTORE=$AMQ_TRUSTSTORE \
+    -e AMQ_TRUSTSTORE_PASSWORD=$AMQ_TRUSTSTORE_PASSWORD \
+    -e AMQ_KEYSTORE=$AMQ_KEYSTORE \
+    -e AMQ_KEYSTORE_PASSWORD=$AMQ_KEYSTORE_PASSWORD \
+    -e AMQ_SSL_PROVIDER=$AMQ_SSL_PROVIDER \
+    -e BROKER_XML="$(cat amqbroker/broker.xml)" \
+    -d --name amqbroker  \
+    -d --net primenet --ip 172.18.0.65 \
+    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
+    registry.redhat.io/amq7/amq-broker:latest
+```
+
+with injection of acceptors
+
+```
+docker run \
+    -e AMQ_USER="adm" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_NAME="amqbroker" \
+    -e AMQ_ACCEPTORS="$(cat amqbroker/transports/acceptors.conf)" \
+    -e AMQ_QUEUES="app.queue" \
+    -e AMQ_ADDRESSES="app.addr" \
+    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
+    -e AMQ_JOURNAL_TYPE="nio" \
+    -e AMQ_DATA_DIR="/opt/amq/data" \
+    -e AMQ_DATA_DIR_LOGGING="true" \
+    -e AMQ_CLUSTERED="false" \
+    -e AMQ_REPLICAS="0" \
+    -e AMQ_CLUSTER_USER="amq-cluster-user" \
+    -e AMQ_CLUSTER_PASSWORD="password" \
+    -e AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" \
+    -e AMQ_TRUSTSTORE="broker-truststore.p12" \
+    -e AMQ_TRUSTSTORE_PASSWORD="password" \
+    -e AMQ_KEYSTORE="broker-keystore.p12" \
+    -e AMQ_KEYSTORE_PASSWORD="password" \
+    -e AMQ_SSL_PROVIDER="JDK" \
+    -d --name amqbroker  \
+    -d --net primenet --ip 172.18.0.65 \
+    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
+    registry.redhat.io/amq7/amq-broker:latest
+```
+
+
+amq-broker-mirror
+
+```
+docker run \
+    -e AMQ_USER="admin" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_NAME="amqbroker-mirror" \
+    -e AMQ_TRANSPORTS="openwire,amqp,stomp,mqtt,hornetq" \
+    -e AMQ_QUEUES="app.queue" \
+    -e AMQ_ADDRESSES="app.addr" \
+    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
+    -e AMQ_JOURNAL_TYPE="nio" \
+    -d --name amqbroker-mirror  \
+    -d --net primenet --ip 172.18.0.66 \
+    registry.redhat.io/amq7/amq-broker:latest
+```
+
+Goto http://amqbroker:8161/console for admin console
+Goto http://amqbroker-mirror:8161/console for admin console
+
+## Interconnect (enterprise version)
+
+```
+docker run \
+    -e QDROUTERD_CONF="$(cat interconnect/qdrouterd.conf)" \
+    --memory="1g" \
+    -d --name interconnect  \
+    -d --net primenet --ip 172.18.0.67 \
+    registry.redhat.io/amq7/amq-interconnect:latest
+```
+
+
 
 ## Kafka
 

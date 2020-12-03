@@ -26,8 +26,12 @@
       <critical-analyzer-check-period>60000</critical-analyzer-check-period>
       <critical-analyzer-policy>HALT</critical-analyzer-policy>
       <page-sync-timeout>1052000</page-sync-timeout>
-      <acceptors>
 
+      <connectors>
+         <connector name="artemis-mirror">tcp://amqbroker-mirror:61617?clientID=amqbroker;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+     </connectors>
+
+      <acceptors>
 
          <acceptor name="artemis">tcp://${BROKER_IP}:61616?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpMinLargeMessageSize=102400;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpDuplicateDetection=true</acceptor>
          <acceptor name="amqp">tcp://${BROKER_IP}:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true</acceptor>
@@ -35,14 +39,30 @@
          <acceptor name="hornetq">tcp://${BROKER_IP}:5445?anycastPrefix=jms.queue.;multicastPrefix=jms.topic.;protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
          <acceptor name="mqtt">tcp://${BROKER_IP}:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
 
-        <acceptor name="artemis-ssl">tcp://${BROKER_IP}:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;sslProvider=JDK</acceptor>
-        <acceptor name="amqp-ssl">tcp://${BROKER_IP}:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;sslProvider=JDK</acceptor>
-        <acceptor name="stomp-ssl">tcp://${BROKER_IP}:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;sslProvider=JDK</acceptor>
-        <acceptor name="mqtt-ssl">tcp://${BROKER_IP}:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;sslProvider=JDK</acceptor>
+         <acceptor name="artemis-ssl">tcp://${BROKER_IP}:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="amqp-ssl">tcp://${BROKER_IP}:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="stomp-ssl">tcp://${BROKER_IP}:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="mqtt-ssl">tcp://${BROKER_IP}:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
 
       </acceptors>
 
-
+      <federations>
+         <federation name="amqbroker-federation">
+            <upstream name="upstream-of-amqbroker" >
+               <static-connectors >
+                  <connector-ref>artemis-mirror</connector-ref>
+               </static-connectors>
+               <policy ref="upstream-of-amqbroker-addr-policy" />
+               <policy ref="upstream-of-amqbroker-queue-policy" />
+            </upstream>
+            <queue-policy  name="upstream-of-amqbroker-queue-policy" priority-adjustment="-1" include-federated="false">
+               <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
+            </queue-policy>
+            <address-policy name="upstream-of-amqbroker-addr-policy" auto-delete="false" max-hops="1" >
+               <include address-match="app.addr.federation.#" />
+            </address-policy>
+         </federation>
+      </federations>
       <security-settings>
          <security-setting match="#">
             <permission type="createNonDurableQueue" roles="admin"/>
@@ -101,7 +121,17 @@
                <queue name="app.queue" />
             </anycast>
          </address>
-         <address name="app.addr"/>
+         <address name="app.queue.federation.test">
+            <anycast>
+               <queue name="app.queue.federation.test" />
+            </anycast>
+         </address>
+         <address name="app.addr">
+            <multicast/>
+         </address>
+         <address name="app.addr.federation.test">
+            <multicast/>
+         </address>
 
       </addresses>
 

@@ -1,5 +1,43 @@
 
 
+# TOC
+
+- [TOC](#toc)
+- [Purpose of this repo](#purpose-of-this-repo)
+- [Prereqs](#prereqs)
+- [Hosts /etc/hosts](#hosts-etchosts)
+- [Portainer](#portainer)
+- [Nexus](#nexus)
+- [Databases](#databases)
+  - [Mysql Database](#mysql-database)
+  - [Oracle DB](#oracle-db)
+  - [Couchbase](#couchbase)
+  - [Infinispan](#infinispan)
+  - [Enterprise image of Datagrid](#enterprise-image-of-datagrid)
+  - [Postgres Database](#postgres-database)
+  - [Elastic & Kibana](#elastic--kibana)
+- [Messaging](#messaging)
+  - [Artemis](#artemis)
+  - [AMQ Broker (enterprise version)](#amq-broker-enterprise-version)
+    - [simplest variant no ssl no custom broker.xml](#simplest-variant-no-ssl-no-custom-brokerxml)
+    - [Generate keystores and truststores](#generate-keystores-and-truststores)
+    - [With SSL no custom tweaks](#with-ssl-no-custom-tweaks)
+    - [SSL with custom Broker.xml : MOST flexible confguration](#ssl-with-custom-brokerxml--most-flexible-confguration)
+      - [Stop and remove all containers](#stop-and-remove-all-containers)
+      - [AMQBROKER](#amqbroker)
+      - [AMQBROKER-MIRROR](#amqbroker-mirror)
+  - [Interconnect (enterprise version)](#interconnect-enterprise-version)
+  - [Kafka](#kafka)
+  - [Kafdrop](#kafdrop)
+  - [Debezium Change Data Capture](#debezium-change-data-capture)
+- [Monitoring](#monitoring)
+  - [Prometheus](#prometheus)
+  - [Grafana](#grafana)
+- [Management](#management)
+  - [Apicurio Schema Registry](#apicurio-schema-registry)
+- [Application Servers](#application-servers)
+  - [EAP](#eap)
+
 # Purpose of this repo
 
 This is a script to setup what I commonly use in a dev environement to build PoCs. It allows you to mainly build/run docker images on your workstation to avoid having to provision a whole Kubernetes cluster for dev purposes. It requires much less resources than a full blown container platform.
@@ -203,7 +241,8 @@ docker run -d --name artemis --net primenet --ip 172.18.0.60  \
 
 ## AMQ Broker (enterprise version)
 
-amqbroker
+
+### simplest variant no ssl no custom broker.xml
 
 ```
 docker run \
@@ -236,9 +275,9 @@ docker run \
     registry.redhat.io/amq7/amq-broker:latest
 ```
 
-ssl no custom
 
-Generate keystores
+### Generate keystores and truststores
+
 ```
 keytool -genkey \
     -alias broker  \
@@ -249,6 +288,15 @@ keytool -genkey \
     -validity 365000 \
     -keystore amqbroker/tls/broker-keystore.p12
 
+keytool -genkey \
+    -alias broker-mirror  \
+    -storepass password \
+    -keyalg RSA \
+    -storetype PKCS12 \
+    -dname "cn=amqbroker-mirror" \
+    -validity 365000 \
+    -keystore amqbroker/tls/broker-mirror-keystore.p12
+
 keytool -export \
     -alias broker \
     -rfc \
@@ -256,8 +304,18 @@ keytool -export \
     -keystore amqbroker/tls/broker-keystore.p12 \
     -file amqbroker/tls/broker_public_cert.pem
 
+keytool -export \
+    -alias broker-mirror \
+    -rfc \
+    -storepass password \
+    -keystore amqbroker/tls/broker-mirror-keystore.p12 \
+    -file amqbroker/tls/broker_mirror_public_cert.pem
+
 openssl pkcs12 -in amqbroker/tls/broker-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/broker_public_cert_openssl.pem
 openssl pkcs12 -in amqbroker/tls/broker-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/broker_private_key.key
+
+openssl pkcs12 -in amqbroker/tls/broker-mirror-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/broker_mirror_public_cert_openssl.pem
+openssl pkcs12 -in amqbroker/tls/broker-mirror-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/broker_mirror_private_key.key
 
 keytool -import \
     -alias broker \
@@ -268,20 +326,25 @@ keytool -import \
     -file amqbroker/tls/broker_public_cert.pem
 
 keytool -import \
-    -alias broker \
+    -alias broker-mirror \
     -storepass password\
     -storetype PKCS12 \
     -noprompt \
-    -keystore amqbroker/tls/broker-truststore.p12 \
-    -file amqbroker/tls/broker_public_cert.pem
+    -keystore amqbroker/tls/client-truststore.p12 \
+    -file amqbroker/tls/broker_mirror_public_cert.pem
+
+cp amqbroker/tls/client-truststore.p12 amqbroker/tls/broker-truststore.p12
+cp amqbroker/tls/client-truststore.p12 amqbroker/tls/broker-mirror-truststore.p12
 
 keytool -list -storepass password -keystore amqbroker/tls/broker-keystore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/broker-mirror-keystore.p12 -v
 keytool -list -storepass password -keystore amqbroker/tls/client-truststore.p12 -v
 keytool -list -storepass password -keystore amqbroker/tls/broker-truststore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/broker-mirror-truststore.p12 -v
 
 ```
 
-ssl no custom
+### With SSL no custom tweaks
 ```
 docker run \
     -e AMQ_USER="adm" \
@@ -313,9 +376,18 @@ docker run \
     registry.redhat.io/amq7/amq-broker:latest
 ```
 
-ssl custom : MOST flexible confguration
+### SSL with custom Broker.xml : MOST flexible confguration
+
+#### Stop and remove all containers
+
+```
+docker stop amqbroker amqbroker-mirror
+docker rm amqbroker amqbroker-mirror
+
 ```
 
+#### AMQBROKER
+```
 export AMQ_NAME="amqbroker" 
 export AMQ_JOURNAL_TYPE="nio" 
 export AMQ_DATA_DIR="/opt/amq/data" 
@@ -325,6 +397,8 @@ export AMQ_TRUSTSTORE_PASSWORD="password"
 export AMQ_KEYSTORE="broker-keystore.p12" 
 export AMQ_KEYSTORE_PASSWORD="password" 
 export AMQ_SSL_PROVIDER="JDK" 
+export AMQ_SSL_NEED_CLIENT_AUTH="true"
+export AMQ_MIRROR_HOST=amqbroker-mirror:61617
 
 export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
 
@@ -337,7 +411,9 @@ envsubst '\
     $AMQ_TRUSTSTORE_PASSWORD,\
     $AMQ_KEYSTORE,\
     $AMQ_KEYSTORE_PASSWORD,\
-    $AMQ_SSL_PROVIDER\
+    $AMQ_SSL_PROVIDER,\
+    $AMQ_SSL_NEED_CLIENT_AUTH, \
+    $AMQ_MIRROR_HOST\
     ' < amqbroker/broker-template.xml > amqbroker/broker.xml
 
 docker run \
@@ -358,6 +434,58 @@ docker run \
     -e BROKER_XML="$(cat amqbroker/broker.xml)" \
     -d --name amqbroker  \
     -d --net primenet --ip 172.18.0.65 \
+    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
+    registry.redhat.io/amq7/amq-broker:latest
+```
+#### AMQBROKER-MIRROR
+
+```
+export AMQ_NAME="amqbroker-mirror" 
+export AMQ_JOURNAL_TYPE="nio" 
+export AMQ_DATA_DIR="/opt/amq/data" 
+export AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" 
+export AMQ_TRUSTSTORE="broker-mirror-truststore.p12" 
+export AMQ_TRUSTSTORE_PASSWORD="password" 
+export AMQ_KEYSTORE="broker-mirror-keystore.p12" 
+export AMQ_KEYSTORE_PASSWORD="password" 
+export AMQ_SSL_PROVIDER="JDK" 
+export AMQ_SSL_NEED_CLIENT_AUTH="true"
+export AMQ_MIRROR_HOST=amqbroker:61617
+
+export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
+
+envsubst '\
+    $AMQ_NAME,\
+    $AMQ_JOURNAL_TYPE_UPPER,\
+    $AMQ_DATA_DIR,\
+    $AMQ_KEYSTORE_TRUSTSTORE_DIR,\
+    $AMQ_TRUSTSTORE,\
+    $AMQ_TRUSTSTORE_PASSWORD,\
+    $AMQ_KEYSTORE,\
+    $AMQ_KEYSTORE_PASSWORD,\
+    $AMQ_SSL_PROVIDER,\
+    $AMQ_SSL_NEED_CLIENT_AUTH, \
+    $AMQ_MIRROR_HOST\
+    ' < amqbroker/broker-template.xml > amqbroker/broker-mirror.xml
+
+docker run \
+    -e AMQ_USER="admin" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_NAME=$AMQ_NAME \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_JOURNAL_TYPE=$AMQ_JOURNAL_TYPE \
+    -e AMQ_DATA_DIR=$AMQ_DATA_DIR \
+    -e AMQ_DATA_DIR_LOGGING="true" \
+    -e AMQ_KEYSTORE_TRUSTSTORE_DIR=$AMQ_KEYSTORE_TRUSTSTORE_DIR \
+    -e AMQ_TRUSTSTORE=$AMQ_TRUSTSTORE \
+    -e AMQ_TRUSTSTORE_PASSWORD=$AMQ_TRUSTSTORE_PASSWORD \
+    -e AMQ_KEYSTORE=$AMQ_KEYSTORE \
+    -e AMQ_KEYSTORE_PASSWORD=$AMQ_KEYSTORE_PASSWORD \
+    -e AMQ_SSL_PROVIDER=$AMQ_SSL_PROVIDER \
+    -e BROKER_XML="$(cat amqbroker/broker-mirror.xml)" \
+    -d --name amqbroker-mirror  \
+    -d --net primenet --ip 172.18.0.66 \
     -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
     registry.redhat.io/amq7/amq-broker:latest
 ```

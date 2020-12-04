@@ -22,10 +22,13 @@
     - [simplest variant no ssl no custom broker.xml](#simplest-variant-no-ssl-no-custom-brokerxml)
     - [Generate keystores and truststores](#generate-keystores-and-truststores)
     - [With SSL no custom tweaks](#with-ssl-no-custom-tweaks)
-    - [SSL with custom Broker.xml : MOST flexible confguration](#ssl-with-custom-brokerxml--most-flexible-confguration)
-      - [Stop and remove all containers](#stop-and-remove-all-containers)
+    - [!!!USE THIS!!! : SSL with custom Broker.xml : MOST flexible confguration](#use-this--ssl-with-custom-brokerxml--most-flexible-confguration)
       - [AMQBROKER](#amqbroker)
-      - [AMQBROKER-MIRROR](#amqbroker-mirror)
+        - [How many replicas and clusters](#how-many-replicas-and-clusters)
+        - [Draft](#draft)
+        - [TLS Stuff](#tls-stuff)
+        - [Broker creation](#broker-creation)
+        - [Broker removal](#broker-removal)
   - [Interconnect (enterprise version)](#interconnect-enterprise-version)
   - [Kafka](#kafka)
   - [Kafdrop](#kafdrop)
@@ -72,9 +75,6 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.61 zookeeper
 172.18.0.62 kafka
 172.18.0.64 dbz
-172.18.0.65 amqbroker
-172.18.0.66 amqbroker-mirror
-172.18.0.67 interconnect
 
 
 172.18.0.70 prometheus
@@ -83,6 +83,12 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.80 schemareg
 
 172.18.0.90 eap
+
+172.18.0.100 amqbrokera0
+172.18.0.101 amqbrokera1
+
+172.18.0.110 amqbrokerb0
+172.18.0.111 amqbrokerb1
 
 ```
 
@@ -280,67 +286,67 @@ docker run \
 
 ```
 keytool -genkey \
-    -alias broker  \
+    -alias amqbrokera  \
     -storepass password \
     -keyalg RSA \
     -storetype PKCS12 \
-    -dname "cn=amqbroker" \
+    -dname "cn=amqbrokera" \
     -validity 365000 \
-    -keystore amqbroker/tls/broker-keystore.p12
+    -keystore amqbroker/tls/amqbrokera-keystore.p12
 
 keytool -genkey \
-    -alias broker-mirror  \
+    -alias amqbrokerb  \
     -storepass password \
     -keyalg RSA \
     -storetype PKCS12 \
-    -dname "cn=amqbroker-mirror" \
+    -dname "cn=amqbrokerb" \
     -validity 365000 \
-    -keystore amqbroker/tls/broker-mirror-keystore.p12
+    -keystore amqbroker/tls/amqbrokerb-keystore.p12
 
 keytool -export \
-    -alias broker \
+    -alias amqbrokera \
     -rfc \
     -storepass password \
-    -keystore amqbroker/tls/broker-keystore.p12 \
-    -file amqbroker/tls/broker_public_cert.pem
+    -keystore amqbroker/tls/amqbrokera-keystore.p12 \
+    -file amqbroker/tls/amqbrokera_public_cert.pem
 
 keytool -export \
-    -alias broker-mirror \
+    -alias amqbrokerb \
     -rfc \
     -storepass password \
-    -keystore amqbroker/tls/broker-mirror-keystore.p12 \
-    -file amqbroker/tls/broker_mirror_public_cert.pem
+    -keystore amqbroker/tls/amqbrokerb-keystore.p12 \
+    -file amqbroker/tls/amqbrokerb_public_cert.pem
 
-openssl pkcs12 -in amqbroker/tls/broker-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/broker_public_cert_openssl.pem
-openssl pkcs12 -in amqbroker/tls/broker-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/broker_private_key.key
+openssl pkcs12 -in amqbroker/tls/amqbrokera-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/amqbrokera_public_cert_openssl.pem
+openssl pkcs12 -in amqbroker/tls/amqbrokera-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/amqbrokera_private_key.key
 
-openssl pkcs12 -in amqbroker/tls/broker-mirror-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/broker_mirror_public_cert_openssl.pem
-openssl pkcs12 -in amqbroker/tls/broker-mirror-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/broker_mirror_private_key.key
+openssl pkcs12 -in amqbroker/tls/amqbrokerb-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/amqbrokerb_public_cert_openssl.pem
+openssl pkcs12 -in amqbroker/tls/amqbrokerb-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/amqbrokerb_private_key.key
 
 keytool -import \
-    -alias broker \
+    -alias amqbrokera \
     -storepass password\
     -storetype PKCS12 \
     -noprompt \
     -keystore amqbroker/tls/client-truststore.p12 \
-    -file amqbroker/tls/broker_public_cert.pem
+    -file amqbroker/tls/amqbrokera_public_cert.pem
 
 keytool -import \
-    -alias broker-mirror \
+    -alias amqbrokerb \
     -storepass password\
     -storetype PKCS12 \
     -noprompt \
     -keystore amqbroker/tls/client-truststore.p12 \
-    -file amqbroker/tls/broker_mirror_public_cert.pem
+    -file amqbroker/tls/amqbrokerb_public_cert.pem
 
-cp amqbroker/tls/client-truststore.p12 amqbroker/tls/broker-truststore.p12
-cp amqbroker/tls/client-truststore.p12 amqbroker/tls/broker-mirror-truststore.p12
+cp amqbroker/tls/client-truststore.p12 amqbroker/tls/amqbrokera-truststore.p12
+cp amqbroker/tls/client-truststore.p12 amqbroker/tls/amqbrokerb-truststore.p12
 
-keytool -list -storepass password -keystore amqbroker/tls/broker-keystore.p12 -v
-keytool -list -storepass password -keystore amqbroker/tls/broker-mirror-keystore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/amqbrokera-keystore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/amqbrokerb-keystore.p12 -v
 keytool -list -storepass password -keystore amqbroker/tls/client-truststore.p12 -v
-keytool -list -storepass password -keystore amqbroker/tls/broker-truststore.p12 -v
-keytool -list -storepass password -keystore amqbroker/tls/broker-mirror-truststore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/amqbrokera-truststore.p12 -v
+keytool -list -storepass password -keystore amqbroker/tls/amqbrokerb-truststore.p12 -v
 
 ```
 
@@ -376,176 +382,218 @@ docker run \
     registry.redhat.io/amq7/amq-broker:latest
 ```
 
-### SSL with custom Broker.xml : MOST flexible confguration
-
-#### Stop and remove all containers
-
-```
-docker stop amqbroker amqbroker-mirror
-docker rm amqbroker amqbroker-mirror
-
-```
+### !!!USE THIS!!! : SSL with custom Broker.xml : MOST flexible confguration
 
 #### AMQBROKER
-```
-export AMQ_NAME="amqbroker" 
-export AMQ_JOURNAL_TYPE="nio" 
-export AMQ_DATA_DIR="/opt/amq/data" 
-export AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" 
-export AMQ_TRUSTSTORE="broker-truststore.p12" 
-export AMQ_TRUSTSTORE_PASSWORD="password" 
-export AMQ_KEYSTORE="broker-keystore.p12" 
-export AMQ_KEYSTORE_PASSWORD="password" 
-export AMQ_SSL_PROVIDER="JDK" 
-export AMQ_SSL_NEED_CLIENT_AUTH="true"
-export AMQ_MIRROR_HOST=amqbroker-mirror:61617
 
-export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
-
-envsubst '\
-    $AMQ_NAME,\
-    $AMQ_JOURNAL_TYPE_UPPER,\
-    $AMQ_DATA_DIR,\
-    $AMQ_KEYSTORE_TRUSTSTORE_DIR,\
-    $AMQ_TRUSTSTORE,\
-    $AMQ_TRUSTSTORE_PASSWORD,\
-    $AMQ_KEYSTORE,\
-    $AMQ_KEYSTORE_PASSWORD,\
-    $AMQ_SSL_PROVIDER,\
-    $AMQ_SSL_NEED_CLIENT_AUTH, \
-    $AMQ_MIRROR_HOST\
-    ' < amqbroker/broker-template.xml > amqbroker/broker.xml
-
-docker run \
-    -e AMQ_USER="admin" \
-    -e AMQ_PASSWORD="password" \
-    -e AMQ_ROLE="admin" \
-    -e AMQ_NAME=$AMQ_NAME \
-    -e AMQ_REQUIRE_LOGIN="false" \
-    -e AMQ_JOURNAL_TYPE=$AMQ_JOURNAL_TYPE \
-    -e AMQ_DATA_DIR=$AMQ_DATA_DIR \
-    -e AMQ_DATA_DIR_LOGGING="true" \
-    -e AMQ_KEYSTORE_TRUSTSTORE_DIR=$AMQ_KEYSTORE_TRUSTSTORE_DIR \
-    -e AMQ_TRUSTSTORE=$AMQ_TRUSTSTORE \
-    -e AMQ_TRUSTSTORE_PASSWORD=$AMQ_TRUSTSTORE_PASSWORD \
-    -e AMQ_KEYSTORE=$AMQ_KEYSTORE \
-    -e AMQ_KEYSTORE_PASSWORD=$AMQ_KEYSTORE_PASSWORD \
-    -e AMQ_SSL_PROVIDER=$AMQ_SSL_PROVIDER \
-    -e BROKER_XML="$(cat amqbroker/broker.xml)" \
-    -d --name amqbroker  \
-    -d --net primenet --ip 172.18.0.65 \
-    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
-    registry.redhat.io/amq7/amq-broker:latest
-```
-#### AMQBROKER-MIRROR
+##### How many replicas and clusters
 
 ```
-export AMQ_NAME="amqbroker-mirror" 
-export AMQ_JOURNAL_TYPE="nio" 
-export AMQ_DATA_DIR="/opt/amq/data" 
-export AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" 
-export AMQ_TRUSTSTORE="broker-mirror-truststore.p12" 
-export AMQ_TRUSTSTORE_PASSWORD="password" 
-export AMQ_KEYSTORE="broker-mirror-keystore.p12" 
-export AMQ_KEYSTORE_PASSWORD="password" 
-export AMQ_SSL_PROVIDER="JDK" 
-export AMQ_SSL_NEED_CLIENT_AUTH="true"
-export AMQ_MIRROR_HOST=amqbroker:61617
+export AMQ_CLUSTERS=(a b)
+export AMQ_REPLICAS_NB=2
 
-export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
-
-envsubst '\
-    $AMQ_NAME,\
-    $AMQ_JOURNAL_TYPE_UPPER,\
-    $AMQ_DATA_DIR,\
-    $AMQ_KEYSTORE_TRUSTSTORE_DIR,\
-    $AMQ_TRUSTSTORE,\
-    $AMQ_TRUSTSTORE_PASSWORD,\
-    $AMQ_KEYSTORE,\
-    $AMQ_KEYSTORE_PASSWORD,\
-    $AMQ_SSL_PROVIDER,\
-    $AMQ_SSL_NEED_CLIENT_AUTH, \
-    $AMQ_MIRROR_HOST\
-    ' < amqbroker/broker-template.xml > amqbroker/broker-mirror.xml
-
-docker run \
-    -e AMQ_USER="admin" \
-    -e AMQ_PASSWORD="password" \
-    -e AMQ_ROLE="admin" \
-    -e AMQ_NAME=$AMQ_NAME \
-    -e AMQ_REQUIRE_LOGIN="false" \
-    -e AMQ_JOURNAL_TYPE=$AMQ_JOURNAL_TYPE \
-    -e AMQ_DATA_DIR=$AMQ_DATA_DIR \
-    -e AMQ_DATA_DIR_LOGGING="true" \
-    -e AMQ_KEYSTORE_TRUSTSTORE_DIR=$AMQ_KEYSTORE_TRUSTSTORE_DIR \
-    -e AMQ_TRUSTSTORE=$AMQ_TRUSTSTORE \
-    -e AMQ_TRUSTSTORE_PASSWORD=$AMQ_TRUSTSTORE_PASSWORD \
-    -e AMQ_KEYSTORE=$AMQ_KEYSTORE \
-    -e AMQ_KEYSTORE_PASSWORD=$AMQ_KEYSTORE_PASSWORD \
-    -e AMQ_SSL_PROVIDER=$AMQ_SSL_PROVIDER \
-    -e BROKER_XML="$(cat amqbroker/broker-mirror.xml)" \
-    -d --name amqbroker-mirror  \
-    -d --net primenet --ip 172.18.0.66 \
-    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
-    registry.redhat.io/amq7/amq-broker:latest
+declare -A upstream
+upstream=( [a]=b [b]=a)
+export upstream
 ```
 
-with injection of acceptors
+##### Draft
 
 ```
-docker run \
-    -e AMQ_USER="adm" \
-    -e AMQ_PASSWORD="password" \
-    -e AMQ_ROLE="admin" \
-    -e AMQ_NAME="amqbroker" \
-    -e AMQ_ACCEPTORS="$(cat amqbroker/transports/acceptors.conf)" \
-    -e AMQ_QUEUES="app.queue" \
-    -e AMQ_ADDRESSES="app.addr" \
-    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
-    -e AMQ_REQUIRE_LOGIN="false" \
-    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
-    -e AMQ_JOURNAL_TYPE="nio" \
-    -e AMQ_DATA_DIR="/opt/amq/data" \
-    -e AMQ_DATA_DIR_LOGGING="true" \
-    -e AMQ_CLUSTERED="false" \
-    -e AMQ_REPLICAS="0" \
-    -e AMQ_CLUSTER_USER="amq-cluster-user" \
-    -e AMQ_CLUSTER_PASSWORD="password" \
-    -e AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" \
-    -e AMQ_TRUSTSTORE="broker-truststore.p12" \
-    -e AMQ_TRUSTSTORE_PASSWORD="password" \
-    -e AMQ_KEYSTORE="broker-keystore.p12" \
-    -e AMQ_KEYSTORE_PASSWORD="password" \
-    -e AMQ_SSL_PROVIDER="JDK" \
-    -d --name amqbroker  \
-    -d --net primenet --ip 172.18.0.65 \
-    -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
-    registry.redhat.io/amq7/amq-broker:latest
+offset=0
+for cluster in ${AMQ_CLUSTERS[@]}
+do
+    export AMQ_NAME_SUFFIX=$cluster
+    export AMQ_MULTICASTPORT=$((9876 + $offset))
+    export AMQ_INTERFACE_IP_PREFIX=172.18.0.1${offset}
+    echo "DO STUFF for : $AMQ_NAME_SUFFIX, $AMQ_MULTICASTPORT, $AMQ_INTERFACE_IP_PREFIX"
+    offset=$((offset+1))
+done
 ```
 
-
-amq-broker-mirror
+##### TLS Stuff
 
 ```
-docker run \
-    -e AMQ_USER="admin" \
-    -e AMQ_PASSWORD="password" \
-    -e AMQ_ROLE="admin" \
-    -e AMQ_NAME="amqbroker-mirror" \
-    -e AMQ_TRANSPORTS="openwire,amqp,stomp,mqtt,hornetq" \
-    -e AMQ_QUEUES="app.queue" \
-    -e AMQ_ADDRESSES="app.addr" \
-    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
-    -e AMQ_REQUIRE_LOGIN="false" \
-    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
-    -e AMQ_JOURNAL_TYPE="nio" \
-    -d --name amqbroker-mirror  \
-    -d --net primenet --ip 172.18.0.66 \
-    registry.redhat.io/amq7/amq-broker:latest
+
+offset=0
+for cluster in ${AMQ_CLUSTERS[@]}
+do
+    export AMQ_NAME_SUFFIX=$cluster
+    export AMQ_MULTICASTPORT=$((9876 + $offset))
+    export AMQ_INTERFACE_IP_PREFIX=172.18.0.1${offset}
+
+    x=0
+    while [ $x -lt $AMQ_REPLICAS_NB ]
+    do
+        export AMQ_CLUSTER_NAME=amqbroker${AMQ_NAME_SUFFIX}
+        export AMQ_NAME=${AMQ_CLUSTER_NAME}${x}
+        keytool -genkey \
+            -alias ${AMQ_NAME}  \
+            -storepass password \
+            -keyalg RSA \
+            -storetype PKCS12 \
+            -dname "cn=${AMQ_NAME}" \
+            -validity 365000 \
+            -keystore amqbroker/tls/${AMQ_NAME}-keystore.p12
+
+        keytool -export \
+            -alias ${AMQ_NAME} \
+            -rfc \
+            -storepass password \
+            -keystore amqbroker/tls/${AMQ_NAME}-keystore.p12 \
+            -file amqbroker/tls/trusted-certs/${AMQ_NAME}.pem
+
+        # openssl pkcs12 -in amqbroker/tls/${AMQ_NAME}-keystore.p12 -password pass:password -clcerts -nokeys -out amqbroker/tls/trusted-certs/${AMQ_NAME}.pem
+        openssl pkcs12 -in amqbroker/tls/${AMQ_NAME}-keystore.p12 -password pass:password -nodes -nocerts -out amqbroker/tls/${AMQ_NAME}.key
+
+        x=$(( $x + 1 ))
+    done
+
+    offset=$((offset+1))
+done
+
+echo "Generate client keys"
+
+keytool -genkey \
+    -alias amqclient  \
+    -storepass password \
+    -keyalg RSA \
+    -storetype PKCS12 \
+    -dname "cn=amqclient" \
+    -validity 365000 \
+    -keystore amqbroker/tls/keystore.p12
+
+keytool -export \
+    -alias amqclient \
+    -rfc \
+    -storepass password \
+    -keystore amqbroker/tls/keystore.p12 \
+    -file amqbroker/tls/trusted-certs/amqclient.pem
+
+FILES=amqbroker/tls/trusted-certs/*
+rm amqbroker/tls/truststore.p12
+for f in $FILES
+do
+    full="${f##*/}"
+    extension="${full##*.}"
+    filename="${full%.*}"
+    echo "importing $full in alias $filename"
+
+    keytool -import \
+        -alias $filename \
+        -storepass password\
+        -storetype PKCS12 \
+        -noprompt \
+        -keystore amqbroker/tls/truststore.p12 \
+        -file $f
+done
+
+keytool -list -storepass password -keystore amqbroker/tls/truststore.p12
 ```
 
-Goto http://amqbroker:8161/console for admin console
-Goto http://amqbroker-mirror:8161/console for admin console
+##### Broker creation
+
+```
+
+offset=0
+for cluster in ${AMQ_CLUSTERS[@]}
+do
+    export AMQ_NAME_SUFFIX=$cluster
+    export AMQ_MULTICASTPORT=$((9876 + $offset))
+    export AMQ_INTERFACE_IP_PREFIX=172.18.0.1${offset}
+
+    x=0
+    while [ $x -lt $AMQ_REPLICAS_NB ]
+    do
+        export AMQ_CLUSTER_NAME=amqbroker${AMQ_NAME_SUFFIX}
+        export AMQ_NAME=${AMQ_CLUSTER_NAME}${x}
+        export AMQ_JOURNAL_TYPE="nio" 
+        export AMQ_DATA_DIR="/opt/amq/data" 
+        export AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" 
+        export AMQ_TRUSTSTORE="truststore.p12" 
+        export AMQ_TRUSTSTORE_PASSWORD="password" 
+        export AMQ_KEYSTORE="${AMQ_NAME}-keystore.p12" 
+        export AMQ_KEYSTORE_PASSWORD="password" 
+        export AMQ_SSL_PROVIDER="JDK" 
+        export AMQ_SSL_NEED_CLIENT_AUTH="true"
+        export AMQ_MIRROR_HOST=tcp://amqbroker${upstream[${AMQ_NAME_SUFFIX}]}${x}:61617
+        export AMQ_INTERFACE_IP=${AMQ_INTERFACE_IP_PREFIX}${x}
+        export AMQ_CLUSTER_USER=cluster-user
+        export AMQ_CLUSTER_PASSWORD=password
+        
+        export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
+
+        envsubst '\
+            $AMQ_NAME,\
+            $AMQ_JOURNAL_TYPE_UPPER,\
+            $AMQ_DATA_DIR,\
+            $AMQ_KEYSTORE_TRUSTSTORE_DIR,\
+            $AMQ_TRUSTSTORE,\
+            $AMQ_TRUSTSTORE_PASSWORD,\
+            $AMQ_KEYSTORE,\
+            $AMQ_KEYSTORE_PASSWORD,\
+            $AMQ_SSL_PROVIDER,\
+            $AMQ_SSL_NEED_CLIENT_AUTH, \
+            $AMQ_MIRROR_HOST,\
+            $AMQ_INTERFACE_IP,\
+            $AMQ_CLUSTER_USER,\
+            $AMQ_CLUSTER_PASSWORD,\
+            $AMQ_MULTICASTPORT,\
+            ' < amqbroker/broker-template.xml > amqbroker/${AMQ_NAME}.xml
+
+        docker run \
+            -e AMQ_USER="admin" \
+            -e AMQ_PASSWORD="password" \
+            -e AMQ_ROLE="admin" \
+            -e AMQ_NAME=$AMQ_NAME \
+            -e AMQ_REQUIRE_LOGIN="false" \
+            -e AMQ_JOURNAL_TYPE=$AMQ_JOURNAL_TYPE \
+            -e AMQ_DATA_DIR=$AMQ_DATA_DIR \
+            -e AMQ_DATA_DIR_LOGGING="true" \
+            -e AMQ_KEYSTORE_TRUSTSTORE_DIR=$AMQ_KEYSTORE_TRUSTSTORE_DIR \
+            -e AMQ_TRUSTSTORE=$AMQ_TRUSTSTORE \
+            -e AMQ_TRUSTSTORE_PASSWORD=$AMQ_TRUSTSTORE_PASSWORD \
+            -e AMQ_KEYSTORE=$AMQ_KEYSTORE \
+            -e AMQ_KEYSTORE_PASSWORD=$AMQ_KEYSTORE_PASSWORD \
+            -e AMQ_SSL_PROVIDER=$AMQ_SSL_PROVIDER \
+            -e BROKER_XML="$(cat amqbroker/${AMQ_NAME}.xml)" \
+            -d --name ${AMQ_NAME}  \
+            -d --net primenet --ip ${AMQ_INTERFACE_IP} \
+            -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
+            registry.redhat.io/amq7/amq-broker:latest
+
+        x=$(( $x + 1 ))
+    done
+
+    offset=$((offset+1))
+done
+```
+
+##### Broker removal
+```
+offset=0
+for cluster in ${AMQ_CLUSTERS[@]}
+do
+    export AMQ_NAME_SUFFIX=$cluster
+    export AMQ_MULTICASTPORT=$((9876 + $offset))
+    export AMQ_INTERFACE_IP_PREFIX=172.18.0.1${offset}
+   
+
+    x=0
+    while [ $x -lt $AMQ_REPLICAS_NB ]
+    do
+        export AMQ_CLUSTER_NAME=amqbroker${AMQ_NAME_SUFFIX}
+        export AMQ_NAME=${AMQ_CLUSTER_NAME}${x}
+       
+        docker stop $AMQ_NAME
+        docker rm $AMQ_NAME
+
+        x=$(( $x + 1 ))
+    done
+
+    offset=$((offset+1))
+done
+```
 
 ## Interconnect (enterprise version)
 

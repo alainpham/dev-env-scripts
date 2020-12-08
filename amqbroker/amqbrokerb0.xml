@@ -28,8 +28,8 @@
       <page-sync-timeout>1052000</page-sync-timeout>
 
       <connectors>
-         <connector name="artemis">tcp://0.0.0.0:61616</connector>
-         <connector name="artemis-ssl">tcp://0.0.0.0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+         <connector name="artemis">tcp://amqbrokerb0:61616</connector>
+         <connector name="artemis-ssl">tcp://amqbrokerb0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
          <connector name="artemis-mirror">tcp://amqbrokera0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
      </connectors>
 
@@ -38,7 +38,7 @@
       <cluster-password>password</cluster-password>
 
       <broadcast-groups>
-         <broadcast-group name="amqbrokerb0-broadcast-group">
+         <broadcast-group name="amqbrokerb-broadcast-group">
             <local-bind-address>172.18.0.110</local-bind-address>
             <local-bind-port>5432</local-bind-port>
             <group-address>231.7.7.7</group-address>
@@ -49,7 +49,7 @@
       </broadcast-groups>
 
       <discovery-groups>
-         <discovery-group name="amqbrokerb0-discovery-group">
+         <discovery-group name="amqbrokerb-discovery-group">
             <local-bind-address>172.18.0.110</local-bind-address>
             <group-address>231.7.7.7</group-address>
             <group-port>9877</group-port>
@@ -58,8 +58,8 @@
       </discovery-groups>
 
       <cluster-connections>
-         <cluster-connection name="amqbrokerb0-cluster">
-            <connector-ref>artemis</connector-ref>
+         <cluster-connection name="amqbrokerb-cluster">
+            <connector-ref>artemis-ssl</connector-ref>
             <retry-interval>1000</retry-interval>
             <retry-interval-multiplier>2</retry-interval-multiplier>
             <max-retry-interval>32000</max-retry-interval>
@@ -68,7 +68,7 @@
             <use-duplicate-detection>true</use-duplicate-detection>
             <message-load-balancing>ON_DEMAND</message-load-balancing>
             <max-hops>1</max-hops>
-            <discovery-group-ref discovery-group-name="amqbrokerb0-discovery-group" />
+            <discovery-group-ref discovery-group-name="amqbrokerb-discovery-group" />
          </cluster-connection>
       </cluster-connections>
 
@@ -87,6 +87,8 @@
 
       </acceptors>
 
+      <!-- <queue-policy  name="upstream-of-amqbrokerb0-queue-policy" priority-adjustment="-1" include-federated="false"> -->
+      <!-- <address-policy name="upstream-of-amqbrokerb0-addr-policy" auto-delete="false" max-hops="1" > -->
       <federations>
          <federation name="amqbrokerb0-federation">
             <upstream name="upstream-of-amqbrokerb0" >
@@ -96,12 +98,10 @@
                <policy ref="upstream-of-amqbrokerb0-addr-policy" />
                <policy ref="upstream-of-amqbrokerb0-queue-policy" />
             </upstream>
-            <!-- <queue-policy  name="upstream-of-amqbrokerb0-queue-policy" priority-adjustment="-1" include-federated="false"> -->
-            <queue-policy  name="upstream-of-amqbrokerb0-queue-policy">
+            <queue-policy  name="upstream-of-amqbrokerb0-queue-policy" priority-adjustment="0" >
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
             </queue-policy>
-            <!-- <address-policy name="upstream-of-amqbrokerb0-addr-policy" auto-delete="false" max-hops="1" > -->
-            <address-policy name="upstream-of-amqbrokerb0-addr-policy">
+            <address-policy name="upstream-of-amqbrokerb0-addr-policy" max-hops="1" auto-delete="true">
                <include address-match="app.addr.federation.#" />
             </address-policy>
          </federation>

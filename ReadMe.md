@@ -524,6 +524,7 @@ do
         export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
 
         envsubst '\
+            $AMQ_CLUSTER_NAME,\
             $AMQ_NAME,\
             $AMQ_JOURNAL_TYPE_UPPER,\
             $AMQ_DATA_DIR,\
@@ -540,8 +541,15 @@ do
             $AMQ_CLUSTER_PASSWORD,\
             $AMQ_MULTICASTPORT,\
             ' < amqbroker/broker-template.xml > amqbroker/${AMQ_NAME}.xml
+        
+        envsubst '\
+            $AMQ_CLUSTER_NAME,\
+            ' < amqbroker/jgroups-file-template.xml > amqbroker/jgroups/$AMQ_CLUSTER_NAME-ping.xml
 
-        docker run \
+        mkdir -p amqbroker/jgroups/$AMQ_CLUSTER_NAME-pingdir
+        chmod -R 777 amqbroker/jgroups
+
+        docker create \
             -e AMQ_USER="admin" \
             -e AMQ_PASSWORD="password" \
             -e AMQ_ROLE="admin" \
@@ -557,11 +565,15 @@ do
             -e AMQ_KEYSTORE_PASSWORD=$AMQ_KEYSTORE_PASSWORD \
             -e AMQ_SSL_PROVIDER=$AMQ_SSL_PROVIDER \
             -e BROKER_XML="$(cat amqbroker/${AMQ_NAME}.xml)" \
-            -d --name ${AMQ_NAME}  \
-            -d --net primenet --ip ${AMQ_INTERFACE_IP} \
+            --name ${AMQ_NAME}  \
+            --net primenet --ip ${AMQ_INTERFACE_IP} \
             -v "$(pwd)"/amqbroker/tls:/etc/amq-secret-volume:ro \
+            -v "$(pwd)"/amqbroker/jgroups:/jgroups:rw \
             registry.redhat.io/amq7/amq-broker:latest
 
+        docker cp amqbroker/jgroups/${AMQ_CLUSTER_NAME}-ping.xml ${AMQ_NAME}:/opt/amq/conf/jgroups-ping.xml
+
+        docker start ${AMQ_NAME}
         x=$(( $x + 1 ))
     done
 
@@ -578,11 +590,11 @@ do
     export AMQ_MULTICASTPORT=$((9876 + $offset))
     export AMQ_INTERFACE_IP_PREFIX=172.18.0.1${offset}
    
+    export AMQ_CLUSTER_NAME=amqbroker${AMQ_NAME_SUFFIX}
 
     x=0
     while [ $x -lt $AMQ_REPLICAS_NB ]
     do
-        export AMQ_CLUSTER_NAME=amqbroker${AMQ_NAME_SUFFIX}
         export AMQ_NAME=${AMQ_CLUSTER_NAME}${x}
        
         docker stop $AMQ_NAME
@@ -590,6 +602,8 @@ do
 
         x=$(( $x + 1 ))
     done
+    
+    rm -rf amqbroker/jgroups/$AMQ_CLUSTER_NAME-pingdir
 
     offset=$((offset+1))
 done

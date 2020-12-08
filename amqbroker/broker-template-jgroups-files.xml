@@ -5,7 +5,7 @@
    <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="urn:activemq:core ">
 
-      <name>amqbrokerb1</name>
+      <name>amqbroker</name>
       <persistence-enabled>true</persistence-enabled>
       <journal-type>NIO</journal-type>
       <paging-directory>/opt/amq/data/paging</paging-directory>
@@ -28,38 +28,33 @@
       <page-sync-timeout>1052000</page-sync-timeout>
 
       <connectors>
-         <connector name="artemis">tcp://amqbrokerb1:61616</connector>
-         <connector name="artemis-ssl">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
-         <connector name="artemis-mirror">tcp://amqbrokera1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+         <connector name="artemis">tcp://0.0.0.0:61616</connector>
+         <connector name="artemis-mirror">tcp://amqbroker-mirror:61617?clientID=amqbroker;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
      </connectors>
 
-      <cluster-user>cluster-user</cluster-user>
+      <cluster-user>${AMQ_CLUSTER_USER}</cluster-user>
 
-      <cluster-password>password</cluster-password>
+      <cluster-password>${AMQ_CLUSTER_PASSWORD}</cluster-password>
 
       <broadcast-groups>
-         <broadcast-group name="amqbrokerb-broadcast-group">
-            <local-bind-address>172.18.0.111</local-bind-address>
-            <local-bind-port>5432</local-bind-port>
-            <group-address>231.7.7.7</group-address>
-            <group-port>9877</group-port>
-            <broadcast-period>2000</broadcast-period>
-            <connector-ref>artemis-ssl</connector-ref>
+         <broadcast-group name="amqbroker-broadcast-group">
+            <jgroups-file>jgroups-ping.xml</jgroups-file>
+            <jgroups-channel>activemq_broadcast_channel</jgroups-channel>
+            <connector-ref>artemis</connector-ref>
          </broadcast-group>
       </broadcast-groups>
 
       <discovery-groups>
-         <discovery-group name="amqbrokerb-discovery-group">
-            <local-bind-address>172.18.0.111</local-bind-address>
-            <group-address>231.7.7.7</group-address>
-            <group-port>9877</group-port>
+         <discovery-group name="amqbroker-discovery-group">
+            <jgroups-file>jgroups-ping.xml</jgroups-file>
+            <jgroups-channel>activemq_broadcast_channel</jgroups-channel>
             <refresh-timeout>10000</refresh-timeout>
          </discovery-group>
       </discovery-groups>
 
       <cluster-connections>
-         <cluster-connection name="amqbrokerb-cluster">
-            <connector-ref>artemis-ssl</connector-ref>
+         <cluster-connection name="amqbroker-cluster">
+            <connector-ref>artemis</connector-ref>
             <retry-interval>1000</retry-interval>
             <retry-interval-multiplier>2</retry-interval-multiplier>
             <max-retry-interval>32000</max-retry-interval>
@@ -68,7 +63,7 @@
             <use-duplicate-detection>true</use-duplicate-detection>
             <message-load-balancing>ON_DEMAND</message-load-balancing>
             <max-hops>1</max-hops>
-            <discovery-group-ref discovery-group-name="amqbrokerb-discovery-group" />
+            <discovery-group-ref discovery-group-name="amqbroker-discovery-group" />
          </cluster-connection>
       </cluster-connections>
 
@@ -80,28 +75,28 @@
          <acceptor name="hornetq">tcp://0.0.0.0:5445?anycastPrefix=jms.queue.;multicastPrefix=jms.topic.;protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
          <acceptor name="mqtt">tcp://0.0.0.0:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
 
-         <acceptor name="artemis-ssl">tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
-         <acceptor name="amqp-ssl">tcp://0.0.0.0:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
-         <acceptor name="stomp-ssl">tcp://0.0.0.0:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
-         <acceptor name="mqtt-ssl">tcp://0.0.0.0:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokerb1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="artemis-ssl">tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="amqp-ssl">tcp://0.0.0.0:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="stomp-ssl">tcp://0.0.0.0:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+         <acceptor name="mqtt-ssl">tcp://0.0.0.0:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/broker-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/broker-truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
 
       </acceptors>
 
-      <!-- <queue-policy  name="upstream-of-amqbrokerb1-queue-policy" priority-adjustment="-1" include-federated="false"> -->
-      <!-- <address-policy name="upstream-of-amqbrokerb1-addr-policy" auto-delete="false" max-hops="1" > -->
       <federations>
-         <federation name="amqbrokerb1-federation">
-            <upstream name="upstream-of-amqbrokerb1" >
+         <federation name="amqbroker-federation">
+            <upstream name="upstream-of-amqbroker" >
                <static-connectors >
                   <connector-ref>artemis-mirror</connector-ref>
                </static-connectors>
-               <policy ref="upstream-of-amqbrokerb1-addr-policy" />
-               <policy ref="upstream-of-amqbrokerb1-queue-policy" />
+               <policy ref="upstream-of-amqbroker-addr-policy" />
+               <policy ref="upstream-of-amqbroker-queue-policy" />
             </upstream>
-            <queue-policy  name="upstream-of-amqbrokerb1-queue-policy" priority-adjustment="0" >
+            <!-- <queue-policy  name="upstream-of-amqbroker-queue-policy" priority-adjustment="-1" include-federated="false"> -->
+            <queue-policy  name="upstream-of-amqbroker-queue-policy">
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
             </queue-policy>
-            <address-policy name="upstream-of-amqbrokerb1-addr-policy" max-hops="1" auto-delete="true">
+            <!-- <address-policy name="upstream-of-amqbroker-addr-policy" auto-delete="false" max-hops="1" > -->
+            <address-policy name="upstream-of-amqbroker-addr-policy">
                <include address-match="app.addr.federation.#" />
             </address-policy>
          </federation>

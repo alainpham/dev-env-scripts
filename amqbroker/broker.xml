@@ -92,7 +92,7 @@
                <policy ref="upstream-of-amqbroker-queue-policy" />
             </upstream>
             <!-- <queue-policy  name="upstream-of-amqbroker-queue-policy" priority-adjustment="-1" include-federated="false"> -->
-            <queue-policy  name="upstream-of-amqbroker-queue-policy">
+            <queue-policy  name="upstream-of-amqbroker-queue-policy" >
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
             </queue-policy>
             <!-- <address-policy name="upstream-of-amqbroker-addr-policy" auto-delete="false" max-hops="1" > -->

@@ -31,7 +31,8 @@
          <connector name="artemis">tcp://${AMQ_NAME}:61616</connector>
          <connector name="artemis-ssl">tcp://${AMQ_NAME}:61617?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER}</connector>
          <connector name="artemis-mirror">${AMQ_MIRROR_HOST}?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER}</connector>
-     </connectors>
+         ${AMQ_MIRROR_XML}
+      </connectors>
 
       <cluster-user>${AMQ_CLUSTER_USER}</cluster-user>
 
@@ -59,12 +60,13 @@
 
       <cluster-connections>
          <cluster-connection name="${AMQ_CLUSTER_NAME}-cluster">
+            <!-- <address>!#::federated.#</address> -->
             <connector-ref>artemis-ssl</connector-ref>
             <retry-interval>1000</retry-interval>
             <retry-interval-multiplier>2</retry-interval-multiplier>
-            <max-retry-interval>32000</max-retry-interval>
-            <initial-connect-attempts>20</initial-connect-attempts>
-            <reconnect-attempts>10</reconnect-attempts>
+            <max-retry-interval>10000</max-retry-interval>
+            <initial-connect-attempts>-1</initial-connect-attempts>
+            <reconnect-attempts>-1</reconnect-attempts>
             <use-duplicate-detection>true</use-duplicate-detection>
             <message-load-balancing>ON_DEMAND</message-load-balancing>
             <max-hops>1</max-hops>
@@ -90,18 +92,30 @@
       <!-- <queue-policy  name="upstream-of-${AMQ_NAME}-queue-policy" priority-adjustment="-1" include-federated="false"> -->
       <!-- <address-policy name="upstream-of-${AMQ_NAME}-addr-policy" auto-delete="false" max-hops="1" > -->
       <federations>
-         <federation name="${AMQ_NAME}-federation">
-            <upstream name="upstream-of-${AMQ_NAME}" >
+         <federation name="${AMQ_CLUSTER_NAME}-federation" user="${AMQ_NAME}" password="${AMQ_CLUSTER_PASSWORD}">
+            <upstream name="upstream-of-${AMQ_CLUSTER_NAME}" >
+               <ha>true</ha>
+               <!--<circuit-breaker-timeout>5000</circuit-breaker-timeout>
+               <connection-ttl>30000</connection-ttl>
+               <call-timeout>30000</call-timeout> -->
+               <retry-interval>2000</retry-interval>
+               <retry-interval-multiplier>2</retry-interval-multiplier>
+               <max-retry-interval>10000</max-retry-interval>
+               <initial-connect-attempts>-1</initial-connect-attempts>
+               <reconnect-attempts>-1</reconnect-attempts>
+               <!-- <check-period>10000</check-period>
+               <call-failover-timeout>3000</call-failover-timeout> -->
                <static-connectors >
-                  <connector-ref>artemis-mirror</connector-ref>
+               <!-- <connector-ref>artemis-mirror</connector-ref> -->
+                  ${AMQ_MIRROR_HOST_REF}
                </static-connectors>
-               <policy ref="upstream-of-${AMQ_NAME}-addr-policy" />
-               <policy ref="upstream-of-${AMQ_NAME}-queue-policy" />
+               <policy ref="upstream-of-${AMQ_CLUSTER_NAME}-addr-policy" />
+               <policy ref="upstream-of-${AMQ_CLUSTER_NAME}-queue-policy" />
             </upstream>
-            <queue-policy  name="upstream-of-${AMQ_NAME}-queue-policy" priority-adjustment="0" >
+            <queue-policy  name="upstream-of-${AMQ_CLUSTER_NAME}-queue-policy"  priority-adjustment="0" >
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
             </queue-policy>
-            <address-policy name="upstream-of-${AMQ_NAME}-addr-policy" max-hops="1" auto-delete="true">
+            <address-policy name="upstream-of-${AMQ_CLUSTER_NAME}-addr-policy"  max-hops="1">
                <include address-match="app.addr.federation.#" />
             </address-policy>
          </federation>

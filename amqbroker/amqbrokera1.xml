@@ -30,8 +30,11 @@
       <connectors>
          <connector name="artemis">tcp://amqbrokera1:61616</connector>
          <connector name="artemis-ssl">tcp://amqbrokera1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
-         <connector name="artemis-mirror">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
-     </connectors>
+         <connector name="artemis-mirror">(tcp://amqbrokerb1:61617,tcp://amqbrokerb0:61617,tcp://amqbrokerb1:61617)?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+         
+<connector name="b0">tcp://amqbrokerb0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+<connector name="b1">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+      </connectors>
 
       <cluster-user>cluster-user</cluster-user>
 
@@ -59,12 +62,13 @@
 
       <cluster-connections>
          <cluster-connection name="amqbrokera-cluster">
+            <!-- <address>!#::federated.#</address> -->
             <connector-ref>artemis-ssl</connector-ref>
             <retry-interval>1000</retry-interval>
             <retry-interval-multiplier>2</retry-interval-multiplier>
-            <max-retry-interval>32000</max-retry-interval>
-            <initial-connect-attempts>20</initial-connect-attempts>
-            <reconnect-attempts>10</reconnect-attempts>
+            <max-retry-interval>10000</max-retry-interval>
+            <initial-connect-attempts>-1</initial-connect-attempts>
+            <reconnect-attempts>-1</reconnect-attempts>
             <use-duplicate-detection>true</use-duplicate-detection>
             <message-load-balancing>ON_DEMAND</message-load-balancing>
             <max-hops>1</max-hops>
@@ -90,18 +94,32 @@
       <!-- <queue-policy  name="upstream-of-amqbrokera1-queue-policy" priority-adjustment="-1" include-federated="false"> -->
       <!-- <address-policy name="upstream-of-amqbrokera1-addr-policy" auto-delete="false" max-hops="1" > -->
       <federations>
-         <federation name="amqbrokera1-federation">
-            <upstream name="upstream-of-amqbrokera1" >
+         <federation name="amqbrokera-federation" user="amqbrokera1" password="password">
+            <upstream name="upstream-of-amqbrokera" >
+               <!-- <ha>true</ha> -->
+               <!--<circuit-breaker-timeout>5000</circuit-breaker-timeout>
+               <connection-ttl>30000</connection-ttl>
+               <call-timeout>30000</call-timeout> -->
+               <retry-interval>2000</retry-interval>
+               <retry-interval-multiplier>2</retry-interval-multiplier>
+               <max-retry-interval>10000</max-retry-interval>
+               <initial-connect-attempts>-1</initial-connect-attempts>
+               <reconnect-attempts>-1</reconnect-attempts>
+               <!-- <check-period>10000</check-period>
+               <call-failover-timeout>3000</call-failover-timeout> -->
                <static-connectors >
-                  <connector-ref>artemis-mirror</connector-ref>
+               <!-- <connector-ref>artemis-mirror</connector-ref> -->
+                  
+<connector-ref>b0</connector-ref>
+<connector-ref>b1</connector-ref>
                </static-connectors>
-               <policy ref="upstream-of-amqbrokera1-addr-policy" />
-               <policy ref="upstream-of-amqbrokera1-queue-policy" />
+               <policy ref="upstream-of-amqbrokera-addr-policy" />
+               <policy ref="upstream-of-amqbrokera-queue-policy" />
             </upstream>
-            <queue-policy  name="upstream-of-amqbrokera1-queue-policy" priority-adjustment="0" >
+            <queue-policy  name="upstream-of-amqbrokera-queue-policy"  priority-adjustment="0" >
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
             </queue-policy>
-            <address-policy name="upstream-of-amqbrokera1-addr-policy" max-hops="1" auto-delete="true">
+            <address-policy name="upstream-of-amqbrokera-addr-policy"  max-hops="1">
                <include address-match="app.addr.federation.#" />
             </address-policy>
          </federation>

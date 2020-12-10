@@ -395,6 +395,69 @@ export AMQ_REPLICAS_NB=2
 declare -A upstream
 upstream=( [a]=b [b]=a)
 export upstream
+
+declare -A all_mirror_hosts
+
+offset=0
+for cluster in ${AMQ_CLUSTERS[@]}
+do
+    y=0
+    while [ $y -lt $AMQ_REPLICAS_NB ]
+    do
+        x=0
+        while [ $x -lt $AMQ_REPLICAS_NB ]
+        do
+            if [ $x -eq 0 ]
+            then
+                all_mirror_hosts[$cluster$y]=tcp://amqbroker${upstream[${cluster}]}${y}:61617,tcp://amqbroker${upstream[${cluster}]}${x}:61617
+            else
+                all_mirror_hosts[$cluster$y]=${all_mirror_hosts[$cluster$y]},tcp://amqbroker${upstream[${cluster}]}${x}:61617
+            fi
+            x=$(( $x + 1 ))
+        done
+        all_mirror_hosts[$cluster$y]='('${all_mirror_hosts[$cluster$y]}')'
+        echo "upstream for " $cluster$y ${all_mirror_hosts[${cluster}${y}]}
+        export all_mirror_hosts
+        y=$((y+1))
+    done
+    offset=$((offset+1))
+
+done
+
+
+declare -A federation_connectors
+declare -A federation_refs
+
+
+offset=0
+for cluster in ${AMQ_CLUSTERS[@]}
+do
+    y=0
+    while [ $y -lt $AMQ_REPLICAS_NB ]
+    do
+        federation_connectors[$cluster$y]=""
+        federation_refs[$cluster$y]=""
+        x=0
+        while [ $x -lt $AMQ_REPLICAS_NB ]
+        do
+            federation_connectors[$cluster$y]=${federation_connectors[$cluster$y]}$'\n''<connector name="'${upstream[${cluster}]}${x}'">'tcp://amqbroker${upstream[${cluster}]}${x}':61617?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER}</connector>'
+            
+            federation_refs[$cluster$y]=${federation_refs[$cluster$y]}$'\n''<connector-ref>'${upstream[${cluster}]}${x}'</connector-ref>'
+
+            x=$(( $x + 1 ))
+        done
+        
+        echo "upstream for " $cluster$y "${federation_connectors[${cluster}${y}]}"
+        echo "upstream for " $cluster$y "${federation_refs[${cluster}${y}]}"
+
+        y=$((y+1))
+    done
+    offset=$((offset+1))
+
+done
+export federation_connectors
+export federation_refs
+
 ```
 
 ##### Draft
@@ -403,9 +466,13 @@ export upstream
 offset=0
 for cluster in ${AMQ_CLUSTERS[@]}
 do
+
     export AMQ_NAME_SUFFIX=$cluster
     export AMQ_MULTICASTPORT=$((9876 + $offset))
     export AMQ_INTERFACE_IP_PREFIX=172.18.0.1${offset}
+
+
+
     echo "DO STUFF for : $AMQ_NAME_SUFFIX, $AMQ_MULTICASTPORT, $AMQ_INTERFACE_IP_PREFIX"
     offset=$((offset+1))
 done
@@ -494,7 +561,7 @@ keytool -list -storepass password -keystore amqbroker/tls/truststore.p12
 ##### Broker creation
 
 ```
-
+function startbroker(){
 offset=0
 for cluster in ${AMQ_CLUSTERS[@]}
 do
@@ -516,7 +583,9 @@ do
         export AMQ_KEYSTORE_PASSWORD="password" 
         export AMQ_SSL_PROVIDER="JDK" 
         export AMQ_SSL_NEED_CLIENT_AUTH="true"
-        export AMQ_MIRROR_HOST=tcp://amqbroker${upstream[${AMQ_NAME_SUFFIX}]}${x}:61617
+        export AMQ_MIRROR_HOST=${all_mirror_hosts[$cluster$x]}
+        export AMQ_MIRROR_XML=$(echo "${federation_connectors[$cluster$x]}" | envsubst  )
+        export AMQ_MIRROR_HOST_REF=${federation_refs[$cluster$x]}
         export AMQ_INTERFACE_IP=${AMQ_INTERFACE_IP_PREFIX}${x}
         export AMQ_CLUSTER_USER=cluster-user
         export AMQ_CLUSTER_PASSWORD=password
@@ -536,6 +605,8 @@ do
             $AMQ_SSL_PROVIDER,\
             $AMQ_SSL_NEED_CLIENT_AUTH, \
             $AMQ_MIRROR_HOST,\
+            $AMQ_MIRROR_XML,\
+            $AMQ_MIRROR_HOST_REF,\
             $AMQ_INTERFACE_IP,\
             $AMQ_CLUSTER_USER,\
             $AMQ_CLUSTER_PASSWORD,\
@@ -579,10 +650,12 @@ do
 
     offset=$((offset+1))
 done
+}
 ```
 
 ##### Broker removal
 ```
+function stopbroker(){
 offset=0
 for cluster in ${AMQ_CLUSTERS[@]}
 do
@@ -607,6 +680,7 @@ do
 
     offset=$((offset+1))
 done
+}
 ```
 
 ## Interconnect (enterprise version)

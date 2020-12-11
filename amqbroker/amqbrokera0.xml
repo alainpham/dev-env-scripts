@@ -30,10 +30,10 @@
       <connectors>
          <connector name="artemis">tcp://amqbrokera0:61616</connector>
          <connector name="artemis-ssl">tcp://amqbrokera0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
-         <connector name="artemis-mirror">(tcp://amqbrokerb0:61617,tcp://amqbrokerb0:61617,tcp://amqbrokerb1:61617)?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+         <connector name="artemis-mirror">(tcp://amqbrokerb0:61617,tcp://amqbrokerb0:61617,tcp://amqbrokerb1:61617)?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;ackBatchSize=64</connector>
          
-<connector name="b0">tcp://amqbrokerb0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
-<connector name="b1">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+<connector name="b0">tcp://amqbrokerb0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;ackBatchSize=64</connector>
+<connector name="b1">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera0-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;ackBatchSize=64</connector>
       </connectors>
 
       <cluster-user>cluster-user</cluster-user>
@@ -72,6 +72,7 @@
             <use-duplicate-detection>true</use-duplicate-detection>
             <message-load-balancing>ON_DEMAND</message-load-balancing>
             <max-hops>1</max-hops>
+            
             <discovery-group-ref discovery-group-name="amqbrokera-discovery-group" />
          </cluster-connection>
       </cluster-connections>
@@ -93,6 +94,8 @@
 
       <!-- <queue-policy  name="upstream-of-amqbrokera0-queue-policy" priority-adjustment="-1" include-federated="false"> -->
       <!-- <address-policy name="upstream-of-amqbrokera0-addr-policy" auto-delete="false" max-hops="1" > -->
+      <!-- ${HOSTNAME} ${BROKER_IP}-->
+
       <federations>
          <federation name="amqbrokera-federation" user="amqbrokera0" password="password">
             <upstream name="upstream-of-amqbrokera" >
@@ -109,17 +112,17 @@
                <call-failover-timeout>3000</call-failover-timeout> -->
                <static-connectors >
                <!-- <connector-ref>artemis-mirror</connector-ref> -->
-                  
+                 
 <connector-ref>b0</connector-ref>
-<connector-ref>b1</connector-ref>
+<connector-ref>b1</connector-ref> 
                </static-connectors>
                <policy ref="upstream-of-amqbrokera-addr-policy" />
                <policy ref="upstream-of-amqbrokera-queue-policy" />
             </upstream>
-            <queue-policy  name="upstream-of-amqbrokera-queue-policy"  priority-adjustment="0" >
+            <queue-policy  name="upstream-of-amqbrokera-queue-policy"  priority-adjustment="0" include-federated="false">
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
             </queue-policy>
-            <address-policy name="upstream-of-amqbrokera-addr-policy"  max-hops="1">
+            <address-policy name="upstream-of-amqbrokera-addr-policy"  max-hops="1" auto-delete="false">
                <include address-match="app.addr.federation.#" />
             </address-policy>
          </federation>

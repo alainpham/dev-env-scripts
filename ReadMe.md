@@ -574,7 +574,7 @@ cd ..
 
 
 
-Goto http://prometheus:9000 for admin console
+Goto http://prometheus:9090 for admin console
 
 ## Grafana
 

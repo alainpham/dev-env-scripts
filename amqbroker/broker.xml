@@ -85,12 +85,21 @@
       <federations>
          <federation name="amqbroker-federation">
             <upstream name="upstream-of-amqbroker" >
+               
+               <ha>false</ha>
+               <share-connection>true</share-connection>
+               <call-timeout></call-timeout>
+               <initial-connect-attempts>-1</initial-connect-attempts>
+
+               <check-period></check-period>
+               <call-failover-timeout></call-failover-timeout>
                <static-connectors >
                   <connector-ref>artemis-mirror</connector-ref>
                </static-connectors>
                <policy ref="upstream-of-amqbroker-addr-policy" />
                <policy ref="upstream-of-amqbroker-queue-policy" />
             </upstream>
+
             <!-- <queue-policy  name="upstream-of-amqbroker-queue-policy" priority-adjustment="-1" include-federated="false"> -->
             <queue-policy  name="upstream-of-amqbroker-queue-policy" >
                <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />

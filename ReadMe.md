@@ -33,6 +33,7 @@
   - [Kafka](#kafka)
   - [Kafdrop](#kafdrop)
   - [Debezium Change Data Capture](#debezium-change-data-capture)
+  - [AMQ Streams](#amq-streams)
 - [Monitoring](#monitoring)
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
@@ -40,6 +41,7 @@
   - [Apicurio Schema Registry](#apicurio-schema-registry)
 - [Application Servers](#application-servers)
   - [EAP](#eap)
+- [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
 
 # Purpose of this repo
 
@@ -52,6 +54,12 @@ Create a network called primenet
 
 ```
 docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet 
+```
+
+To get access to Red Hat Enterprise container registry you need to login as follows
+
+```
+docker login registry.redhat.io
 ```
 
 # Hosts /etc/hosts
@@ -74,8 +82,12 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.60 artemis
 172.18.0.61 zookeeper
 172.18.0.62 kafka
+172.18.0.63 kafdrop
 172.18.0.64 dbz
-
+172.18.0.65 amqstreams-zk
+172.18.0.66 amqstreams
+172.18.0.67 amqstreams-kafdrop
+172.18.0.68 interconnect
 
 172.18.0.70 prometheus
 172.18.0.71 grafana
@@ -89,6 +101,8 @@ This is to have some static name resolution docker containers we run locally
 
 172.18.0.110 amqbrokerb0
 172.18.0.111 amqbrokerb1
+
+172.18.0.120 ubi-station
 
 ```
 
@@ -430,7 +444,7 @@ docker run \
     -e QDROUTERD_CONF="$(cat interconnect/qdrouterd.conf)" \
     --memory="1g" \
     -d --name interconnect  \
-    -d --net primenet --ip 172.18.0.67 \
+    -d --net primenet --ip 172.18.0.68 \
     registry.redhat.io/amq7/amq-interconnect:latest
 ```
 
@@ -464,7 +478,7 @@ docker run -d --name kafdrop --net primenet --ip 172.18.0.63 \
     -e KAFKA_BROKERCONNECT=kafka:9092 \
     -e JVM_OPTS="-Xms32M -Xmx128M" \
     -e SERVER_SERVLET_CONTEXTPATH="/" \
-    obsidiandynamics/kafdrop:3.26.0
+    obsidiandynamics/kafdrop:3.27.0
 ```
 
 Goto http://kafdrop:9000 for admin console
@@ -508,6 +522,39 @@ curl -X POST \
 EOF
 ```
 
+## AMQ Streams
+
+Building image
+
+```
+cd amqstreams
+docker build -t amqstreams:1.6.0 .
+```
+
+Running containers
+
+```
+docker run -d --name amqstreams-zk --net primenet --ip 172.18.0.65  \
+  -e LOG_DIR=/tmp/logs \
+  -e KAFKA_OPTS=-javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.14.0.redhat-00002.jar=9404:/opt/kafka/custom-config/zookeeper-prometheus-config.yaml \
+  amqstreams:1.6.0 \
+  sh -c "bin/zookeeper-server-start.sh config/zookeeper.properties"
+
+docker run -d --name amqstreams --net primenet --ip 172.18.0.66  \
+  -e LOG_DIR=/tmp/logs \
+  -e KAFKA_OPTS=-javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.14.0.redhat-00002.jar=9404:/opt/kafka/custom-config/kafka-prometheus-config.yaml \
+  amqstreams:1.6.0 \
+  sh -c "bin/kafka-server-start.sh config/server.properties --override listeners=PLAINTEXT://0.0.0.0:9092 --override advertised.listeners=PLAINTEXT://amqstreams:9092 --override zookeeper.connect=amqstreams-zk:2181"
+
+docker run -d --name amqstreams-kafdrop --net primenet --ip 172.18.0.67 \
+    -e KAFKA_BROKERCONNECT=amqstreams:9092 \
+    -e JVM_OPTS="-Xms32M -Xmx128M" \
+    -e SERVER_SERVLET_CONTEXTPATH="/" \
+    obsidiandynamics/kafdrop:3.27.0
+```
+
+Goto http://amqstreams-kafdrop:9000 for admin console
+
 # Monitoring
 
 ## Prometheus
@@ -516,11 +563,11 @@ EOF
 
 docker stop prometheus
 docker rm prometheus
-docker rmi prom:v2.19.0
+docker rmi prom:v2.24.0
 
 cd prometheus
-docker build -t prom:v2.19.0 .
-docker run -d --name prometheus --net primenet --ip 172.18.0.70 prom:v2.19.0
+docker build -t prom:v2.24.0 .
+docker run -d --name prometheus --net primenet --ip 172.18.0.70 prom:v2.24.0
 cd ..
 ```
 
@@ -534,11 +581,11 @@ Goto http://prometheus:9000 for admin console
 ```
 docker stop grafana
 docker rm grafana
-docker rmi graf:7.0.6
+docker rmi graf:7.3.7
 
 cd grafana
-docker build -t graf:7.0.6 .
-docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:7.0.6
+docker build -t graf:7.3.7 .
+docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:7.3.7
 cd ..
 ```
 
@@ -590,4 +637,24 @@ cd ..
 docker run -d --name eap --net primenet --ip 172.18.0.90 \
     eap:7.2
 
+```
+
+# Getting a RHEL Compatible JDK8 container
+
+```
+docker pull registry.redhat.io/ubi8/openjdk-8
+
+cd ubi-station
+docker build -t ubi-station:8 .
+cd ..
+
+# docker run -it --name ubi-station --net primenet --ip 172.18.0.120 --entrypoint "/bin/bash" -v /home/workdrive/TAZONE/MISSIONS/2020-11-Eurofins/hotfix/amq-broker-7.8.0.GA-src/:/home/jboss/source registry.redhat.io/ubi8/openjdk-8 
+
+docker run -it --name ubi-station --net primenet --ip 172.18.0.120 --entrypoint "/bin/bash" -v /home/workdrive/TAZONE/MISSIONS/2020-11-Eurofins/hotfix/:/home/jboss/source ubi-station:8
+docker exec -it ubi-station /bin/bash
+
+
+docker stop ubi-station
+docker rm ubi-station
+docker rmi ubi-station:8
 ```

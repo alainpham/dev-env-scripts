@@ -23,6 +23,25 @@ scrape_configs:
           kubernetes_pod_name: "kafka-cluster-zookeeper-0"
           statefulset_kubernetes_io_pod_name: "kafka-cluster-zookeeper-0"
 
+  - job_name: 'amqstreams'
+    static_configs:
+      - targets: 
+          - "amqstreams:9404"
+        labels:
+          namespace: "kafka"
+          strimzi_io_cluster: "kafka-cluster"
+          strimzi_io_name: "kafka-cluster-kafka"
+          kubernetes_pod_name: "kafka-cluster-kafka-0"
+          statefulset_kubernetes_io_pod_name: "kafka-cluster-kafka-0"
+      - targets: 
+          - "amqstreams-zk:9404"
+        labels:
+          namespace: "kafka"
+          strimzi_io_cluster: "kafka-cluster"
+          strimzi_io_name: "kafka-cluster-zookeeper"
+          kubernetes_pod_name: "kafka-cluster-zookeeper-0"
+          statefulset_kubernetes_io_pod_name: "kafka-cluster-zookeeper-0"
+
   - job_name: 'camel'
     static_configs:
       - targets: 

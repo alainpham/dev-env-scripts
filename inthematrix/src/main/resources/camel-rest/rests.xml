@@ -3,7 +3,7 @@
         <get id="get-ping" uri="/ping" >
             <route id="get-ping-route">
                 <setBody id="set-body-get-ping-route">
-                    <constant>pong</constant>
+                    <constant>pongss</constant>
                 </setBody>
             </route>
         </get>

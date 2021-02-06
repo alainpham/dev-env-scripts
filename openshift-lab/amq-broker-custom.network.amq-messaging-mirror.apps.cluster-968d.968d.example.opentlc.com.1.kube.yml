@@ -1,0 +1,97 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    ActiveMQArtemis: amq-broker-b
+    application: amq-broker-b-app
+    statefulset.kubernetes.io/pod-name: amq-broker-b-ss-1
+  name: amq-broker-b-1-svc
+  annotations:
+    prometheus.io/path: /metrics/
+    prometheus.io/port: '8161'
+    prometheus.io/scheme: https
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+  - port: 61616
+    name: all
+    protocol: TCP
+    targetPort: 61616
+  - port: 8161
+    name: console-jolokia
+    protocol: TCP
+    targetPort: 8161
+  - port: 5672
+    name: amqp
+    protocol: TCP
+    targetPort: 5672
+  - port: 1883
+    name: mqtt
+    protocol: TCP
+    targetPort: 1883
+  - port: 61613
+    name: stomp
+    protocol: TCP
+    targetPort: 61613
+  - port: 61617
+    name: all-ssl
+    protocol: TCP
+    targetPort: 61617
+  - port: 5671
+    name: amqp-ssl
+    protocol: TCP
+    targetPort: 5671
+  - port: 8883
+    name: mqtt-ssl
+    protocol: TCP
+    targetPort: 8883
+  - port: 61612
+    name: stomp-ssl
+    protocol: TCP
+    targetPort: 61612
+  selector:
+    ActiveMQArtemis: amq-broker-b
+    application: amq-broker-b-app
+    statefulset.kubernetes.io/pod-name: amq-broker-b-ss-1
+  type: ClusterIP
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  labels:
+    ActiveMQArtemis: amq-broker-b
+    application: amq-broker-b-app
+    statefulset.kubernetes.io/pod-name: amq-broker-b-ss-1
+  name: amq-broker-b-console-1
+spec:
+  host: amq-broker-b-console-1.amq-messaging-mirror.apps.cluster-968d.968d.example.opentlc.com
+  port:
+    targetPort: console-jolokia
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: amq-broker-b-1-svc
+    weight: 100
+  wildcardPolicy: None
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  labels:
+    ActiveMQArtemis: amq-broker-b
+    application: amq-broker-b-app
+    statefulset.kubernetes.io/pod-name: amq-broker-b-ss-1
+  name: amq-broker-b-acceptor-1
+spec:
+  host: amq-broker-b-acceptor-1.amq-messaging-mirror.apps.cluster-968d.968d.example.opentlc.com
+  port:
+    targetPort: all-ssl
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: amq-broker-b-1-svc
+    weight: 100
+  wildcardPolicy: None

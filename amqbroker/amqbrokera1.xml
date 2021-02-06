@@ -30,10 +30,10 @@
       <connectors>
          <connector name="artemis">tcp://amqbrokera1:61616</connector>
          <connector name="artemis-ssl">tcp://amqbrokera1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
-         <connector name="artemis-mirror">(tcp://amqbrokerb1:61617,tcp://amqbrokerb0:61617,tcp://amqbrokerb1:61617)?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;ackBatchSize=64</connector>
+         <connector name="artemis-mirror">(tcp://amqbrokerb1:61617,tcp://amqbrokerb0:61617,tcp://amqbrokerb1:61617)?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
          
-<connector name="b0">tcp://amqbrokerb0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;ackBatchSize=64</connector>
-<connector name="b1">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;ackBatchSize=64</connector>
+<connector name="b0">tcp://amqbrokerb0:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
+<connector name="b1">tcp://amqbrokerb1:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/amqbrokera1-keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
       </connectors>
 
       <cluster-user>cluster-user</cluster-user>
@@ -95,38 +95,6 @@
       <!-- <queue-policy  name="upstream-of-amqbrokera1-queue-policy" priority-adjustment="-1" include-federated="false"> -->
       <!-- <address-policy name="upstream-of-amqbrokera1-addr-policy" auto-delete="false" max-hops="1" > -->
       <!-- ${HOSTNAME} ${BROKER_IP}-->
-
-      <federations>
-         <federation name="amqbrokera-federation" user="amqbrokera1" password="password">
-            <upstream name="upstream-of-amqbrokera" >
-               <ha>true</ha>
-               <!--<circuit-breaker-timeout>5000</circuit-breaker-timeout>
-               <connection-ttl>30000</connection-ttl>
-               <call-timeout>30000</call-timeout> -->
-               <retry-interval>2000</retry-interval>
-               <retry-interval-multiplier>2</retry-interval-multiplier>
-               <max-retry-interval>10000</max-retry-interval>
-               <initial-connect-attempts>-1</initial-connect-attempts>
-               <reconnect-attempts>-1</reconnect-attempts>
-               <!-- <check-period>10000</check-period>
-               <call-failover-timeout>3000</call-failover-timeout> -->
-               <static-connectors >
-               <!-- <connector-ref>artemis-mirror</connector-ref> -->
-                 
-<connector-ref>b0</connector-ref>
-<connector-ref>b1</connector-ref> 
-               </static-connectors>
-               <policy ref="upstream-of-amqbrokera-addr-policy" />
-               <policy ref="upstream-of-amqbrokera-queue-policy" />
-            </upstream>
-            <queue-policy  name="upstream-of-amqbrokera-queue-policy"  priority-adjustment="0" include-federated="false">
-               <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
-            </queue-policy>
-            <address-policy name="upstream-of-amqbrokera-addr-policy"  max-hops="1" auto-delete="false">
-               <include address-match="app.addr.federation.#" />
-            </address-policy>
-         </federation>
-      </federations>
       <security-settings>
          <security-setting match="#">
             <permission type="createNonDurableQueue" roles="admin"/>
@@ -159,6 +127,7 @@
             <dead-letter-address>DLQ</dead-letter-address>
             <expiry-address>ExpiryQueue</expiry-address>
             <redelivery-delay>0</redelivery-delay>
+            <redistribution-delay>0</redistribution-delay>
             <max-size-bytes>-1</max-size-bytes>
             <message-counter-history-day-limit>10</message-counter-history-day-limit>
             <address-full-policy>PAGE</address-full-policy>
@@ -196,7 +165,11 @@
          <address name="app.addr.federation.test">
             <multicast/>
          </address>
-
+         <address name="DEMO.OUT">
+            <anycast>
+               <queue name="DEMO.OUT" />
+            </anycast>
+         </address>
       </addresses>
 
       <!-- <metrics-plugin class-name="org.apache.activemq.artemis.core.server.metrics.plugins.ArtemisPrometheusMetricsPlugin"/> -->

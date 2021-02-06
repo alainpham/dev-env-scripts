@@ -6,13 +6,13 @@
 #
 # Then, build the image with:
 #
-# docker build -f src/main/docker/Dockerfile.native -t quarkus/${artifactid} .
+# docker build -f src/main/docker/Dockerfile.native -t quarkus/inthematrix .
 #
 # Then run the container using:
 #
-# docker run -i --rm -p 8080:8080 quarkus/${artifactid}
+# docker run -i --rm -p 8080:8080 quarkus/inthematrix
 #
-FROM registry.access.redhat.com/ubi8/ubi-minimal:8.1
+FROM registry.access.redhat.com/ubi8/ubi-minimal:8.3
 WORKDIR /work/
 RUN chown 1001 /work \
     && chmod "g+rwX" /work \

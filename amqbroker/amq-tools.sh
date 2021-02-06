@@ -53,7 +53,7 @@ function initamqvars(){
             x=0
             while [ $x -lt $AMQ_REPLICAS_NB ]
             do
-                federation_connectors[$cluster$y]=${federation_connectors[$cluster$y]}$'\n''<connector name="'${upstream[${cluster}]}${x}'">'tcp://amqbroker${upstream[${cluster}]}${x}':61617?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};ackBatchSize=64</connector>'
+                federation_connectors[$cluster$y]=${federation_connectors[$cluster$y]}$'\n''<connector name="'${upstream[${cluster}]}${x}'">'tcp://amqbroker${upstream[${cluster}]}${x}':61617?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER}</connector>'
                 
                 federation_refs[$cluster$y]=${federation_refs[$cluster$y]}$'\n''<connector-ref>'${upstream[${cluster}]}${x}'</connector-ref>'
 

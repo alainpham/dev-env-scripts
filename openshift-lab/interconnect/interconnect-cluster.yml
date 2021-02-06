@@ -1,0 +1,42 @@
+apiVersion: interconnectedcloud.github.io/v1alpha1
+kind: Interconnect
+metadata:
+  name: interconnect-cluster
+  namespace: amq-messaging
+spec:
+  addresses:  
+  - prefix: app
+    waypoint: true
+  deploymentPlan:
+    role: interior
+    placement: Any
+    size: 2
+  listeners:  
+    - port: 5672
+    - authenticatePeer: false
+      expose: true
+      http: true
+      port: 8080
+    - port: 5671
+      sslProfile: default
+      expose: true
+  interRouterListeners:
+    - port: 55671
+      sslProfile: default
+      expose: true
+  connectors:
+    - name: amq-broker
+      host: amq-broker-hdls-svc.amq-messaging.svc.cluster.local
+      port: 5672
+      routeContainer: true
+  autoLinks:
+    - address: 'app.queue'
+      direction: in
+      connection: amq-broker
+    - address: 'app.queue'
+      direction: out
+      connection: amq-broker
+  sslProfiles:
+  - name: default
+    credentials: interconnect-cluster-default-credentials
+    caCert: interconnect-cluster-default-credentials

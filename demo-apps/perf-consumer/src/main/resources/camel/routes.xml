@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<routes xmlns="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+    
+    <route id="http-receiver">
+        <from id="http-receiver-starter" uri="servlet://ping" />
+        <to uri="bean:eventLogger?method=logStartAndBody" />
+        <setHeader id="set-header-http-receiver" headerName="Content-Type">
+            <constant>application/json</constant>
+        </setHeader>
+        <setBody  id="set-body-http-receiver">
+            <constant>{"msg" : "HELLO"}</constant>
+        </setBody>
+        <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
+    </route>
+
+
+    <route id="send-socket-msg-to-all">
+        <from id="send-socket-msg-to-all-starter" uri="servlet://send-msg"/>
+        <convertBodyTo type="java.lang.String"/>
+        <log message="${body}"/>
+        <to uri="ahc-ws:{{server.address}}:{{server.port}}/websocket"/>
+    </route>
+    <route id="data-consumer-route">
+        <from id="data-consumer-from" uri="jms:queue:app.queue?concurrentConsumers={{jms.concurrentConsumers}}"/>
+       <log message="${body}"></log>
+    </route>
+</routes>

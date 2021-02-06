@@ -1,0 +1,195 @@
+<?xml version='1.0' encoding="UTF-8"?>
+
+<configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:activemq schema/artemis-server.xsd urn:activemq:core schema/artemis-configuration.xsd">
+
+   <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="urn:activemq:core ">
+
+      <name>${AMQ_NAME}</name>
+      <persistence-enabled>true</persistence-enabled>
+      <journal-type>${AMQ_JOURNAL_TYPE_UPPER}</journal-type>
+      <paging-directory>${AMQ_DATA_DIR}/paging</paging-directory>
+      <bindings-directory>${AMQ_DATA_DIR}/bindings</bindings-directory>
+      <journal-directory>${AMQ_DATA_DIR}/journal</journal-directory>
+      <large-messages-directory>${AMQ_DATA_DIR}/large-messages</large-messages-directory>
+      <journal-datasync>true</journal-datasync>
+      <journal-min-files>2</journal-min-files>
+      <journal-pool-files>10</journal-pool-files>
+      <journal-device-block-size>4096</journal-device-block-size>
+      <journal-file-size>10M</journal-file-size>
+      <journal-buffer-timeout>1052000</journal-buffer-timeout>
+      <journal-max-io>1</journal-max-io>
+      <disk-scan-period>5000</disk-scan-period>
+      <max-disk-usage>90</max-disk-usage>
+      <critical-analyzer>true</critical-analyzer>
+      <critical-analyzer-timeout>120000</critical-analyzer-timeout>
+      <critical-analyzer-check-period>60000</critical-analyzer-check-period>
+      <critical-analyzer-policy>HALT</critical-analyzer-policy>
+      <page-sync-timeout>1052000</page-sync-timeout>
+
+      <connectors>
+         <connector name="artemis">tcp://${AMQ_NAME}:61616</connector>
+         <connector name="artemis-ssl">tcp://${AMQ_NAME}:61617?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER}</connector>
+         <connector name="artemis-mirror">${AMQ_MIRROR_HOST}?sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER}</connector>
+         ${AMQ_MIRROR_XML}
+      </connectors>
+
+      <cluster-user>${AMQ_CLUSTER_USER}</cluster-user>
+
+      <cluster-password>${AMQ_CLUSTER_PASSWORD}</cluster-password>
+
+      <broadcast-groups>
+         <broadcast-group name="${AMQ_CLUSTER_NAME}-broadcast-group">
+            <local-bind-address>${AMQ_INTERFACE_IP}</local-bind-address>
+            <local-bind-port>5432</local-bind-port>
+            <group-address>231.7.7.7</group-address>
+            <group-port>${AMQ_MULTICASTPORT}</group-port>
+            <broadcast-period>2000</broadcast-period>
+            <connector-ref>artemis-ssl</connector-ref>
+         </broadcast-group>
+      </broadcast-groups>
+
+      <discovery-groups>
+         <discovery-group name="${AMQ_CLUSTER_NAME}-discovery-group">
+            <local-bind-address>${AMQ_INTERFACE_IP}</local-bind-address>
+            <group-address>231.7.7.7</group-address>
+            <group-port>${AMQ_MULTICASTPORT}</group-port>
+            <refresh-timeout>10000</refresh-timeout>
+         </discovery-group>
+      </discovery-groups>
+
+      <cluster-connections>
+         <cluster-connection name="${AMQ_CLUSTER_NAME}-cluster">
+            <!-- <address>!#::federated.#</address> -->
+            <connector-ref>artemis-ssl</connector-ref>
+            <retry-interval>1000</retry-interval>
+            <retry-interval-multiplier>2</retry-interval-multiplier>
+            <max-retry-interval>10000</max-retry-interval>
+            <initial-connect-attempts>-1</initial-connect-attempts>
+            <reconnect-attempts>-1</reconnect-attempts>
+            <use-duplicate-detection>true</use-duplicate-detection>
+            <message-load-balancing>ON_DEMAND</message-load-balancing>
+            <max-hops>1</max-hops>
+            
+            <discovery-group-ref discovery-group-name="${AMQ_CLUSTER_NAME}-discovery-group" />
+         </cluster-connection>
+      </cluster-connections>
+
+      <acceptors>
+
+         <acceptor name="artemis">tcp://0.0.0.0:61616?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpMinLargeMessageSize=102400;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpDuplicateDetection=true</acceptor>
+         <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true</acceptor>
+         <acceptor name="stomp">tcp://0.0.0.0:61613?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true</acceptor>
+         <acceptor name="hornetq">tcp://0.0.0.0:5445?anycastPrefix=jms.queue.;multicastPrefix=jms.topic.;protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
+         <acceptor name="mqtt">tcp://0.0.0.0:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
+
+         <acceptor name="artemis-ssl">tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+         <acceptor name="amqp-ssl">tcp://0.0.0.0:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+         <acceptor name="stomp-ssl">tcp://0.0.0.0:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+         <acceptor name="mqtt-ssl">tcp://0.0.0.0:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+
+      </acceptors>
+
+      <!-- <queue-policy  name="upstream-of-${AMQ_NAME}-queue-policy" priority-adjustment="-1" include-federated="false"> -->
+      <!-- <address-policy name="upstream-of-${AMQ_NAME}-addr-policy" auto-delete="false" max-hops="1" > -->
+      <!-- ${HOSTNAME} ${BROKER_IP}-->
+
+      <federations>
+         <federation name="${AMQ_CLUSTER_NAME}-federation" user="${AMQ_NAME}" password="${AMQ_CLUSTER_PASSWORD}">
+            <upstream name="upstream-of-${AMQ_CLUSTER_NAME}" >
+               <ha>false</ha>
+               <initial-connect-attempts>-1</initial-connect-attempts>
+               <static-connectors >
+               <!-- <connector-ref>artemis-mirror</connector-ref> -->
+                 ${AMQ_MIRROR_HOST_REF} 
+               </static-connectors>
+               <policy ref="policySet${AMQ_CLUSTER_NAME}" />
+            </upstream>
+            <policy-set name="policySet${AMQ_CLUSTER_NAME}">
+               <policy ref="queue_policy_${AMQ_CLUSTER_NAME}" />
+               <policy ref="addr_policy_${AMQ_CLUSTER_NAME}" />
+            </policy-set>
+            <queue-policy  name="queue_policy_${AMQ_CLUSTER_NAME}"  priority-adjustment="0" include-federated="false">
+               <include queue-match="app.queue.federation.#" address-match="app.queue.federation.#" />
+            </queue-policy>
+            <address-policy name="addr_policy_${AMQ_CLUSTER_NAME}"  max-hops="1" auto-delete="false">
+               <include address-match="app.addr.federation.#" />
+            </address-policy>
+         </federation>
+      </federations>
+      <security-settings>
+         <security-setting match="#">
+            <permission type="createNonDurableQueue" roles="admin"/>
+            <permission type="deleteNonDurableQueue" roles="admin"/>
+            <permission type="createDurableQueue" roles="admin"/>
+            <permission type="deleteDurableQueue" roles="admin"/>
+            <permission type="createAddress" roles="admin"/>
+            <permission type="deleteAddress" roles="admin"/>
+            <permission type="consume" roles="admin"/>
+            <permission type="browse" roles="admin"/>
+            <permission type="send" roles="admin"/>
+            <permission type="manage" roles="admin"/>
+         </security-setting>
+      </security-settings>
+
+      <address-settings>
+         <address-setting match="activemq.management#">
+            <dead-letter-address>DLQ</dead-letter-address>
+            <expiry-address>ExpiryQueue</expiry-address>
+            <redelivery-delay>0</redelivery-delay>
+            <max-size-bytes>-1</max-size-bytes>
+            <message-counter-history-day-limit>10</message-counter-history-day-limit>
+            <address-full-policy>PAGE</address-full-policy>
+            <auto-create-queues>true</auto-create-queues>
+            <auto-create-addresses>true</auto-create-addresses>
+            <auto-create-jms-queues>true</auto-create-jms-queues>
+            <auto-create-jms-topics>true</auto-create-jms-topics>
+         </address-setting>
+         <address-setting match="#">
+            <dead-letter-address>DLQ</dead-letter-address>
+            <expiry-address>ExpiryQueue</expiry-address>
+            <redelivery-delay>0</redelivery-delay>
+            <max-size-bytes>-1</max-size-bytes>
+            <message-counter-history-day-limit>10</message-counter-history-day-limit>
+            <address-full-policy>PAGE</address-full-policy>
+            <auto-create-queues>true</auto-create-queues>
+            <auto-create-addresses>true</auto-create-addresses>
+            <auto-create-jms-queues>true</auto-create-jms-queues>
+            <auto-create-jms-topics>true</auto-create-jms-topics>
+         </address-setting>
+      </address-settings>
+
+      <addresses>
+         <address name="DLQ">
+            <anycast>
+               <queue name="DLQ" />
+            </anycast>
+         </address>
+         <address name="ExpiryQueue">
+            <anycast>
+               <queue name="ExpiryQueue" />
+            </anycast>
+         </address>
+         <address name="app.queue">
+            <anycast>
+               <queue name="app.queue" />
+            </anycast>
+         </address>
+         <address name="app.queue.federation.test">
+            <anycast>
+               <queue name="app.queue.federation.test" />
+            </anycast>
+         </address>
+         <address name="app.addr">
+            <multicast/>
+         </address>
+         <address name="app.addr.federation.test">
+            <multicast/>
+         </address>
+
+      </addresses>
+
+      <!-- <metrics-plugin class-name="org.apache.activemq.artemis.core.server.metrics.plugins.ArtemisPrometheusMetricsPlugin"/> -->
+      <metrics> <plugin class-name="org.apache.activemq.artemis.core.server.metrics.plugins.ArtemisPrometheusMetricsPlugin"/> </metrics>
+   </core>
+</configuration>

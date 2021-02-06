@@ -1,0 +1,9 @@
+FROM openjdk:11-jre-buster
+ADD https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/0.14.0/jmx_prometheus_javaagent-0.14.0.jar jmx_prometheus_javaagent.jar
+COPY target/*.jar app.jar
+COPY tls/* /deployments/tls/
+COPY src/main/fabric8-includes/prometheus-config.yml prometheus-config.yml
+ENTRYPOINT ["java","-javaagent:/jmx_prometheus_javaagent.jar=9779:/prometheus-config.yml","-jar","/app.jar"]
+EXPOSE 8080
+EXPOSE 8081
+EXPOSE 9779

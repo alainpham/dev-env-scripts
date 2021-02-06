@@ -1,14 +1,78 @@
-<html>
+<!doctype html>
+<html lang="en">
 <header>
+    <meta charset="utf-8">
     <title>inthematrix</title>
+    <meta name="description" content="inthematrix interface">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <link rel="stylesheet" href="css/main.css" />
+    <link rel="stylesheet" href="css/framework/all.css" />
+
 </header>
 
 <body>
-   <h1>Welcome to the inthematrix interface</h1>
-   <p><a href="/ping">Ping</a></p>
-   <p><a href="/openapi">JaxRS Open API definition</a></p>
-   <p><a href="/camel-openapi">Camel Open API definition</a></p>
-   <p><a href="/swagger-ui">Swagger UI - JaxRS</a></p>
+
+    <div w3-include-html="partials/header.html"></div>
+    <div class="content-body">
+        <!-- PUT YOUR CONTENT HERE -->
+        <div class="jumbotron">
+            <h1>AMQ Broker federation overview</h1>
+        </div>
+        <div class="flex-container">
+            <div class="flex-item flex-grow">
+                <h2>amqbrokera0</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('amqbrokera0')">clear</button>
+                </div>
+                <table id="amqbrokera0"></table>
+            </div>
+            <div class="flex-item flex-grow">
+                <h2>amqbrokera1</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('amqbrokera1')">clear</button>
+                </div>
+                <table id="amqbrokera1"></table>
+            </div>
+        </div>
+        <div class="flex-container">
+            <div class="flex-item flex-grow">
+                <h2>amqbrokerb0</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('amqbrokerb0')">clear</button>
+                </div>
+                <table id="amqbrokerb0"></table>
+            </div>
+            <div class="flex-item flex-grow">
+                <h2>amqbrokerb1</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('amqbrokerb1')">clear</button>
+                </div>
+                <table id="amqbrokerb1"></table>
+            </div>
+        </div>
+        <div class="flex-container">
+            <div class="flex-item flex-grow">
+                <h2>Last message</h2>
+                <pre id="messages">Basic Messages Will show here</pre>
+            </div>
+        </div>
+        <div class="flex-container">
+            <div class="flex-item flex-grow flex-container-col">
+                <h2>Log messages</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('log-table')">clear</button>
+                    <button onclick="processSocketMsg(exampleEvent)">populate example</button>
+                </div>
+                <table id="log-table">
+                </table>
+            </div>
+        </div>
+    </div>
+    <!-- END PUT YOUR CONTENT HERE -->
+
+    <script src="js/main.js"></script>
+
 </body>
 
 </html>

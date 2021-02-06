@@ -9,4 +9,96 @@
             <constant>{"msg" : "HELLO"}</constant>
         </setBody>
     </route>
+
+    <route id="send-msg">
+        <from id="send-socket-msg-to-all-starter" uri="platform-http:/send-msg"/>
+        <convertBodyTo type="java.lang.String"/>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <log message="${body}"/>
+
+        <bean ref="viewUpdate" method="upsertData(${body}, person, state-table)"/>
+        <bean ref="viewUpdate" method="appendData(${body}, person, log-table)"/>
+
+        <marshal>
+            <json library="Jackson"/>
+        </marshal>
+    </route>
+
+    <route>
+        <from uri="timer:update?period=3s"/>
+        <setBody>
+            <constant>
+                [{ "brokerName": "amqbrokera0", "brokerUrl":"https://amqbrokera0:8161/console/jolokia/"},
+                 { "brokerName": "amqbrokera1", "brokerUrl":"https://amqbrokera1:8161/console/jolokia/"},
+                 { "brokerName": "amqbrokerb0", "brokerUrl":"https://amqbrokerb0:8161/console/jolokia/"},
+                 { "brokerName": "amqbrokerb1", "brokerUrl":"https://amqbrokerb1:8161/console/jolokia/"} 
+                ]
+            </constant>
+        </setBody>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <split>
+            <simple>${body}</simple>
+            <to uri="direct:updateConnections"></to>
+        </split>
+    </route>
+
+    <route>
+        <from uri="direct:updateConnections"/>
+        <setHeader name="Authorization">
+            <constant>Basic YWxhZGRpbjpvcGVuc2VzYW1l</constant>
+        </setHeader>
+        <setHeader name="brokerName">
+            <simple>${body[brokerName]}</simple>
+        </setHeader>
+        <setHeader name="brokerUrl">
+            <simple>${body[brokerUrl]}</simple>
+        </setHeader>
+        <setBody>
+            <simple>
+                {
+                    "type": "exec",
+                    "mbean": "org.apache.activemq.artemis:broker=\"${header.brokerName}\"",
+                    "operation": "listConnections(java.lang.String, int, int)",
+                    "arguments": [
+                        "{\"field\":\"\",\"operation\":\"\",\"value\":\"\",\"sortOrder\":\"desc\",\"sortColumn\":\"users\"}",
+                        1,
+                        999
+                    ]
+                }
+            </simple>
+        </setBody>
+        <toD uri="${header.brokerUrl}"/>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <setProperty name="brokerId">
+            <simple>${body[request][mbean]}</simple>
+        </setProperty>
+        <setBody>
+            <simple>${body[value]}</simple>
+        </setBody>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <setBody>
+            <simple>${body[data]}</simple>
+        </setBody>
+        <split>
+            <simple>${body}</simple>
+            <!-- <to uri="language:simple:${body.put(brokerID,${exchangeProperty[brokerId]})}?transform=false"/> -->
+            <to uri="language:simple:${body.put(id,${body[connectionID]})}?transform=false"/>
+            <to uri="language:simple:${body.remove(remoteAddress)}?transform=false"/>
+            <to uri="language:simple:${body.remove(localAddress)}?transform=false"/>
+            <to uri="language:simple:${body.remove(implementation)}?transform=false"/>
+            <to uri="language:simple:${body.remove(connectionID)}?transform=false"/>
+            <to uri="language:simple:${body.remove(creationTime)}?transform=false"/>
+            <to uri="language:simple:${body.remove(clientID)}?transform=false"/>
+        </split>
+        
+        <bean ref="viewUpdate" method="refreshData(${body}, amqConnection, ${header.brokerName})"/>
+    </route>
 </routes>

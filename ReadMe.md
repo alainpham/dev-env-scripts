@@ -47,6 +47,8 @@
 
 This is a script to setup what I commonly use in a dev environement to build PoCs. It allows you to mainly build/run docker images on your workstation to avoid having to provision a whole Kubernetes cluster for dev purposes. It requires much less resources than a full blown container platform.
 
+To provision a these things on a real Openshift Cluster look into the [openshift-lab folder](openshift-lab/ReadMe.md)
+
 # Prereqs
 
 You should have docker installed with a dedicated.
@@ -448,6 +450,14 @@ docker run \
     registry.redhat.io/amq7/amq-interconnect:latest
 ```
 
+```
+docker run \
+    -e QDROUTERD_CONF="$(cat interconnect/qdrouterd-mesh.conf)" \
+    --memory="1g" \
+    -d --name interconnect  \
+    -d --net primenet --ip 172.18.0.68 \
+    registry.redhat.io/amq7/amq-interconnect:latest
+```
 
 
 ## Kafka

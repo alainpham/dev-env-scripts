@@ -1,0 +1,519 @@
+# apiVersion: v1
+# kind: ServiceAccount
+# metadata:
+#   name: ${AMQ_NAME}-service-account
+#   labels:
+#     ActiveMQArtemis: ${AMQ_NAME}
+#     application: ${AMQ_NAME}-app
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1beta1
+# kind: Role
+# metadata:
+#   name: ${AMQ_NAME}-role
+#   labels:
+#     ActiveMQArtemis: ${AMQ_NAME}
+#     application: ${AMQ_NAME}-app
+# rules:
+# - apiGroups:
+#   - ""
+#   resources:
+#   - endpoints
+#   verbs:
+#   - create
+#   - delete
+#   - deletecollection
+#   - get
+#   - list
+#   - patch
+#   - update
+#   - watch
+# - apiGroups:
+#   - ""
+#   resources:
+#   - namespaces
+#   verbs:
+#   - get
+#   - list
+# ---
+# apiVersion: rbac.authorization.k8s.io/v1beta1
+# kind: RoleBinding
+# metadata:
+#   name: ${AMQ_NAME}-role-binding
+#   labels:
+#     ActiveMQArtemis: ${AMQ_NAME}
+#     application: ${AMQ_NAME}-app
+# subjects:
+#   - kind: ServiceAccount
+#     name: ${AMQ_NAME}-service-account
+# roleRef:
+#   kind: Role
+#   name: ${AMQ_NAME}-role
+#   apiGroup: rbac.authorization.k8s.io
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  labels:
+    ActiveMQArtemis: ${AMQ_NAME}
+    application: ${AMQ_NAME}-app
+  name: ${AMQ_NAME}-acceptor-hls
+spec:
+  port:
+    targetPort: all-ssl
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: ${AMQ_NAME}-amq-headless
+    weight: 100
+  wildcardPolicy: None
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    description: The broker's headless, non load balanced service
+  labels:
+    ActiveMQArtemis: ${AMQ_NAME}
+    application: ${AMQ_NAME}-app
+  name: ${AMQ_NAME}-amq-headless
+spec:
+  clusterIP: None
+  publishNotReadyAddresses: true
+  ports:
+  - port: 61616
+    name: all
+    protocol: TCP
+    targetPort: 61616
+  - port: 8161
+    name: console-jolokia
+    protocol: TCP
+    targetPort: 8161
+  - port: 5672
+    name: amqp
+    protocol: TCP
+    targetPort: 5672
+  - port: 1883
+    name: mqtt
+    protocol: TCP
+    targetPort: 1883
+  - port: 61613
+    name: stomp
+    protocol: TCP
+    targetPort: 61613
+  - port: 61617
+    name: all-ssl
+    protocol: TCP
+    targetPort: 61617
+  - port: 5671
+    name: amqp-ssl
+    protocol: TCP
+    targetPort: 5671
+  - port: 8883
+    name: mqtt-ssl
+    protocol: TCP
+    targetPort: 8883
+  - port: 61612
+    name: stomp-ssl
+    protocol: TCP
+    targetPort: 61612
+  selector:
+    ActiveMQArtemis: ${AMQ_NAME}
+    application: ${AMQ_NAME}-app
+  type: ClusterIP
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    description: The JGroups ping port for clustering.
+    service.alpha.kubernetes.io/tolerate-unready-endpoints: 'true'
+  labels:
+    application: ${AMQ_NAME}-app
+  name: ${AMQ_NAME}-ping-svc
+spec:
+  clusterIP: None  
+  ports:
+    - targetPort: 8888
+      port: 8888
+  selector:
+    ActiveMQArtemis: ${AMQ_NAME}
+    application: ${AMQ_NAME}-app
+---
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: ${AMQ_STATEFUL_SET_NAME}
+  labels:
+    ActiveMQArtemis: ${AMQ_NAME}
+    application: ${AMQ_NAME}-app
+spec:
+  replicas: ${AMQ_REPLICAS}
+  selector:
+    matchLabels:
+      ActiveMQArtemis: ${AMQ_NAME}
+      application: ${AMQ_NAME}-app
+  serviceName: ${AMQ_NAME}-amq-headless
+  podManagementPolicy: OrderedReady
+  template:
+    metadata:
+      name: ${AMQ_NAME}
+      labels:
+        ActiveMQArtemis: ${AMQ_NAME}
+        application: ${AMQ_NAME}-app
+    spec:
+      volumes:
+        - name: ${AMQ_NAME}
+          persistentVolumeClaim:
+            claimName: ${AMQ_NAME}
+        - name: ${AMQ_NAME}-tls-secret-volume
+          secret:
+            secretName: ${AMQ_NAME}-tls-secret
+            defaultMode: 420
+      containers:
+        - name: ${AMQ_NAME}-container
+          resources:
+            limits:
+              cpu: "0.4"
+            requests:
+              cpu: "0.4"
+          readinessProbe:
+            exec:
+              command:
+              - "/bin/bash"
+              - "-c"
+              - "/opt/amq/bin/readinessProbe.sh"
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 15
+          livenessProbe:
+            tcpSocket:
+              port: 8161
+            initialDelaySeconds: 30
+            timeoutSeconds: 5
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 15
+          command:
+            - /opt/amq/bin/launch.sh
+            - start
+          terminationMessagePath: /dev/termination-log
+          env:
+            - name: AMQ_ROLE
+              value: ${AMQ_ROLE}
+            - name: AMQ_NAME
+              value: ${AMQ_NAME}
+            - name: AMQ_REQUIRE_LOGIN
+              value: "${AMQ_REQUIRE_LOGIN}"
+            - name: AMQ_EXTRA_ARGS
+              value: "--no-autotune"
+            - name: AMQ_JOURNAL_TYPE
+              value: ${AMQ_JOURNAL_TYPE}
+            - name: PING_SVC_NAME
+              value: ${AMQ_NAME}-ping-svc
+            - name: AMQ_DATA_DIR
+              value: ${AMQ_DATA_DIR}
+            - name: AMQ_DATA_DIR_LOGGING
+              value: "${AMQ_DATA_DIR_LOGGING}"
+            - name: AMQ_CLUSTERED
+              value: "${AMQ_CLUSTERED}"
+            - name: AMQ_USER
+              value: ${AMQ_USER}
+            - name: AMQ_PASSWORD
+              value: ${AMQ_PASSWORD}
+            - name: AMQ_CLUSTER_USER
+              value: ${AMQ_CLUSTER_USER}
+            - name: AMQ_CLUSTER_PASSWORD
+              value: ${AMQ_CLUSTER_PASSWORD}
+            - name: AMQ_KEYSTORE_TRUSTSTORE_DIR
+              value: ${AMQ_KEYSTORE_TRUSTSTORE_DIR}
+            - name: AMQ_TRUSTSTORE
+              value: ${AMQ_TRUSTSTORE}
+            - name: AMQ_TRUSTSTORE_PASSWORD
+              value: ${AMQ_TRUSTSTORE_PASSWORD}
+            - name: AMQ_KEYSTORE
+              value: ${AMQ_KEYSTORE}
+            - name: AMQ_KEYSTORE_PASSWORD
+              value: ${AMQ_KEYSTORE_PASSWORD}
+            - name: AMQ_SSL_PROVIDER
+              value: ${AMQ_SSL_PROVIDER}
+            - name: LOGGING_PROPERTIES
+              value: |-
+                #
+                # Licensed to the Apache Software Foundation (ASF) under one or more
+                # contributor license agreements. See the NOTICE file distributed with
+                # this work for additional information regarding copyright ownership.
+                # The ASF licenses this file to You under the Apache License, Version 2.0
+                # (the "License"); you may not use this file except in compliance with
+                # the License. You may obtain a copy of the License at
+                #
+                #     http://www.apache.org/licenses/LICENSE-2.0
+                #
+                # Unless required by applicable law or agreed to in writing, software
+                # distributed under the License is distributed on an "AS IS" BASIS,
+                # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+                # See the License for the specific language governing permissions and
+                # limitations under the License.
+                #
+
+                # Additional logger names to configure (root logger is always configured)
+                # Root logger option
+                loggers=org.apache.activemq.artemis.core.server.federation,org.apache.activemq.artemis.core.client.impl,org.eclipse.jetty,org.jboss.logging,org.apache.activemq.artemis.core.server,org.apache.activemq.artemis.utils,org.apache.activemq.artemis.journal,org.apache.activemq.artemis.jms.server,org.apache.activemq.artemis.integration.bootstrap,org.apache.activemq.audit.base,org.apache.activemq.audit.message,org.apache.activemq.audit.resource
+
+                # Root logger level
+                logger.level=INFO
+                # TRACE LOGGER FOR FEDERATION CONNECTION BUG
+                logger.org.apache.activemq.artemis.core.client.impl.level=INFO
+                # ActiveMQ Artemis logger levels
+                logger.org.apache.activemq.artemis.core.server.level=INFO
+                logger.org.apache.activemq.artemis.journal.level=INFO
+                logger.org.apache.activemq.artemis.utils.level=INFO
+                logger.org.apache.activemq.artemis.jms.level=INFO
+                logger.org.apache.activemq.artemis.integration.bootstrap.level=INFO
+                logger.org.eclipse.jetty.level=WARN
+                # Root logger handlers
+                logger.handlers=FILE,CONSOLE
+
+                # to enable audit change the level to INFO
+                logger.org.apache.activemq.audit.base.level=ERROR
+                logger.org.apache.activemq.audit.base.handlers=AUDIT_FILE
+                logger.org.apache.activemq.audit.base.useParentHandlers=false
+
+                logger.org.apache.activemq.audit.resource.level=ERROR
+                logger.org.apache.activemq.audit.resource.handlers=AUDIT_FILE
+                logger.org.apache.activemq.audit.resource.useParentHandlers=false
+
+                logger.org.apache.activemq.audit.message.level=ERROR
+                logger.org.apache.activemq.audit.message.handlers=AUDIT_FILE
+                logger.org.apache.activemq.audit.message.useParentHandlers=false
+
+                # Console handler configuration
+                handler.CONSOLE=org.jboss.logmanager.handlers.ConsoleHandler
+                handler.CONSOLE.properties=autoFlush
+                handler.CONSOLE.level=DEBUG
+                handler.CONSOLE.autoFlush=true
+                handler.CONSOLE.formatter=PATTERN
+
+                # File handler configuration
+                handler.FILE=org.jboss.logmanager.handlers.PeriodicRotatingFileHandler
+                handler.FILE.level=DEBUG
+                handler.FILE.properties=suffix,append,autoFlush,fileName
+                handler.FILE.suffix=.yyyy-MM-dd
+                handler.FILE.append=true
+                handler.FILE.autoFlush=true
+                handler.FILE.fileName=/opt/${AMQ_NAME}/data/log/artemis.log
+                handler.FILE.formatter=PATTERN
+
+                # Formatter pattern configuration
+                formatter.PATTERN=org.jboss.logmanager.formatters.PatternFormatter
+                formatter.PATTERN.properties=pattern
+                formatter.PATTERN.pattern=%d %-5p [%c] %s%E%n
+
+                #Audit logger
+                handler.AUDIT_FILE=org.jboss.logmanager.handlers.PeriodicRotatingFileHandler
+                handler.AUDIT_FILE.level=INFO
+                handler.AUDIT_FILE.properties=suffix,append,autoFlush,fileName
+                handler.AUDIT_FILE.suffix=.yyyy-MM-dd
+                handler.AUDIT_FILE.append=true
+                handler.AUDIT_FILE.autoFlush=true
+                handler.AUDIT_FILE.fileName=/opt/${AMQ_NAME}/data/log/audit.log
+                handler.AUDIT_FILE.formatter=AUDIT_PATTERN
+
+                formatter.AUDIT_PATTERN=org.jboss.logmanager.formatters.PatternFormatter
+                formatter.AUDIT_PATTERN.properties=pattern
+                formatter.AUDIT_PATTERN.pattern=%d [AUDIT](%t) %s%E%n
+            - name: BROKER_XML
+              value: |-
+                <?xml version='1.0' encoding="UTF-8"?>
+
+                <configuration xmlns="urn:activemq" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="urn:activemq schema/artemis-server.xsd urn:activemq:core schema/artemis-configuration.xsd">
+
+                  <core xmlns="urn:activemq:core" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        xsi:schemaLocation="urn:activemq:core ">
+
+                      <name>${AMQ_NAME}</name>
+                      <persistence-enabled>true</persistence-enabled>
+                      <journal-type>${AMQ_JOURNAL_TYPE_UPPER}</journal-type>
+                      <paging-directory>${AMQ_DATA_DIR}/paging</paging-directory>
+                      <bindings-directory>${AMQ_DATA_DIR}/bindings</bindings-directory>
+                      <journal-directory>${AMQ_DATA_DIR}/journal</journal-directory>
+                      <large-messages-directory>${AMQ_DATA_DIR}/large-messages</large-messages-directory>
+                      <journal-datasync>true</journal-datasync>
+                      <journal-min-files>2</journal-min-files>
+                      <journal-pool-files>10</journal-pool-files>
+                      <journal-device-block-size>4096</journal-device-block-size>
+                      <journal-file-size>10M</journal-file-size>
+                      <journal-buffer-timeout>1052000</journal-buffer-timeout>
+                      <journal-max-io>1</journal-max-io>
+                      <disk-scan-period>5000</disk-scan-period>
+                      <max-disk-usage>90</max-disk-usage>
+                      <critical-analyzer>true</critical-analyzer>
+                      <critical-analyzer-timeout>120000</critical-analyzer-timeout>
+                      <critical-analyzer-check-period>60000</critical-analyzer-check-period>
+                      <critical-analyzer-policy>HALT</critical-analyzer-policy>
+                      <page-sync-timeout>1052000</page-sync-timeout>
+
+                      <connectors>
+                        <connector name="artemis">tcp://${BROKER_IP}:61616</connector>
+                      </connectors>
+
+                      <cluster-user>${AMQ_CLUSTER_USER}</cluster-user>
+
+                      <cluster-password>${AMQ_CLUSTER_PASSWORD}</cluster-password>
+
+                      <broadcast-groups>
+                        <broadcast-group name="${AMQ_NAME}-broadcast-group">
+                            <jgroups-file>jgroups-ping.xml</jgroups-file>
+                            <jgroups-channel>${AMQ_NAME}_broadcast_channel</jgroups-channel>
+                            <connector-ref>artemis</connector-ref>
+                        </broadcast-group>
+                      </broadcast-groups>
+
+                      <discovery-groups>
+                        <discovery-group name="${AMQ_NAME}-discovery-group">
+                            <jgroups-file>jgroups-ping.xml</jgroups-file>
+                            <jgroups-channel>${AMQ_NAME}_broadcast_channel</jgroups-channel>
+                            <refresh-timeout>10000</refresh-timeout>
+                        </discovery-group>
+                      </discovery-groups>
+
+                      <cluster-connections>
+                        <cluster-connection name="${AMQ_NAME}-cluster">
+                            <connector-ref>artemis</connector-ref>
+                            <retry-interval>1000</retry-interval>
+                            <retry-interval-multiplier>2</retry-interval-multiplier>
+                            <max-retry-interval>32000</max-retry-interval>
+                            <initial-connect-attempts>20</initial-connect-attempts>
+                            <reconnect-attempts>10</reconnect-attempts>
+                            <use-duplicate-detection>true</use-duplicate-detection>
+                            <message-load-balancing>ON_DEMAND</message-load-balancing>
+                            <max-hops>1</max-hops>
+                            <discovery-group-ref discovery-group-name="${AMQ_NAME}-discovery-group" />
+                        </cluster-connection>
+                      </cluster-connections>
+
+                      <acceptors>
+
+                        <acceptor name="artemis">tcp://0.0.0.0:61616?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;amqpMinLargeMessageSize=102400;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpDuplicateDetection=true</acceptor>
+                        <acceptor name="amqp">tcp://0.0.0.0:5672?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;amqpMinLargeMessageSize=102400;amqpDuplicateDetection=true</acceptor>
+                        <acceptor name="stomp">tcp://0.0.0.0:61613?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true</acceptor>
+                        <acceptor name="hornetq">tcp://0.0.0.0:5445?anycastPrefix=jms.queue.;multicastPrefix=jms.topic.;protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
+                        <acceptor name="mqtt">tcp://0.0.0.0:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
+
+                        <acceptor name="artemis-ssl">tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+                        <acceptor name="amqp-ssl">tcp://0.0.0.0:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+                        <acceptor name="stomp-ssl">tcp://0.0.0.0:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+                        <acceptor name="mqtt-ssl">tcp://0.0.0.0:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_KEYSTORE};keyStorePassword=${AMQ_KEYSTORE_PASSWORD};trustStorePath=${AMQ_KEYSTORE_TRUSTSTORE_DIR}/${AMQ_TRUSTSTORE};trustStorePassword=${AMQ_TRUSTSTORE_PASSWORD};sslProvider=${AMQ_SSL_PROVIDER};needClientAuth=${AMQ_SSL_NEED_CLIENT_AUTH}</acceptor>
+
+                      </acceptors>
+
+                      <security-settings>
+                        <security-setting match="#">
+                            <permission type="createNonDurableQueue" roles="admin"/>
+                            <permission type="deleteNonDurableQueue" roles="admin"/>
+                            <permission type="createDurableQueue" roles="admin"/>
+                            <permission type="deleteDurableQueue" roles="admin"/>
+                            <permission type="createAddress" roles="admin"/>
+                            <permission type="deleteAddress" roles="admin"/>
+                            <permission type="consume" roles="admin"/>
+                            <permission type="browse" roles="admin"/>
+                            <permission type="send" roles="admin"/>
+                            <permission type="manage" roles="admin"/>
+                        </security-setting>
+                      </security-settings>
+
+                      <address-settings>
+                        <address-setting match="activemq.management#">
+                            <dead-letter-address>DLQ</dead-letter-address>
+                            <expiry-address>ExpiryQueue</expiry-address>
+                            <redelivery-delay>0</redelivery-delay>
+                            <max-size-bytes>-1</max-size-bytes>
+                            <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                            <address-full-policy>PAGE</address-full-policy>
+                            <auto-create-queues>true</auto-create-queues>
+                            <auto-create-addresses>true</auto-create-addresses>
+                            <auto-create-jms-queues>true</auto-create-jms-queues>
+                            <auto-create-jms-topics>true</auto-create-jms-topics>
+                        </address-setting>
+                        <address-setting match="#">
+                            <dead-letter-address>DLQ</dead-letter-address>
+                            <expiry-address>ExpiryQueue</expiry-address>
+                            <redelivery-delay>0</redelivery-delay>
+                            <max-size-bytes>-1</max-size-bytes>
+                            <message-counter-history-day-limit>10</message-counter-history-day-limit>
+                            <address-full-policy>PAGE</address-full-policy>
+                            <auto-create-queues>true</auto-create-queues>
+                            <auto-create-addresses>true</auto-create-addresses>
+                            <auto-create-jms-queues>true</auto-create-jms-queues>
+                            <auto-create-jms-topics>true</auto-create-jms-topics>
+                        </address-setting>
+                      </address-settings>
+
+                      <addresses>
+                        <address name="DLQ">
+                            <anycast>
+                              <queue name="DLQ" />
+                            </anycast>
+                        </address>
+                        <address name="ExpiryQueue">
+                            <anycast>
+                              <queue name="ExpiryQueue" />
+                            </anycast>
+                        </address>
+                        <address name="app.queue">
+                            <anycast>
+                              <queue name="app.queue" />
+                            </anycast>
+                        </address>
+                        <address name="app.queue.federation.test">
+                            <anycast>
+                              <queue name="app.queue.federation.test" />
+                            </anycast>
+                        </address>
+                        <address name="app.addr">
+                            <multicast/>
+                        </address>
+                        <address name="app.addr.federation.test">
+                            <multicast/>
+                        </address>
+                      </addresses>
+
+                      <!-- <metrics-plugin class-name="org.apache.activemq.artemis.core.server.metrics.plugins.ArtemisPrometheusMetricsPlugin"/> -->
+                      <metrics> <plugin class-name="org.apache.activemq.artemis.core.server.metrics.plugins.ArtemisPrometheusMetricsPlugin"/> </metrics>
+                  </core>
+                </configuration>
+          imagePullPolicy: Always
+          volumeMounts:
+            - name: ${AMQ_NAME}
+              mountPath: ${AMQ_DATA_DIR}
+            - name: ${AMQ_NAME}-tls-secret-volume
+              readOnly: true
+              mountPath: ${AMQ_KEYSTORE_TRUSTSTORE_DIR}
+          terminationMessagePolicy: File
+          image: 'image-registry.openshift-image-registry.svc:5000/openshift/amq-broker:7.8'
+      restartPolicy: Always
+      terminationGracePeriodSeconds: 60
+      dnsPolicy: ClusterFirst
+      securityContext: {}
+      schedulerName: default-scheduler
+  volumeClaimTemplates:
+    - kind: PersistentVolumeClaim
+      apiVersion: v1
+      metadata:
+        name: ${AMQ_NAME}
+        labels:
+          ActiveMQArtemis: ${AMQ_NAME}
+          application: ${AMQ_NAME}-app
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi
+        volumeMode: Filesystem
+  updateStrategy:
+    type: RollingUpdate
+    rollingUpdate:
+      partition: 0

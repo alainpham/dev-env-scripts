@@ -65,7 +65,7 @@
     <route id="send-large-file">
         <from uri="file:{{targetLargePath}}?delete=true"/>
         <log message="${body.class}"/>
-        <to uri="jms:queue:app.queue"/>
+        <to uri="jms:queue:{{largequeue}}"/>
     </route>
 
 </routes>

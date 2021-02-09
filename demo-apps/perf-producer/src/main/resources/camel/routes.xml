@@ -47,4 +47,25 @@
         <to id="to-target" uri="jms:queue:app.queue"/>
     </route>
 
+
+    <route id="create-large-file">
+        <from uri="servlet:create-large-file"/>
+        <convertBodyTo type="java.lang.String"/>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <log message="creating large file : ${body}"/>
+        <bean ref="generateData" method="generate(${body[fileSize]})"></bean>
+        <setBody>
+            <constant>"DONE"</constant>
+        </setBody>
+        <log message="done"/>
+    </route>
+
+    <route id="send-large-file">
+        <from uri="file:{{targetLargePath}}?delete=true"/>
+        <log message="${body.class}"/>
+        <to uri="jms:queue:app.queue"/>
+    </route>
+
 </routes>

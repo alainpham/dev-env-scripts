@@ -34,6 +34,15 @@
             </div>
         </div>
         <div class="flex-container">
+            <div class="flex-item flex-container-col" >
+                <h2>Create large file</h2>
+                <span>File Size in MB</span>
+                <input  type="text" id="file-size" value="700" placeholder="message size in MB">
+                <button  id="send-button"
+            onclick="backEndRequest('messages','/camel/create-large-file','post', JSON.stringify({ fileSize: document.getElementById('file-size').value}) )">create</button>
+            </div>
+        </div>
+        <div class="flex-container">
             <div class="flex-item flex-grow flex-container-col">
                 <h2>Data Table</h2>
                 <div class="flex-container">

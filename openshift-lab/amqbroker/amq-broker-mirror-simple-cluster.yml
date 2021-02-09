@@ -1,0 +1,48 @@
+apiVersion: broker.amq.io/v2alpha4
+kind: ActiveMQArtemis
+metadata:
+  name: amq-broker-mirror
+  application: amq-broker-mirror
+spec:
+  version: 7.8.0
+  deploymentPlan:
+    # get 2 broker instances
+    size: 2
+    image: registry.redhat.io/amq7/amq-broker:7.8
+    #require login for console & broker access
+    requireLogin: false 
+    persistenceEnabled: true
+    journalType: nio
+    messageMigration: true
+  console:
+    expose: true
+    useClientAuth : false
+  adminUser: admin
+  adminPassword: admin
+  acceptors:
+      # Generic tls acceptor for exposed outside of openshift connexions
+    - name: generic
+      protocols: all
+      port: 61619
+      sslEnabled: true
+      enabledProtocols: TLSv1,TLSv1.1,TLSv1.2
+      needClientAuth: false
+      wantClientAuth: false
+      verifyHost: false
+      expose: true
+      amqpMinLargeMessageSize: 204800
+    - name: amqp
+      protocols: amqp
+      port: 5672
+      amqpMinLargeMessageSize: 204800
+  addressSettings:
+    applyRule: merge_all
+    addressSetting:
+      - match: '#'
+        autoCreateAddresses: false
+        autoCreateQueues: false
+        autoCreateJmsQueues: false
+        autoCreateJmsTopics: false
+      - match: 'app.#'
+        autoCreateAddresses: true
+        autoCreateQueues: true

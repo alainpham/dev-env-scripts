@@ -9,13 +9,14 @@
 - [AMQ Broker](#amq-broker)
   - [Import images](#import-images-1)
   - [Install hotfix](#install-hotfix)
-  - [Setting up vars](#setting-up-vars)
+- [AMQ Broker Federation](#amq-broker-federation)
+  - [Setting up vars for custom federation coniguration](#setting-up-vars-for-custom-federation-coniguration)
   - [Creating keystores and truststores](#creating-keystores-and-truststores)
   - [Config generation](#config-generation)
   - [Create 2 Cluster in Federation](#create-2-cluster-in-federation)
-  - [Deploy Local Monitoring](#deploy-local-monitoring)
-  - [Install using operator](#install-using-operator)
-  - [Single Cluster using stateful set only](#single-cluster-using-stateful-set-only)
+- [AMQ Broker Cluster using stateful set only](#amq-broker-cluster-using-stateful-set-only)
+- [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
+- [Deploy Local Monitoring](#deploy-local-monitoring)
 - [Install Interconnect](#install-interconnect)
 
 
@@ -76,7 +77,9 @@ oc new-build --strategy docker --binary -i amq-broker:7.8 --name amq-broker-hotf
 oc start-build amq-broker-hotfix --from-dir=amqbroker/hotfix/build --follow
 ```
 
-## Setting up vars
+# AMQ Broker Federation
+
+## Setting up vars for custom federation coniguration
 
 ```
 export AMQ_CLUSTERS=(amq-messaging.apps.cluster-968d.968d.example.opentlc.com amq-messaging-mirror.apps.cluster-968d.968d.example.opentlc.com)
@@ -253,8 +256,6 @@ function generateconfigs(){
 
 ```
 
-
-
 ## Create 2 Cluster in Federation
 ```
 export TMPL_FILE=amq-broker-custom-cluster-federation.template.kube.yml
@@ -263,37 +264,7 @@ oc new-project amq-messaging
 oc new-project amq-messaging-mirror
 ```
 
-## Deploy Local Monitoring
-
-Follow these instructions 
-
-https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kubernetesopenshift-namespace-for-monitoring
-
-## Install using operator
-
-```
-
-keytool -genkey \
-      -alias amq-broker  \
-      -storepass password \
-      -keyalg RSA \
-      -storetype PKCS12 \
-      -dname "cn=amq-broker" \
-      -validity 365000 \
-      -keystore amqbroker/tls/amq-broker-keystore.p12
-
-
-oc create secret generic amq-broker-generic-secret \
---from-file=broker.ks=amqbroker/tls/amq-broker-keystore.p12 \
---from-file=client.ts=amqbroker/tls/truststore.p12 \
---from-literal=keyStorePassword=password \
---from-literal=trustStorePassword=password
-
-oc apply -f amqbroker/amq-broker-simple-cluster.yml
-```
-
-
-## Single Cluster using stateful set only
+# AMQ Broker Cluster using stateful set only
 ```
 oc new-project amq-messaging-mirror
 
@@ -309,20 +280,105 @@ generateconfigs
 
 ```
 
-# Install Interconnect
+# AMQ Broker Cluster using operator
 
-Install the operator
+Create 2 messaging projects for 2 different clusters
 
-custom install
 ```
 oc new-project amq-messaging
+oc new-project amq-messaging-mirror
+```
+
+Install Amq 7 Broker operator through operator hub on the project amq-messaging
+
+or install CRDS & operator manually as follows and deploy 
+
+```
+oc project amq-messaging
+oc create -f amqbroker/deploy/crds/broker_activemqartemis_crd.yaml
+oc create -f amqbroker/deploy/crds/broker_activemqartemisaddress_crd.yaml
+oc create -f amqbroker/deploy/crds/broker_activemqartemisscaledown_crd.yaml
+
+oc create -f amqbroker/deploy/service_account.yaml
+oc create -f amqbroker/deploy/role.yaml
+oc create -f amqbroker/deploy/role_binding.yaml
+oc create -f amqbroker/deploy/operator.yaml
+```
+
+
+deploy on mirror env (optional)
+
+```
+oc project amq-messaging-mirror
+oc create -f amqbroker/deploy/service_account.yaml
+oc create -f amqbroker/deploy/role.yaml
+oc create -f amqbroker/deploy/role_binding.yaml
+oc create -f amqbroker/deploy/operator.yaml
+```
+
+deploy main cluster
+
+```
+keytool -genkey \
+      -alias amq-broker  \
+      -storepass password \
+      -keyalg RSA \
+      -storetype PKCS12 \
+      -dname "cn=amq-broker" \
+      -validity 365000 \
+      -keystore amqbroker/tls/amq-broker-keystore.p12
+
+oc project amq-messaging
+
+oc create secret generic amq-broker-generic-secret \
+--from-file=broker.ks=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=client.ts=amqbroker/tls/truststore.p12 \
+--from-literal=keyStorePassword=password \
+--from-literal=trustStorePassword=password
+
+oc apply -f amqbroker/amq-broker-simple-cluster.yml
+```
+
+deploy mirror cluster
+
+```
+oc project amq-messaging-mirror
+
+oc create secret generic amq-broker-mirror-generic-secret \
+--from-file=broker.ks=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=client.ts=amqbroker/tls/truststore.p12 \
+--from-literal=keyStorePassword=password \
+--from-literal=trustStorePassword=password
+
+oc apply -f amqbroker/amq-broker-mirror-simple-cluster.yml
+```
+
+# Deploy Local Monitoring
+
+Follow these instructions 
+
+https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kubernetesopenshift-namespace-for-monitoring
+
+
+# Install Interconnect
+
+```
+oc new-project amq-messaging
+oc new-project amq-messaging-mirror
+```
+
+Install the operator through operator hub
+
+or custom install on another namespace
+```
+oc project amq-messaging-mirror
 oc create -f interconnect/deploy/service_account.yaml
 oc create -f interconnect/deploy/role.yaml
 oc create -f interconnect/deploy/role_binding.yaml
 oc create -f interconnect/deploy/operator.yaml
 ```
 
-Deploy cluster
+Deploy main cluster
 
 ```
 
@@ -338,9 +394,20 @@ openssl req -new -batch -subj "/CN=amq-interconnect.amq-messaging.svc.cluster.lo
 
 openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.crt -CAkey interconnect/tls/ca-key.pem -out interconnect/tls/tls.crt -CAcreateserial
 
+oc project amq-messaging
+
 oc create secret generic interconnect-cluster-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
 oc apply -f interconnect/interconnect-cluster.yml
+
+```
+
+deploy mirror interrconnect 
+
+```
+oc project amq-messaging-mirror
+
+oc create secret generic interconnect-cluster-mirror-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
 oc apply -f interconnect/interconnect-cluster-mirror.yml
 

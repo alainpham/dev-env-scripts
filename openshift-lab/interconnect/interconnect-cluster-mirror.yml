@@ -25,7 +25,7 @@ spec:
       expose: true
   connectors:
     - name: amq-broker-mirror
-      host: amq-broker-amq-headless.amq-messaging-mirror.svc.cluster.local
+      host: amq-broker-mirror-hdls-svc.amq-messaging-mirror.svc.cluster.local
       port: 5672
       routeContainer: true
   autoLinks:
@@ -36,11 +36,11 @@ spec:
       direction: out
       connection: amq-broker-mirror
   interRouterConnectors:
-    - host: interconnect-cluster-55671-amq-messaging.apps.cluster-df8b.df8b.example.opentlc.com
+    - host: interconnect-cluster-55671-amq-messaging.apps.cluster-4cc6.4cc6.example.opentlc.com
       port: 443
       verifyHostname: false
       sslProfile: default
   sslProfiles:
   - name: default
-    credentials: interconnect-cluster-default-credentials
-    caCert: interconnect-cluster-default-credentials
+    credentials: interconnect-cluster-mirror-default-credentials
+    caCert: interconnect-cluster-mirror-default-credentials

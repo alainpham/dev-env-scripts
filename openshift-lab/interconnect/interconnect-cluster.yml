@@ -2,7 +2,6 @@ apiVersion: interconnectedcloud.github.io/v1alpha1
 kind: Interconnect
 metadata:
   name: interconnect-cluster
-  namespace: amq-messaging
 spec:
   addresses:  
   - prefix: app

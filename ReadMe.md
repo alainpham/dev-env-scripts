@@ -39,6 +39,7 @@
   - [Grafana](#grafana)
 - [Management](#management)
   - [Apicurio Schema Registry](#apicurio-schema-registry)
+  - [API Man](#api-man)
 - [Application Servers](#application-servers)
   - [EAP](#eap)
 - [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
@@ -95,6 +96,7 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.71 grafana
 
 172.18.0.80 schemareg
+172.18.0.81 apiman
 
 172.18.0.90 eap
 
@@ -616,6 +618,13 @@ Console
 http://schemareg:8080/ui/artifacts
 http://schemareg:8080/api
 
+## API Man
+
+```
+docker run -d --name apiman --net primenet --ip 172.18.0.81 apiman/on-wildfly:2.0.0.Final
+```
+
+Go to http://apiman:8080/
 
 # Application Servers
 

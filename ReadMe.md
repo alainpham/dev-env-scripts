@@ -461,6 +461,23 @@ docker run \
     registry.redhat.io/amq7/amq-interconnect:latest
 ```
 
+```
+
+docker stop interconnect
+docker rm interconnect
+docker rmi interconnect-tls:latest
+cd interconnect 
+docker build -t interconnect-tls:latest .
+cd ..
+
+docker run \
+    -e QDROUTERD_CONF="$(cat interconnect/qdrouterd-to-cloud.conf)" \
+    --memory="1g" \
+    -d --name interconnect  \
+    -d --net primenet --ip 172.18.0.68 \
+    interconnect-tls:latest
+```
+
 
 ## Kafka
 

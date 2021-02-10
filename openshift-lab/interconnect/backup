@@ -1,0 +1,8 @@
+connector {
+    name: interconnect-cluster-mirror
+    role: inter-router
+    host: interconnect-cluster-mirror-55671-amq-messaging-mirror.apps.cluster-4cc6.4cc6.example.opentlc.com
+    port: 443
+    sslProfile: default
+    verifyHostname: false
+}

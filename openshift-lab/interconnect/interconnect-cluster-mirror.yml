@@ -1,15 +1,19 @@
 apiVersion: interconnectedcloud.github.io/v1alpha1
 kind: Interconnect
 metadata:
-  name: interconnect-cluster
+  name: interconnect-cluster-mirror
 spec:
   addresses:  
-  - prefix: app
+  - prefix: app.queue
+    distribution: balanced
+    waypoint: true
+  - prefix: app.queue-mirror
+    distribution: balanced
     waypoint: true
   deploymentPlan:
     role: interior
     placement: Any
-    size: 2
+    size: 1
   listeners:  
     - port: 5672
     - authenticatePeer: false
@@ -29,10 +33,10 @@ spec:
       port: 5672
       routeContainer: true
   autoLinks:
-    - address: 'app.queue'
+    - address: 'app.queue-mirror'
       direction: in
       connection: amq-broker-mirror
-    - address: 'app.queue'
+    - address: 'app.queue-mirror'
       direction: out
       connection: amq-broker-mirror
   interRouterConnectors:
@@ -40,6 +44,7 @@ spec:
       port: 443
       verifyHostname: false
       sslProfile: default
+      name: interconnect-cluster
   sslProfiles:
   - name: default
     credentials: interconnect-cluster-mirror-default-credentials

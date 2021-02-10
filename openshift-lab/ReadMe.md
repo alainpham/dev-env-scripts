@@ -18,6 +18,9 @@
 - [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
 - [Deploy Local Monitoring](#deploy-local-monitoring)
 - [Install Interconnect](#install-interconnect)
+  - [Deploy main cluster](#deploy-main-cluster)
+  - [Deploy mirror interrconnect](#deploy-mirror-interrconnect)
+- [Deploy Messaging tester](#deploy-messaging-tester)
 
 
 
@@ -378,7 +381,7 @@ oc create -f interconnect/deploy/role_binding.yaml
 oc create -f interconnect/deploy/operator.yaml
 ```
 
-Deploy main cluster
+## Deploy main cluster
 
 ```
 
@@ -398,17 +401,32 @@ oc project amq-messaging
 
 oc create secret generic interconnect-cluster-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster.yml
+oc apply -f interconnect/interconnect-cluster.yml -n amq-messaging
+oc delete -f interconnect/interconnect-cluster.yml -n amq-messaging
 
 ```
 
-deploy mirror interrconnect 
+## Deploy mirror interrconnect 
 
 ```
 oc project amq-messaging-mirror
 
 oc create secret generic interconnect-cluster-mirror-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster-mirror.yml
+oc apply -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-mirror
+oc delete -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-mirror
 
+```
+
+# Deploy Messaging tester
+
+```
+oc project amq-messaging
+oc apply -f apps/messaging-tester.yml  -n amq-messaging
+oc delete -f apps/messaging-tester.yml -n amq-messaging
+
+
+oc project amq-messaging-mirror
+oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
+oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
 ```

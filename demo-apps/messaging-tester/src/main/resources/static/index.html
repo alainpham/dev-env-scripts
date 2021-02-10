@@ -21,7 +21,10 @@
         </div>
         <div class="flex-container">
             <div class="flex-item " >
+                <h2>Test single message</h2>
                 <form id="data-form" class="flex-container-col">
+                    <label>Destination</label>
+                    <input  type="text" id="destination" value="app.queue" placeholder="destination">
                     <label>Id</label>
                     <input  type="text" id="id" value="xx" placeholder="Id">
                     <label>Name</label>
@@ -38,6 +41,10 @@
                 </form>
                 <button  id="send-button"
                     onclick="backEndRequest(null,'/camel/send-msg','post', formDataToJson('data-form'))">send</button>
+                <button  id="stop-consumers"
+                    onclick="backEndRequest(null,'/camel/stop-consumers','get', null)">stop-consumers</button>
+                <button  id="start-consumers"
+                    onclick="backEndRequest(null,'/camel/start-consumers','get', null)">start-consumers</button>
             </div>
             <div class="flex-item flex-grow">
                 <h2>State Table</h2>
@@ -49,6 +56,17 @@
             </div>
         </div>
         <div class="flex-container">
+            <div class="flex-item flex-container-col" >
+                <h2>Test high load</h2>
+                <form id="perf-data-form" class="flex-container-col">
+                    <label>Number of messages</label>
+                    <input  type="text" id="nbmsg" value="1000" placeholder="number of messages">
+                    <label>Messages size in bytes</label>
+                    <input  type="text" id="size" value="1000" placeholder="message size in bytes">
+                </form>
+                <button  id="send-button"
+                onclick="backEndRequest(null,'/camel/send','post', formDataToJson('perf-data-form'))">send</button>
+            </div>
             <div class="flex-item flex-grow">
                 <h2>Last message</h2>
                 <pre id="messages">Basic Messages Will show here</pre>

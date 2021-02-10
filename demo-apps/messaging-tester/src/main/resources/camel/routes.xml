@@ -13,14 +13,74 @@
         <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
     </route>
 
-    <route id="send-msg">
-        <from id="send-socket-msg-to-all-starter" uri="servlet:/send-msg"/>
+
+    <route id="trigger-sends">
+        <from uri="servlet:/send"></from>
         <convertBodyTo type="java.lang.String"/>
-        <inOnly uri="jms:app.queue"/>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <setHeader headerName="records">
+            <simple>${body[nbmsg]}</simple>
+        </setHeader>
+        <setHeader headerName="size">
+            <simple>${body[size]}</simple>
+        </setHeader>
+        <log message="${body}"></log>
+        <to pattern="InOnly" uri="jms:topic:{{topic.loadtrigger}}" />
+    </route>
+
+    <route id="data-generation-route">
+        <from id="data-generation-from" uri="jms:topic:{{topic.loadtrigger}}?concurrentConsumers={{jms.concurrentConsumers}}"/>
+        <log message="start sending data.."></log>
+        <bean id="bean-generate-data" ref="dataGenerator" method="spamData"/>
+        <log message="done sending"></log>
+    </route>
+
+    <route id="send-to-target-route">
+        <from id="send-to-target-from" uri="direct:send"/>
+        <removeHeaders pattern="*"/>
+        <to id="to-target" uri="jms:queue:{{queue.perf}}"/>
+    </route>
+
+    <route id="receive-perf">
+        <from uri="jms:queue:{{queue.perf}}"/>
+        <sample messageFrequency="500">
+            <log message="500 messages have been processed since last log..."></log>
+        </sample>
     </route>
 
     <route>
-        <from uri="jms:app.queue"/>
+        <from uri="servlet:stop-consumers"/>
+        <to uri="controlbus:route?routeId=receive-msg&amp;action=stop"/>
+        <to uri="controlbus:route?routeId=receive-perf&amp;action=stop"/>
+
+    </route>
+
+    <route>
+        <from uri="servlet:start-consumers"/>
+        <to uri="controlbus:route?routeId=receive-msg&amp;action=start"/>
+        <to uri="controlbus:route?routeId=receive-perf&amp;action=start"/>
+    </route>
+
+    <route id="send-msg">
+        <from id="send-socket-msg-to-all-starter" uri="servlet:/send-msg"/>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <setHeader headerName="CamelJmsDestinationName">
+            <simple>${body[destination]}</simple>
+        </setHeader>
+        <log message="message sent to ${headers.CamelJmsDestinationName}"></log>
+        <marshal>
+            <json library="Jackson"/>
+        </marshal>
+        <convertBodyTo type="java.lang.String"/>
+        <inOnly uri="jms:queue:{{queue.defaultapp.send}}"/>
+    </route>
+
+    <route id="receive-msg">
+        <from uri="jms:queue:{{queue.defaultapp}}"/>
         <unmarshal>
             <json library="Jackson"/>
         </unmarshal>

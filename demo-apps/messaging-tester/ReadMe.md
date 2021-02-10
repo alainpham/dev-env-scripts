@@ -144,3 +144,14 @@ cd messaging-tester
 oc apply -f openshift.yml
 oc start-build messaging-tester-s2i --from-dir=deploy --follow
 ```
+
+## Publish as community container
+
+```
+docker stop messaging-tester
+docker rm messaging-tester
+docker rmi messaging-tester
+docker build -t messaging-tester -f DockerfileCommunity .
+docker tag messaging-tester:latest alainpham/messaging-tester:latest
+docker push alainpham/messaging-tester:latest
+```

@@ -4,12 +4,16 @@ metadata:
   name: interconnect-cluster
 spec:
   addresses:  
-  - prefix: app
+  - prefix: app.queue
+    distribution: balanced
+    waypoint: true
+  - prefix: app.queue-mirror
+    distribution: balanced
     waypoint: true
   deploymentPlan:
     role: interior
     placement: Any
-    size: 2
+    size: 1
   listeners:  
     - port: 5672
     - authenticatePeer: false

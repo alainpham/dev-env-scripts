@@ -45,11 +45,48 @@
 
     <route id="receive-perf">
         <from uri="jms:queue:{{queue.perf}}"/>
-        <sample messageFrequency="500">
-            <log message="500 messages have been processed since last log..."></log>
+        <sample messageFrequency="1000">
+            <log message="1000 messages have been processed since last log..."></log>
         </sample>
     </route>
 
+    <route id="stat-query">
+        <from uri="timer:querystat?period=3s"/>
+        <to uri="controlbus:route?routeId=receive-perf&amp;action=stats&amp;loggingLevel=OFF"/>
+        <unmarshal>
+            <jacksonxml />
+        </unmarshal>
+        <setHeader headerName="startcount">
+            <simple resultType="java.lang.Long">${body[exchangesCompleted]}</simple>
+        </setHeader>
+        <delay>
+            <constant>1000</constant>
+        </delay>
+        <to uri="controlbus:route?routeId=receive-perf&amp;action=stats&amp;loggingLevel=OFF"/>
+        <unmarshal>
+            <jacksonxml />
+        </unmarshal>
+        <setHeader headerName="endcount">
+            <simple resultType="java.lang.Long">${body[exchangesCompleted]}</simple>
+        </setHeader>
+        <setHeader headerName="tps">
+            <ognl>request.headers.endcount - request.headers.startcount</ognl>
+        </setHeader>
+        <setBody>
+            <simple>
+                {
+                    "id": "receive-perf",
+                    "lastUpdate": "${date:now:HH':'mm':'ss}",
+                    "exchangesCompleted": "${body[exchangesCompleted]}",
+                    "tps": "${header.tps}"
+                }</simple>
+        </setBody>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        
+        <bean ref="viewUpdate" method="update(${body},route-stat , false, true, true,upsert-data,perf-table)"/>
+    </route>
     <route>
         <from uri="servlet:stop-consumers"/>
         <to uri="controlbus:route?routeId=receive-msg&amp;action=stop"/>

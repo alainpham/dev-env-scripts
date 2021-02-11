@@ -7,9 +7,6 @@ spec:
   - prefix: app.queue
     distribution: balanced
     waypoint: true
-  - prefix: app.queue-mirror
-    distribution: balanced
-    waypoint: true
   deploymentPlan:
     role: interior
     placement: Any

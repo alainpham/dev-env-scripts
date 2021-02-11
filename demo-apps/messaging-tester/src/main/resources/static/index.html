@@ -50,7 +50,6 @@
                 <h2>State Table</h2>
                 <div class="flex-container">
                     <button onclick="clearTable('state-table')">clear</button>
-                    <button onclick="processSocketMsg(exampleStateEvent)">populate state example</button>
                 </div>
                 <table id="state-table"></table>
             </div>
@@ -67,6 +66,15 @@
                 <button  id="send-button"
                 onclick="backEndRequest(null,'/camel/send','post', formDataToJson('perf-data-form'))">send</button>
             </div>
+            <div class="flex-item flex-grow">
+                <h2>Performance data</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('perf-table')">clear</button>
+                </div>
+                <table id="perf-table"></table>
+            </div>
+        </div>
+        <div class="flex-container">
             <div class="flex-item flex-grow">
                 <h2>Last message</h2>
                 <pre id="messages">Basic Messages Will show here</pre>

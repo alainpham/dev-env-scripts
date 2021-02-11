@@ -4,9 +4,6 @@ metadata:
   name: interconnect-cluster-mirror
 spec:
   addresses:  
-  - prefix: app.queue
-    distribution: balanced
-    waypoint: true
   - prefix: app.queue-mirror
     distribution: balanced
     waypoint: true

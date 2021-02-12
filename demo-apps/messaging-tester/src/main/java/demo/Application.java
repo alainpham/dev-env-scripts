@@ -64,9 +64,13 @@ public class Application implements WebSocketConfigurer{
         
         jndiConfig.put(InitialContext.INITIAL_CONTEXT_FACTORY, env.getProperty("jms."+InitialContext.INITIAL_CONTEXT_FACTORY));
         jndiConfig.put("connectionFactory."+CNX_FACTORY_NAME, env.getProperty("jms.connectionFactory."+CNX_FACTORY_NAME));
+        jndiConfig.put(Context.PROVIDER_URL, env.getProperty("jms."+InitialContext.PROVIDER_URL));
+        jndiConfig.put(Context.SECURITY_PRINCIPAL, env.getProperty("jms."+InitialContext.SECURITY_PRINCIPAL));
+        jndiConfig.put(Context.SECURITY_CREDENTIALS, env.getProperty("jms."+InitialContext.SECURITY_CREDENTIALS));
+
 
         Context context = new InitialContext(jndiConfig);
-        ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup(CNX_FACTORY_NAME);
+        ConnectionFactory connectionFactory = (ConnectionFactory) context.lookup(env.getProperty("jms.default.cnx.factory"));
 
         CachingConnectionFactory cachingConnectionFactory = new CachingConnectionFactory(connectionFactory);
         return cachingConnectionFactory;

@@ -27,11 +27,11 @@ import org.springframework.web.socket.config.annotation.WebSocketHandlerRegistry
 @SpringBootApplication
 @EnableWebSocket
 // @ImportResource({"classpath:spring/camel-context.xml"})
-public class Application implements WebSocketConfigurer{
+public class MessagingTester implements WebSocketConfigurer{
 
     // must have a main method spring-boot can run
     public static void main(String[] args) {
-        SpringApplication.run(Application.class, args);
+        SpringApplication.run(MessagingTester.class, args);
     }
 
     @Bean
@@ -64,7 +64,9 @@ public class Application implements WebSocketConfigurer{
         
         jndiConfig.put(InitialContext.INITIAL_CONTEXT_FACTORY, env.getProperty("jms."+InitialContext.INITIAL_CONTEXT_FACTORY));
         jndiConfig.put("connectionFactory."+CNX_FACTORY_NAME, env.getProperty("jms.connectionFactory."+CNX_FACTORY_NAME));
-        jndiConfig.put(Context.PROVIDER_URL, env.getProperty("jms."+InitialContext.PROVIDER_URL));
+        if (env.getProperty("jms."+InitialContext.PROVIDER_URL) != null){
+            jndiConfig.put(Context.PROVIDER_URL, env.getProperty("jms."+InitialContext.PROVIDER_URL));
+        }
         jndiConfig.put(Context.SECURITY_PRINCIPAL, env.getProperty("jms."+InitialContext.SECURITY_PRINCIPAL));
         jndiConfig.put(Context.SECURITY_CREDENTIALS, env.getProperty("jms."+InitialContext.SECURITY_CREDENTIALS));
 

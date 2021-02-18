@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<rests xmlns="http://camel.apache.org/schema/spring">
+    <restConfiguration component="servlet"/>
+    <rest>
+        <get id="GetBeer" uri="/beer/{name}">
+            <description>Get beer having name</description>
+            <param dataType="string" description="Name of beer to retrieve" name="name" required="true" type="path"/>
+            <to uri="direct:GetBeer"/>
+        </get>
+        <get id="FindBeersByStatus" uri="/beer/findByStatus/{status}">
+            <description>Get beers having status</description>
+            <param dataType="string" description="Status of beers to retrieve" name="status" required="true" type="path"/>
+            <param dataType="number" description="Number of page to retrieve" name="page" required="false" type="query"/>
+            <to uri="direct:FindBeersByStatus"/>
+        </get>
+        <get id="ListBeers" uri="/beer">
+            <description>List beers within catalog</description>
+            <param dataType="number" description="Number of page to retrieve" name="page" required="false" type="query"/>
+            <to uri="direct:ListBeers"/>
+        </get>
+    </rest>
+</rests>

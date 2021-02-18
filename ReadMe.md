@@ -41,7 +41,8 @@
   - [Apicurio Schema Registry](#apicurio-schema-registry)
   - [API Man](#api-man)
 - [Application Servers](#application-servers)
-  - [EAP](#eap)
+  - [EAP 7](#eap-7)
+  - [EAP 6](#eap-6)
 - [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
 
 # Purpose of this repo
@@ -99,6 +100,7 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.81 apiman
 
 172.18.0.90 eap
+172.18.0.91 eap6
 
 172.18.0.100 amqbrokera0
 172.18.0.101 amqbrokera1
@@ -465,10 +467,17 @@ docker run \
 
 docker stop interconnect
 docker rm interconnect
+
+
 docker rmi interconnect-tls:latest
 cd interconnect 
 docker build -t interconnect-tls:latest .
 cd ..
+
+
+docker stop interconnect
+docker rm interconnect
+
 
 docker run \
     -e QDROUTERD_CONF="$(cat interconnect/qdrouterd-to-cloud.conf)" \
@@ -635,6 +644,18 @@ Console
 http://schemareg:8080/ui/artifacts
 http://schemareg:8080/api
 
+in memory
+```
+docker run -d --name schemareg --net primenet --ip 172.18.0.80 \
+    apicurio/apicurio-registry-mem:1.3.2.Final
+
+```
+Console 
+http://schemareg:8080/ui/artifacts
+http://schemareg:8080/api
+
+
+
 ## API Man
 
 ```
@@ -645,7 +666,7 @@ Go to http://apiman:8080/
 
 # Application Servers
 
-## EAP
+## EAP 7
 
 Place the installation packages form access.redhat.com in the folder `eap/.packages`
 
@@ -672,6 +693,33 @@ cd ..
 
 docker run -d --name eap --net primenet --ip 172.18.0.90 \
     eap:7.2
+
+```
+
+## EAP 6
+Place the installation packages form access.redhat.com in the folder `eap/.packages`
+
+You should have :
+```
+├── .packages
+│   └── jboss-eap-6.4.0
+```
+
+
+Run these commands to build and run the container
+
+```
+docker stop eap6
+docker rm eap6
+docker rmi eap6:6.4
+
+cd eap6
+docker build -t eap6:6.4 .
+cd ..
+
+
+docker run -d --name eap6 --net primenet --ip 172.18.0.91 \
+    eap6:6.4
 
 ```
 

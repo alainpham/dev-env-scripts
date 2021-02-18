@@ -24,7 +24,7 @@ public class WebSocketTextHandler extends TextWebSocketHandler {
 	@Override
 	public void handleTextMessage(WebSocketSession session, TextMessage message)
 			throws Exception {
-		logger.info(message.getPayload());
+		logger.trace(message.getPayload());
 		
 		for(WebSocketSession s : sessions) {
 			try {

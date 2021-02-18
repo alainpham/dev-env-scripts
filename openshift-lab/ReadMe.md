@@ -429,4 +429,13 @@ oc delete -f apps/messaging-tester.yml -n amq-messaging
 oc project amq-messaging-mirror
 oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
 oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
+
+
+oc delete -f apps/messaging-tester.yml -n amq-messaging
+oc apply -f apps/messaging-tester.yml  -n amq-messaging
+oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
+oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
+
+
+
 ```

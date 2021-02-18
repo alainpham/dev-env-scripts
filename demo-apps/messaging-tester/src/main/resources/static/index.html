@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en">
-<header>
+<head>
     <meta charset="utf-8">
     <title>messaging-tester</title>
     <meta name="description" content="messaging-tester interface">
@@ -9,15 +9,17 @@
     <link rel="stylesheet" href="css/main.css" />
     <link rel="stylesheet" href="css/framework/all.css" />
 
-</header>
-
+    <script src="js/main.js"></script>
+    <script src="js/head.js"></script>
+</head>
+    
 <body>
 
     <div w3-include-html="partials/header.html"></div>
     <div class="content-body">
         <!-- PUT YOUR CONTENT HERE -->
         <div class="jumbotron">
-            <h1>Welcome to the messaging-tester interface</h1>
+            <h1 id="jumbo">Messaging Tester</h1>
         </div>
         <div class="flex-container">
             <div class="flex-item " >
@@ -54,6 +56,25 @@
                 <table id="state-table"></table>
             </div>
         </div>
+
+        <div class="flex-container">
+            <div  class="flex-item flex-grow flex-container-col">
+                <h2>Log messages</h2>
+                <div class="flex-container">
+                    <button onclick="clearTable('log-table')">clear</button>
+                    <button onclick="processSocketMsg(exampleEvent)">populate example</button>
+                </div>
+                <div style="max-height: 500px;overflow-y: auto;">
+                    <table  id="log-table">
+                    </table>
+                </div>
+            </div>
+            <div class="flex-item flex-grow">
+                <h2>Last message</h2>
+                <pre id="messages">Basic Messages Will show here</pre>
+            </div>
+        </div>
+
         <div class="flex-container">
             <div class="flex-item flex-container-col" >
                 <h2>Test high load</h2>
@@ -74,27 +95,12 @@
                 <table id="perf-table"></table>
             </div>
         </div>
-        <div class="flex-container">
-            <div class="flex-item flex-grow">
-                <h2>Last message</h2>
-                <pre id="messages">Basic Messages Will show here</pre>
-            </div>
-        </div>
-        <div class="flex-container">
-            <div class="flex-item flex-grow flex-container-col">
-                <h2>Log messages</h2>
-                <div class="flex-container">
-                    <button onclick="clearTable('log-table')">clear</button>
-                    <button onclick="processSocketMsg(exampleEvent)">populate example</button>
-                </div>
-                <table id="log-table">
-                </table>
-            </div>
-        </div>
+
     </div>
     <!-- END PUT YOUR CONTENT HERE -->
 
-    <script src="js/main.js"></script>
+    <script src="js/render.js"></script>
+    <script src="app/app.js"></script>
 
 </body>
 

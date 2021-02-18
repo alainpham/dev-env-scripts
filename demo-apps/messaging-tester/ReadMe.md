@@ -109,6 +109,24 @@ docker run -d --net primenet --ip 172.18.0.10 --name messaging-tester -e SPRING_
 
 docker run -it --net primenet --ip 172.18.0.10 --rm --name messaging-tester messaging-tester
 
+docker run -it --net primenet --ip 172.18.0.10 --rm --name messaging-tester-red -e SPRING_PROFILES_ACTIVE=dev -e THEME=main-dark-red messaging-tester
+
+
+function runtester(){
+    docker run -d --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=tcp://amqbrokera0:61617 -e THEME=main-dark-blue --name messaging-testera0 messaging-tester
+    docker run -d --rm --net primenet --ip 172.18.0.11 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=tcp://amqbrokera1:61617 -e THEME=main-dark-green --name messaging-testera1 messaging-tester
+    docker run -d --rm --net primenet --ip 172.18.0.12 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=tcp://amqbrokerb0:61617 -e THEME=main-dark-red --name messaging-testerb0 messaging-tester
+    docker run -d --rm --net primenet --ip 172.18.0.13 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=tcp://amqbrokerb1:61617 -e THEME=main-dark-orange --name messaging-testerb1 messaging-tester
+}
+
+
+function restarttester(){
+docker restart artemessagingmis-testera0 messaging-testera1  messaging-testerb0 messaging-testerb1
+}
+
+function stoptester(){
+docker stop messaging-testera0 messaging-testera1  messaging-testerb0 messaging-testerb1
+}
 ```
 
 Stop or launch multple instaces

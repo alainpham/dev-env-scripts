@@ -71,6 +71,8 @@ docker login registry.redhat.io
 This is to have some static name resolution docker containers we run locally
 
 ```
+172.18.0.10 current
+
 172.18.0.40 portainer
 172.18.0.41 nexus
 

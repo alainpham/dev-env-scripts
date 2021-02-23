@@ -37,7 +37,7 @@ spec:
       direction: out
       connection: amq-broker-b
   interRouterConnectors:
-    - host: interconnect-cluster-a-55671-amq-messaging-a.apps.cluster-4cc6.4cc6.example.opentlc.com
+    - host: interconnect-cluster-a-55671-amq-messaging-a.apps.cluster-f646.f646.example.opentlc.com
       port: 443
       verifyHostname: false
       sslProfile: default

@@ -16,10 +16,14 @@
   - [Create 2 Cluster in Federation](#create-2-cluster-in-federation)
 - [AMQ Broker Cluster using stateful set only](#amq-broker-cluster-using-stateful-set-only)
 - [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
+  - [Self sign tls keys](#self-sign-tls-keys)
+  - [deploy main cluster](#deploy-main-cluster)
+  - [deploy second cluster](#deploy-second-cluster)
 - [Deploy Local Monitoring](#deploy-local-monitoring)
 - [Install Interconnect](#install-interconnect)
-  - [Deploy main cluster](#deploy-main-cluster)
-  - [Deploy mirror interrconnect](#deploy-mirror-interrconnect)
+  - [Self sign tls keys](#self-sign-tls-keys-1)
+  - [Deploy main cluster](#deploy-main-cluster-1)
+  - [Deploy second interrconnect](#deploy-second-interrconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
   - [Using openshift services](#using-openshift-services)
   - [Using openshift routes](#using-openshift-routes)
@@ -311,7 +315,7 @@ oc create -f amqbroker/deploy/operator.yaml
 ```
 
 
-deploy on mirror env (optional)
+deploy on second env (optional)
 
 ```
 oc project amq-messaging-b
@@ -322,7 +326,7 @@ oc create -f amqbroker/deploy/operator.yaml
 ```
 
 
-Self sign tls keys
+## Self sign tls keys
 
 ```
 keytool -genkey \
@@ -337,7 +341,7 @@ keytool -genkey \
 keytool -list -storepass password -keystore amqbroker/tls/amq-broker-keystore.p12
 ```
 
-deploy main cluster
+## deploy main cluster
 
 ```
 oc project amq-messaging-a
@@ -351,7 +355,7 @@ oc create secret generic amq-broker-a-generic-secret \
 oc apply -f amqbroker/amq-broker-a-simple-cluster.yml
 ```
 
-deploy mirror cluster
+##  deploy second cluster
 
 ```
 oc project amq-messaging-b
@@ -381,7 +385,8 @@ oc new-project amq-messaging-b
 
 Install the operator through operator hub
 
-or custom install on another namespace
+Custom install on another namespace
+
 ```
 oc project amq-messaging-b
 oc create -f interconnect/deploy/service_account.yaml
@@ -390,10 +395,9 @@ oc create -f interconnect/deploy/role_binding.yaml
 oc create -f interconnect/deploy/operator.yaml
 ```
 
-## Deploy main cluster
+## Self sign tls keys
 
 ```
-
 mkdir interconnect/tls
 
 openssl genrsa -out interconnect/tls/ca-key.pem 2048
@@ -405,25 +409,40 @@ openssl genrsa -out interconnect/tls/tls.key 2048
 openssl req -new -batch -subj "/CN=amq-interconnect.amq-messaging.svc.cluster.local" -key interconnect/tls/tls.key -out interconnect/tls/server-csr.pem
 
 openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.crt -CAkey interconnect/tls/ca-key.pem -out interconnect/tls/tls.crt -CAcreateserial
+```
 
+## Deploy main cluster
+
+```
 oc project amq-messaging-a
 
-oc create secret generic interconnect-cluster-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+oc create secret generic interconnect-cluster-a-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster.yml -n amq-messaging-a
-oc delete -f interconnect/interconnect-cluster.yml -n amq-messaging-a
+oc delete -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
+oc apply -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
 
 ```
 
-## Deploy mirror interrconnect 
+## Deploy second interrconnect 
+
+Make sure to change the url of the interRouter Connection file interconnect/interconnect-cluster-mirror.yml
+
+```
+  interRouterConnectors:
+    - host: interconnect-cluster-a-55671-amq-messaging-a.apps.<YOUR-CLUSTER-URLS>
+      port: 443
+      verifyHostname: false
+      sslProfile: default
+      name: interconnect-cluster
+```
 
 ```
 oc project amq-messaging-b
 
-oc create secret generic interconnect-cluster-mirror-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+oc create secret generic interconnect-cluster-b-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-b
-oc delete -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-b
+oc delete -f interconnect/interconnect-cluster-b.yml -n amq-messaging-b
+oc apply -f interconnect/interconnect-cluster-b.yml -n amq-messaging-b
 
 ```
 
@@ -476,4 +495,12 @@ oc apply -f apps/messaging-tester-route-b0.yml  -n apps
 oc delete -f apps/messaging-tester-route-b1.yml  -n apps
 oc apply -f apps/messaging-tester-route-b1.yml  -n apps
 
+
+
+oc delete -f apps/messaging-tester-interconnect-a.yml  -n apps
+oc apply -f apps/messaging-tester-interconnect-a.yml  -n apps
+
+
+oc delete -f apps/messaging-tester-interconnect-b.yml  -n apps
+oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
 ```

@@ -1,8 +1,8 @@
 apiVersion: broker.amq.io/v2alpha4
 kind: ActiveMQArtemis
 metadata:
-  name: amq-broker-mirror
-  application: amq-broker-mirror
+  name: amq-broker-a
+  application: amq-broker-a
 spec:
   version: 7.8.0
   deploymentPlan:

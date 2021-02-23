@@ -21,6 +21,8 @@
   - [Deploy main cluster](#deploy-main-cluster)
   - [Deploy mirror interrconnect](#deploy-mirror-interrconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
+  - [Using openshift services](#using-openshift-services)
+  - [Using openshift routes](#using-openshift-routes)
 
 
 
@@ -288,16 +290,16 @@ generateconfigs
 Create 2 messaging projects for 2 different clusters
 
 ```
-oc new-project amq-messaging
-oc new-project amq-messaging-mirror
+oc new-project amq-messaging-a
+oc new-project amq-messaging-b
 ```
 
-Install Amq 7 Broker operator through operator hub on the project amq-messaging
+Install Amq 7 Broker operator through operator hub on the project amq-messaging-a
 
 or install CRDS & operator manually as follows and deploy 
 
 ```
-oc project amq-messaging
+oc project amq-messaging-a
 oc create -f amqbroker/deploy/crds/broker_activemqartemis_crd.yaml
 oc create -f amqbroker/deploy/crds/broker_activemqartemisaddress_crd.yaml
 oc create -f amqbroker/deploy/crds/broker_activemqartemisscaledown_crd.yaml
@@ -312,14 +314,15 @@ oc create -f amqbroker/deploy/operator.yaml
 deploy on mirror env (optional)
 
 ```
-oc project amq-messaging-mirror
+oc project amq-messaging-b
 oc create -f amqbroker/deploy/service_account.yaml
 oc create -f amqbroker/deploy/role.yaml
 oc create -f amqbroker/deploy/role_binding.yaml
 oc create -f amqbroker/deploy/operator.yaml
 ```
 
-deploy main cluster
+
+Self sign tls keys
 
 ```
 keytool -genkey \
@@ -331,29 +334,35 @@ keytool -genkey \
       -validity 365000 \
       -keystore amqbroker/tls/amq-broker-keystore.p12
 
-oc project amq-messaging
+keytool -list -storepass password -keystore amqbroker/tls/amq-broker-keystore.p12
+```
 
-oc create secret generic amq-broker-generic-secret \
+deploy main cluster
+
+```
+oc project amq-messaging-a
+
+oc create secret generic amq-broker-a-generic-secret \
 --from-file=broker.ks=amqbroker/tls/amq-broker-keystore.p12 \
 --from-file=client.ts=amqbroker/tls/truststore.p12 \
 --from-literal=keyStorePassword=password \
 --from-literal=trustStorePassword=password
 
-oc apply -f amqbroker/amq-broker-simple-cluster.yml
+oc apply -f amqbroker/amq-broker-a-simple-cluster.yml
 ```
 
 deploy mirror cluster
 
 ```
-oc project amq-messaging-mirror
+oc project amq-messaging-b
 
-oc create secret generic amq-broker-mirror-generic-secret \
+oc create secret generic amq-broker-b-generic-secret \
 --from-file=broker.ks=amqbroker/tls/amq-broker-keystore.p12 \
 --from-file=client.ts=amqbroker/tls/truststore.p12 \
 --from-literal=keyStorePassword=password \
 --from-literal=trustStorePassword=password
 
-oc apply -f amqbroker/amq-broker-mirror-simple-cluster.yml
+oc apply -f amqbroker/amq-broker-b-simple-cluster.yml
 ```
 
 # Deploy Local Monitoring
@@ -366,15 +375,15 @@ https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kuber
 # Install Interconnect
 
 ```
-oc new-project amq-messaging
-oc new-project amq-messaging-mirror
+oc new-project amq-messaging-a
+oc new-project amq-messaging-b
 ```
 
 Install the operator through operator hub
 
 or custom install on another namespace
 ```
-oc project amq-messaging-mirror
+oc project amq-messaging-b
 oc create -f interconnect/deploy/service_account.yaml
 oc create -f interconnect/deploy/role.yaml
 oc create -f interconnect/deploy/role_binding.yaml
@@ -397,45 +406,74 @@ openssl req -new -batch -subj "/CN=amq-interconnect.amq-messaging.svc.cluster.lo
 
 openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.crt -CAkey interconnect/tls/ca-key.pem -out interconnect/tls/tls.crt -CAcreateserial
 
-oc project amq-messaging
+oc project amq-messaging-a
 
 oc create secret generic interconnect-cluster-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster.yml -n amq-messaging
-oc delete -f interconnect/interconnect-cluster.yml -n amq-messaging
+oc apply -f interconnect/interconnect-cluster.yml -n amq-messaging-a
+oc delete -f interconnect/interconnect-cluster.yml -n amq-messaging-a
 
 ```
 
 ## Deploy mirror interrconnect 
 
 ```
-oc project amq-messaging-mirror
+oc project amq-messaging-b
 
 oc create secret generic interconnect-cluster-mirror-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-mirror
-oc delete -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-mirror
+oc apply -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-b
+oc delete -f interconnect/interconnect-cluster-mirror.yml -n amq-messaging-b
 
 ```
 
 # Deploy Messaging tester
 
+
+change apps/*yml files to your needs. Transform keystores and truststores to base64 strings to embed it into the yaml files.
+
 ```
-oc project amq-messaging
-oc apply -f apps/messaging-tester.yml  -n amq-messaging
-oc delete -f apps/messaging-tester.yml -n amq-messaging
+base64 -w0 tls/keystore.p12 > keystore.base64
+base64 -w0 tls/truststore.p12 > truststore.base64
+```
+
+## Using openshift services
+
+```
+oc project amq-messaging-a
+oc apply -f apps/messaging-tester.yml  -n amq-messaging-a
+oc delete -f apps/messaging-tester.yml -n amq-messaging-a
 
 
-oc project amq-messaging-mirror
-oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
-oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
+oc project amq-messaging-b
+oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
+oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
 
 
-oc delete -f apps/messaging-tester.yml -n amq-messaging
-oc apply -f apps/messaging-tester.yml  -n amq-messaging
-oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
-oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-mirror
+oc delete -f apps/messaging-tester.yml -n amq-messaging-a
+oc apply -f apps/messaging-tester.yml  -n amq-messaging-a
+oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
+oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
 
+```
 
+## Using openshift routes
+
+deploying message testers using Openshift routes
+
+```
+oc new-project apps
+
+oc delete -f apps/messaging-tester-route-a0.yml  -n apps
+oc apply -f apps/messaging-tester-route-a0.yml  -n apps
+
+oc delete -f apps/messaging-tester-route-a1.yml  -n apps
+oc apply -f apps/messaging-tester-route-a1.yml  -n apps
+
+oc delete -f apps/messaging-tester-route-b0.yml  -n apps
+oc apply -f apps/messaging-tester-route-b0.yml  -n apps
+
+oc delete -f apps/messaging-tester-route-b1.yml  -n apps
+oc apply -f apps/messaging-tester-route-b1.yml  -n apps
 
 ```

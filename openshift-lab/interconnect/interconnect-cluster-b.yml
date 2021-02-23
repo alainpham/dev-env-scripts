@@ -1,10 +1,10 @@
 apiVersion: interconnectedcloud.github.io/v1alpha1
 kind: Interconnect
 metadata:
-  name: interconnect-cluster
+  name: interconnect-cluster-b
 spec:
   addresses:  
-  - prefix: app.queue
+  - prefix: app.queue-b
     distribution: balanced
     waypoint: true
   deploymentPlan:
@@ -25,18 +25,24 @@ spec:
       sslProfile: default
       expose: true
   connectors:
-    - name: amq-broker
-      host: amq-broker-hdls-svc.amq-messaging.svc.cluster.local
+    - name: amq-broker-b
+      host: amq-broker-b-hdls-svc.amq-messaging-b.svc.cluster.local
       port: 5672
       routeContainer: true
   autoLinks:
-    - address: 'app.queue'
+    - address: 'app.queue-b'
       direction: in
-      connection: amq-broker
-    - address: 'app.queue'
+      connection: amq-broker-b
+    - address: 'app.queue-b'
       direction: out
-      connection: amq-broker
+      connection: amq-broker-b
+  interRouterConnectors:
+    - host: interconnect-cluster-a-55671-amq-messaging-a.apps.cluster-4cc6.4cc6.example.opentlc.com
+      port: 443
+      verifyHostname: false
+      sslProfile: default
+      name: interconnect-cluster
   sslProfiles:
   - name: default
-    credentials: interconnect-cluster-default-credentials
-    caCert: interconnect-cluster-default-credentials
+    credentials: interconnect-cluster-b-default-credentials
+    caCert: interconnect-cluster-b-default-credentials

@@ -459,6 +459,9 @@ base64 -w0 tls/truststore.p12 > truststore.base64
 
 deploying message testers using Openshift routes
 
+
+The follwoing deployments connect directly to the AMQ 7 broker cluster
+
 ```
 oc new-project apps
 
@@ -474,8 +477,12 @@ oc apply -f apps/messaging-tester-route-b0.yml  -n apps
 oc delete -f apps/messaging-tester-route-b1.yml  -n apps
 oc apply -f apps/messaging-tester-route-b1.yml  -n apps
 
+```
 
 
+The follwoing deployments connect directly to the AMQ Interconnect Layer
+
+```
 oc delete -f apps/messaging-tester-interconnect-a.yml  -n apps
 oc apply -f apps/messaging-tester-interconnect-a.yml  -n apps
 

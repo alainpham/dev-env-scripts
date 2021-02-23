@@ -25,7 +25,6 @@
   - [Deploy main cluster](#deploy-main-cluster-1)
   - [Deploy second interrconnect](#deploy-second-interrconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
-  - [Using openshift services](#using-openshift-services)
   - [Using openshift routes](#using-openshift-routes)
 
 
@@ -454,26 +453,6 @@ change apps/*yml files to your needs. Transform keystores and truststores to bas
 ```
 base64 -w0 tls/keystore.p12 > keystore.base64
 base64 -w0 tls/truststore.p12 > truststore.base64
-```
-
-## Using openshift services
-
-```
-oc project amq-messaging-a
-oc apply -f apps/messaging-tester.yml  -n amq-messaging-a
-oc delete -f apps/messaging-tester.yml -n amq-messaging-a
-
-
-oc project amq-messaging-b
-oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
-oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
-
-
-oc delete -f apps/messaging-tester.yml -n amq-messaging-a
-oc apply -f apps/messaging-tester.yml  -n amq-messaging-a
-oc delete -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
-oc apply -f apps/messaging-tester-mirror.yml  -n amq-messaging-b
-
 ```
 
 ## Using openshift routes

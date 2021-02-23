@@ -1,4 +1,23 @@
-# Spring Boot with camel and other useful things messaging-tester 
+# Spring Boot Apache Camel Application for messaging bus testing
+
+This project aims at giving you the tools to test your messaging infrastructure.
+Currently it is prepackaged with ActiveMQ Artemis protocol and AMQP clients.
+You can extend the project to import dependencies to other brokers and protocols easily and configure them with JMS connection factory settings.
+
+## Run prebuilt package
+
+```
+wget https://github.com/alainpham/dev-env-scripts/releases/download/latest/messaging-tester.tar.gz
+tar xzvf messaging-tester.tar.gz
+```
+
+Configure config config/application.properties using one of the examples provided and run the application
+
+```
+cd messaging-tester
+java -jar messaging-tester.jar
+```
+
 
 
 ## To build this project use
@@ -13,7 +32,18 @@ mvn install
 mvn spring-boot:run
 ```
 
-##Dealing with SSL/TLS
+## Dealing with SSL/TLS
+
+Useful commands to download public keys from https sni servers 
+
+```
+mkdir tls/trusted-certs
+
+serverhost=amq-broker-a-generic-0-svc-rte-amq-messaging-a.apps.cluster-f646.f646.example.opentlc.com
+serverport=443
+
+echo -n | openssl s_client -connect $serverhost:$serverport | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > tls/trusted-certs/amq-broker.pem
+```
 
 Generate some private keys and truststores
 
@@ -31,8 +61,9 @@ keytool -export \
     -alias messaging-tester \
     -rfc \
     -storepass password \
-    -keystore tls/broker-keystore.p12 \
-    -file tls/messaging-tester.pem
+    -keystore tls/keystore.p12 \
+    -file tls/trusted-certs/messaging-tester.pem
+
 
 FILES=tls/trusted-certs/*
 for f in $FILES
@@ -53,8 +84,15 @@ done
 
 keytool -list -storepass password -keystore tls/keystore.p12 -v
 keytool -list -storepass password -keystore tls/truststore.p12 -v
+
 ```
 
+turning a binary file into base64 string to be able to put into yaml files
+
+```
+base64 -w0 tls/keystore.p12 > tls/keystore.base64
+base64 -w0 tls/truststore.p12 > tls/truststore.base64
+```
 
 ## To deploy directly on openshift
 

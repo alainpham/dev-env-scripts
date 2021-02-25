@@ -15,14 +15,18 @@
   - [Config generation](#config-generation)
   - [Create 2 Cluster in Federation](#create-2-cluster-in-federation)
 - [AMQ Broker Cluster using stateful set only](#amq-broker-cluster-using-stateful-set-only)
-- [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
   - [Self sign tls keys](#self-sign-tls-keys)
-  - [deploy main cluster](#deploy-main-cluster)
-  - [deploy second cluster](#deploy-second-cluster)
+  - [Deploy main cluster](#deploy-main-cluster)
+  - [Deploy second cluster](#deploy-second-cluster)
+  - [(alternative) Using config generation](#alternative-using-config-generation)
+- [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
+  - [Self sign tls keys and import truststore](#self-sign-tls-keys-and-import-truststore)
+  - [deploy main cluster](#deploy-main-cluster-1)
+  - [deploy second cluster](#deploy-second-cluster-1)
 - [Deploy Local Monitoring](#deploy-local-monitoring)
 - [Install Interconnect](#install-interconnect)
   - [Self sign tls keys](#self-sign-tls-keys-1)
-  - [Deploy main cluster](#deploy-main-cluster-1)
+  - [Deploy main cluster](#deploy-main-cluster-2)
   - [Deploy second interrconnect](#deploy-second-interrconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
   - [Using openshift routes](#using-openshift-routes)
@@ -264,6 +268,92 @@ function generateconfigs(){
 
 ```
 
+Simplified version
+
+```
+function generateconfigs(){
+
+  for cluster in ${AMQ_CLUSTERS[@]}
+  do
+    export AMQ_NS="amq-messaging"
+    export AMQ_DOMAIN="$cluster"
+    export AMQ_NAME=${brokername[$cluster]}
+    export AMQ_FEDNAME=${fedname[$cluster]}
+    export AMQ_STATEFUL_SET_NAME="${AMQ_NAME}-ss"
+    export AMQ_JOURNAL_TYPE="nio" 
+    export AMQ_DATA_DIR="/opt/${AMQ_NAME}/data" 
+    export AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" 
+    export AMQ_TRUSTSTORE="truststore.p12" 
+    export AMQ_TRUSTSTORE_PASSWORD="password" 
+    export AMQ_KEYSTORE="${cluster}-keystore.p12" 
+    export AMQ_KEYSTORE_PASSWORD="password" 
+    export AMQ_SSL_PROVIDER="JDK" 
+    export AMQ_SSL_NEED_CLIENT_AUTH="true"
+    export AMQ_MIRROR_HOST=tcp://${mirrorname[$cluster]}-acceptor-hls.${upstream[$cluster]}:443
+    #export AMQ_MIRROR_HOST=amqbroker-mirror:61617
+    export AMQ_CLUSTER_USER=${AMQ_NAME}-cluster
+    export AMQ_CLUSTER_PASSWORD=${AMQ_NAME}-password
+    export AMQ_JOURNAL_TYPE_UPPER=$(echo $AMQ_JOURNAL_TYPE | tr [:lower:] [:upper:])
+
+    export AMQ_REQUIRE_LOGIN=false
+    export AMQ_DATA_DIR_LOGGING="true"
+    export AMQ_CLUSTERED=true
+    export AMQ_USER=admin
+    export AMQ_PASSWORD=admin
+    export AMQ_ROLE=admin
+    export AMQ_REPLICAS=$AMQ_REPLICAS_NB
+
+
+    envsubst '\
+        $AMQ_DOMAIN,\
+        $AMQ_STATEFUL_SET_NAME, \
+        $AMQ_NAME,\
+        $AMQ_FEDNAME,\
+        $AMQ_JOURNAL_TYPE,\
+        $AMQ_JOURNAL_TYPE_UPPER,\
+        $AMQ_DATA_DIR,\
+        $AMQ_KEYSTORE_TRUSTSTORE_DIR,\
+        $AMQ_TRUSTSTORE,\
+        $AMQ_TRUSTSTORE_PASSWORD,\
+        $AMQ_KEYSTORE,\
+        $AMQ_KEYSTORE_PASSWORD,\
+        $AMQ_SSL_PROVIDER,\
+        $AMQ_SSL_NEED_CLIENT_AUTH, \
+        $AMQ_MIRROR_HOST, \
+        $AMQ_REQUIRE_LOGIN, \
+        $AMQ_DATA_DIR_LOGGING, \
+        $AMQ_CLUSTERED, \
+        $AMQ_USER, \
+        $AMQ_PASSWORD, \
+        $AMQ_ROLE, \
+        $AMQ_CLUSTER_USER,\
+        $AMQ_CLUSTER_PASSWORD,\
+        $AMQ_REPLICAS, \
+        ' < amqbroker/${TMPL_FILE} > amq-broker-custom.final.${cluster}.kube.yml
+
+    AMQ_INSTANCE_NB=0
+    while [ $AMQ_INSTANCE_NB -lt $AMQ_REPLICAS ]
+    do
+      export AMQ_INSTANCE_NB
+      envsubst '\
+          $AMQ_DOMAIN,\
+          $AMQ_NAME,\
+          $AMQ_INSTANCE_NB,\
+          ' < amqbroker/amq-broker-custom.network.template.kube.yml > amq-broker-custom.network.${cluster}.${AMQ_INSTANCE_NB}.kube.yml
+      echo "oc apply -f amq-broker-custom.network.${cluster}.${AMQ_INSTANCE_NB}.kube.yml"
+      AMQ_INSTANCE_NB=$(( $AMQ_INSTANCE_NB + 1 ))
+    done
+
+    echo "oc apply -f amq-broker-custom.final.${cluster}.kube.yml"
+
+    echo "oc create secret generic ${AMQ_NAME}-tls-secret \
+    --from-file=${AMQ_KEYSTORE}=amqbroker/tls/${AMQ_KEYSTORE} \
+    --from-file=${AMQ_TRUSTSTORE}=amqbroker/tls/${AMQ_TRUSTSTORE}"
+
+  done
+}
+```
+
 ## Create 2 Cluster in Federation
 ```
 export TMPL_FILE=amq-broker-custom-cluster-federation.template.kube.yml
@@ -273,8 +363,78 @@ oc new-project amq-messaging-mirror
 ```
 
 # AMQ Broker Cluster using stateful set only
+
 ```
-oc new-project amq-messaging-mirror
+oc new-project amq-messaging-a
+oc new-project amq-messaging-b
+```
+
+## Self sign tls keys
+
+```
+keytool -genkey \
+      -alias amq-broker  \
+      -storepass password \
+      -keyalg RSA \
+      -storetype PKCS12 \
+      -dname "cn=amq-broker" \
+      -validity 365000 \
+      -keystore amqbroker/tls/amq-broker-keystore.p12
+
+keytool -list -storepass password -keystore amqbroker/tls/amq-broker-keystore.p12
+
+for f in $FILES
+do
+    full="${f##*/}"
+    extension="${full##*.}"
+    filename="${full%.*}"
+    echo "importing $full in alias $filename"
+
+    keytool -import \
+        -alias $filename \
+        -storepass password\
+        -storetype PKCS12 \
+        -noprompt \
+        -keystore amqbroker/tls/truststore.p12 \
+        -file $f
+done
+
+keytool -list -storepass password -keystore amqbroker/tls/truststore.p12
+
+```
+
+## Deploy main cluster
+
+```
+oc project amq-messaging-a
+
+oc create secret generic amq-broker-a-tls-secret \
+--from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=truststore.p12=amqbroker/tls/truststore.p12
+
+oc apply -f amqbroker/amq-broker-a-custom-cluster.yml -n amq-messaging-a
+oc apply -f amqbroker/amq-broker-a-custom-network.yml -n amq-messaging-a
+
+```
+
+## Deploy second cluster
+
+```
+oc project amq-messaging-b
+
+oc create secret generic amq-broker-b-tls-secret \
+--from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=truststore.p12=amqbroker/tls/truststore.p12
+
+oc apply -f amqbroker/amq-broker-b-custom-cluster.yml -n amq-messaging-b
+oc apply -f amqbroker/amq-broker-b-custom-network.yml -n amq-messaging-b
+
+```
+
+## (alternative) Using config generation
+
+```
+oc new-project amq-messaging-b
 
 export AMQ_CLUSTERS=(amq-broker)
 
@@ -325,7 +485,7 @@ oc create -f amqbroker/deploy/operator.yaml
 ```
 
 
-## Self sign tls keys
+## Self sign tls keys and import truststore
 
 ```
 keytool -genkey \
@@ -338,6 +498,25 @@ keytool -genkey \
       -keystore amqbroker/tls/amq-broker-keystore.p12
 
 keytool -list -storepass password -keystore amqbroker/tls/amq-broker-keystore.p12
+
+
+for f in $FILES
+do
+    full="${f##*/}"
+    extension="${full##*.}"
+    filename="${full%.*}"
+    echo "importing $full in alias $filename"
+
+    keytool -import \
+        -alias $filename \
+        -storepass password\
+        -storetype PKCS12 \
+        -noprompt \
+        -keystore amqbroker/tls/truststore.p12 \
+        -file $f
+done
+
+keytool -list -storepass password -keystore amqbroker/tls/truststore.p12
 ```
 
 ## deploy main cluster
@@ -489,4 +668,10 @@ oc apply -f apps/messaging-tester-interconnect-a.yml  -n apps
 
 oc delete -f apps/messaging-tester-interconnect-b.yml  -n apps
 oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
+
+oc delete -f apps/messaging-tester-interconnect-b.yml  -n apps
+oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
+
+oc delete -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
+oc apply -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 ```

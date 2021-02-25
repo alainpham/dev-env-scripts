@@ -18,6 +18,11 @@ cd messaging-tester
 java -jar messaging-tester.jar
 ```
 
+Example running with docker
+
+```
+docker run -it --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFILES_ACTIVE=dev-core -e JMS_CONNECTIONFACTORY_DEFAULT=tcp://amqbrokera0:61616 -e THEME=main-dark-blue -e QUEUE_DEFAULTAPP=app.queue-a --name messaging-tester alainpham/messaging-tester:latest
+```
 
 
 ## To build this project use

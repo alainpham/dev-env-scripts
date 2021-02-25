@@ -2,6 +2,8 @@
 global.listeners.uiconfig.push(
     async function(uiconfig){
         document.getElementById("jumbo").innerHTML=uiconfig['jms.uri'];
+        document.getElementById("destination").value=uiconfig['queue.defaultapp'];
+        
     }
 )
 

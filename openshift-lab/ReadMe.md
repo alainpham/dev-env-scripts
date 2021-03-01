@@ -594,7 +594,7 @@ openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.cr
 ```
 oc project amq-messaging-a
 
-oc create secret generic interconnect-cluster-a-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+oc create secret generic interconnect-cluster-a-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt -n  amq-messaging-a
 
 oc delete -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
 oc apply -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
@@ -617,7 +617,7 @@ Make sure to change the url of the interRouter Connection file interconnect/inte
 ```
 oc project amq-messaging-b
 
-oc create secret generic interconnect-cluster-b-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+oc create secret generic interconnect-cluster-b-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt  -n amq-messaging-b
 
 oc delete -f interconnect/interconnect-cluster-b.yml -n amq-messaging-b
 oc apply -f interconnect/interconnect-cluster-b.yml -n amq-messaging-b
@@ -669,8 +669,6 @@ oc apply -f apps/messaging-tester-interconnect-a.yml  -n apps
 oc delete -f apps/messaging-tester-interconnect-b.yml  -n apps
 oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
 
-oc delete -f apps/messaging-tester-interconnect-b.yml  -n apps
-oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
 
 oc delete -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 oc apply -f apps/messaging-tester-interconnect-a-failover.yml  -n apps

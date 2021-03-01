@@ -156,7 +156,7 @@ stringData:
     spring.resources.cache.cachecontrol.cache-public=true
     spring.resources.cache.cachecontrol.max-age=0
 
-    jms.uri=(tcp://amq-broker-b-generic-1-svc-rte-amq-messaging-b.apps.cluster-f646.f646.example.opentlc.com:443)
+    jms.uri=(tcp://amq-broker-b-generic-1-svc-rte-amq-messaging-b.apps.cluster-fbdc.fbdc.example.opentlc.com:443)
     jms.user=user-b1
     jms.pwd=password
     jms.sslEnabled=true

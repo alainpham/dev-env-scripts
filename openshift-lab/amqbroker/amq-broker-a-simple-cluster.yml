@@ -38,6 +38,16 @@ spec:
       verifyHost: false
       expose: true
       amqpMinLargeMessageSize: 204800
+    - name: hornetq
+      protocols: hornetq,stomp
+      port: 5446
+      sslEnabled: true
+      needClientAuth: false
+      wantClientAuth: false
+      verifyHost: false
+      expose: true
+      anycastPrefix: jms.topic.
+      multicastPrefix: jms.queue.
     - name: amqp
       protocols: amqp
       port: 5672

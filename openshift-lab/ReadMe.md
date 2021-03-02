@@ -530,7 +530,14 @@ oc create secret generic amq-broker-a-generic-secret \
 --from-literal=keyStorePassword=password \
 --from-literal=trustStorePassword=password
 
-oc apply -f amqbroker/amq-broker-a-simple-cluster.yml
+oc create secret generic amq-broker-a-hornetq-secret \
+--from-file=broker.ks=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=client.ts=amqbroker/tls/truststore.p12 \
+--from-literal=keyStorePassword=password \
+--from-literal=trustStorePassword=password
+
+
+oc apply -f amqbroker/amq-broker-a-simple-cluster.yml -n amq-messaging-a
 ```
 
 ##  deploy second cluster

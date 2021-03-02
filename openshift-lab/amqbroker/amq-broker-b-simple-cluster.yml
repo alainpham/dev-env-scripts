@@ -38,6 +38,8 @@ spec:
       verifyHost: false
       expose: true
       amqpMinLargeMessageSize: 204800
+      anycastPrefix: jms.topic.
+      multicastPrefix: jms.queue.
     - name: amqp
       protocols: amqp
       port: 5672

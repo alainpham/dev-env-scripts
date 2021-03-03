@@ -25,7 +25,7 @@ spec:
       containers:
       - env:
         - name: "AMQHOST"
-          value: "amq-broker-a-ss-0.amq-broker-a-amq-headless.amq-messaging-a.svc.cluster.local"
+          value: "amq-broker-a-0-svc"
         - name: "AMQPORT"
           value: "61617"
         image: "alainpham/hornetq-client:latest"

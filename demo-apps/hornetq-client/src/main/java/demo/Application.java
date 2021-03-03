@@ -1,5 +1,7 @@
 package demo;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -13,20 +15,28 @@ import javax.jms.Session;
 import javax.jms.TextMessage;
 
 import org.hornetq.api.core.TransportConfiguration;
+import org.hornetq.api.core.client.HornetQClient;
+import org.hornetq.api.core.client.ServerLocator;
 import org.hornetq.api.jms.HornetQJMSClient;
 import org.hornetq.api.jms.JMSFactoryType;
+import org.hornetq.core.client.impl.ServerLocatorImpl;
 import org.hornetq.core.remoting.impl.netty.NettyConnectorFactory;
 import org.hornetq.core.remoting.impl.netty.TransportConstants;
 import org.hornetq.jms.client.HornetQConnectionFactory;
 
 public class Application {
 
-    public static void main(String[] args) throws JMSException, InterruptedException {
+    public static void main(String[] args) throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
 
-        // THIS WORKS
-
-
+        // THIS WORKS*
+        /* 
+            export AMQHOST=amq-broker-a-acceptor-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
+            export AMQPORT=443
+       
+            export AMQHOST=amqbrokera0
+            export AMQPORT=5446
+        */
         params.put("host",  System.getenv("AMQHOST")); //export AMQHOST=amqbrokera0
         params.put("port", System.getenv("AMQPORT")); //export AMQPORT=5446
         params.put(TransportConstants.SSL_ENABLED_PROP_NAME, true);
@@ -54,7 +64,13 @@ public class Application {
         
         TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getName(), params);
         HornetQConnectionFactory factory = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
-
+        ServerLocator sl= HornetQClient.createServerLocator(false, config);
+        // sl.createSessionFactory();
+        // factory.setConnectionLoadBalancingPolicyClassName("org.hornetq.api.core.client.loadbalance.FirstElementConnectionLoadBalancingPolicy");
+        
+        System.out.println(Arrays.asList(factory.getServerLocator().getStaticTransportConfigurations()));
+        System.out.println(factory.getServerLocator().isHA());
+        System.out.println(factory.getServerLocator().getTopology().describe());
         System.out.println("Created factory..");
         Connection connection = factory.createConnection("normaluser","userpassword");
         connection.start();
@@ -68,6 +84,10 @@ public class Application {
         TextMessage message = session.createTextMessage("{\"hello\":\"test "+ new Date() +" \"}");
         producer.send(message);
         System.out.println("sent " + i + " messages");
+
+        System.out.println(Arrays.asList(factory.getServerLocator().getStaticTransportConfigurations()));
+        System.out.println(factory.getServerLocator().isHA());
+        System.out.println(factory.getServerLocator().getTopology().describe());
         Thread.sleep(100000);
     }
 }

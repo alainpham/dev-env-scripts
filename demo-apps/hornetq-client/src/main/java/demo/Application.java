@@ -21,33 +21,32 @@ import org.hornetq.jms.client.HornetQConnectionFactory;
 
 public class Application {
 
-    public static void main(String[] args) throws JMSException {
+    public static void main(String[] args) throws JMSException, InterruptedException {
         Map<String, Object> params = new HashMap<String, Object>();
 
         // THIS WORKS
 
 
-        params.put("host", "amqbrokera0");
-        params.put("port", 5446);
+        params.put("host",  System.getenv("AMQHOST")); //export AMQHOST=amqbrokera0
+        params.put("port", System.getenv("AMQPORT")); //export AMQPORT=5446
         params.put(TransportConstants.SSL_ENABLED_PROP_NAME, true);
-        params.put(TransportConstants.TRUSTSTORE_PATH_PROP_NAME,"/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/amqbroker/tls/truststore.jks");
+        params.put(TransportConstants.TRUSTSTORE_PATH_PROP_NAME,"/deployments/tls/truststore.jks");
         params.put(TransportConstants.TRUSTSTORE_PASSWORD_PROP_NAME,"password");
-        params.put(TransportConstants.TRUSTSTORE_PROVIDER_PROP_NAME,"JKS");
-
-        params.put(TransportConstants.KEYSTORE_PATH_PROP_NAME,"/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/amqbroker/tls/keystore.p12");
-        params.put(TransportConstants.KEYSTORE_PASSWORD_PROP_NAME,"password");
-        params.put(TransportConstants.KEYSTORE_PROVIDER_PROP_NAME,"JKS");
-
-        //
-
-        // params.put("host", "amq-broker-a-hornetq-0-svc-rte-amq-messaging-a.apps.cluster-fbdc.fbdc.example.opentlc.com");
-        // params.put("port", "443");
-        // params.put(TransportConstants.SSL_ENABLED_PROP_NAME, true);
-        // params.put(TransportConstants.TRUSTSTORE_PATH_PROP_NAME,"/home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/truststore.jks");
-        // params.put(TransportConstants.TRUSTSTORE_PASSWORD_PROP_NAME,"password");
         // params.put(TransportConstants.TRUSTSTORE_PROVIDER_PROP_NAME,"JKS");
 
-        // params.put(TransportConstants.KEYSTORE_PATH_PROP_NAME,"/home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/keystore.jks");
+        params.put(TransportConstants.KEYSTORE_PATH_PROP_NAME,"/deployments/tls/keystore.jks");
+        params.put(TransportConstants.KEYSTORE_PASSWORD_PROP_NAME,"password");
+        // params.put(TransportConstants.KEYSTORE_PROVIDER_PROP_NAME,"JKS");
+
+        //
+        // params.put("host", "amq-broker-a-acceptor-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com");
+        // params.put("port", "443");
+        // params.put(TransportConstants.SSL_ENABLED_PROP_NAME, true);
+        // params.put(TransportConstants.TRUSTSTORE_PATH_PROP_NAME,"/home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/truststore.p12");
+        // params.put(TransportConstants.TRUSTSTORE_PASSWORD_PROP_NAME,"password");
+        // // params.put(TransportConstants.TRUSTSTORE_PROVIDER_PROP_NAME,"JKS");
+
+        // params.put(TransportConstants.KEYSTORE_PATH_PROP_NAME,"/home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/keystore.p12");
         // params.put(TransportConstants.KEYSTORE_PASSWORD_PROP_NAME,"password");
         // params.put(TransportConstants.KEYSTORE_PROVIDER_PROP_NAME,"JKS");
         
@@ -55,17 +54,21 @@ public class Application {
         
         TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getName(), params);
         HornetQConnectionFactory factory = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
+
         System.out.println("Created factory..");
-        Connection connection = factory.createConnection("HAHA","test");
+        Connection connection = factory.createConnection("normaluser","userpassword");
         connection.start();
         System.out.println("Created connection..");
         Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
         Queue q = session.createQueue("app.queue");
         MessageProducer producer = session.createProducer(q);
-        TextMessage message = session.createTextMessage("Ping: " + new Date());
-        producer.send(message);
         System.out.println("connected");
-        System.out.println("done");
+        System.out.println("sending...");
+        int i =0;
+        TextMessage message = session.createTextMessage("{\"hello\":\"test "+ new Date() +" \"}");
+        producer.send(message);
+        System.out.println("sent " + i + " messages");
+        Thread.sleep(100000);
     }
 }
 

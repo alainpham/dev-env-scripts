@@ -25,9 +25,9 @@ spec:
       containers:
       - env:
         - name: "AMQHOST"
-          value: "amq-broker-a-0-svc"
+          value: "amq-broker-a-generic-0-svc"
         - name: "AMQPORT"
-          value: "5446"
+          value: "61619"
         image: "alainpham/hornetq-client:latest"
         imagePullPolicy: "Always"
         name: "hornetq-client"

@@ -231,7 +231,7 @@ spec:
                 loggers=org.apache.activemq.artemis.core.server.federation,org.apache.activemq.artemis.core.client.impl,org.eclipse.jetty,org.jboss.logging,org.apache.activemq.artemis.core.server,org.apache.activemq.artemis.utils,org.apache.activemq.artemis.journal,org.apache.activemq.artemis.jms.server,org.apache.activemq.artemis.integration.bootstrap,org.apache.activemq.audit.base,org.apache.activemq.audit.message,org.apache.activemq.audit.resource
 
                 # Root logger level
-                logger.level=INFO
+                logger.level=TRACE
                 # TRACE LOGGER FOR FEDERATION CONNECTION BUG
                 logger.org.apache.activemq.artemis.core.client.impl.level=INFO
                 # ActiveMQ Artemis logger levels
@@ -325,6 +325,7 @@ spec:
 
                       <connectors>
                         <connector name="artemis">tcp://${BROKER_IP}:61616</connector>
+                        <connector name="artemis-ssl">tcp://${BROKER_IP}:61617?sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK</connector>
                       </connectors>
 
                       <cluster-user>amq-broker-a-cluster</cluster-user>
@@ -335,7 +336,7 @@ spec:
                         <broadcast-group name="amq-broker-a-broadcast-group">
                             <jgroups-file>jgroups-ping.xml</jgroups-file>
                             <jgroups-channel>amq-broker-a_broadcast_channel</jgroups-channel>
-                            <connector-ref>artemis</connector-ref>
+                            <connector-ref>artemis-ssl</connector-ref>
                         </broadcast-group>
                       </broadcast-groups>
 
@@ -349,7 +350,7 @@ spec:
 
                       <cluster-connections>
                         <cluster-connection name="amq-broker-a-cluster">
-                            <connector-ref>artemis</connector-ref>
+                            <connector-ref>artemis-ssl</connector-ref>
                             <retry-interval>1000</retry-interval>
                             <retry-interval-multiplier>2</retry-interval-multiplier>
                             <max-retry-interval>32000</max-retry-interval>
@@ -370,7 +371,8 @@ spec:
                         <acceptor name="hornetq">tcp://0.0.0.0:5445?anycastPrefix=jms.queue.;multicastPrefix=jms.topic.;protocols=HORNETQ,STOMP;useEpoll=true</acceptor>
                         <acceptor name="mqtt">tcp://0.0.0.0:1883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true</acceptor>
 
-                        <acceptor name="artemis-ssl">tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
+                        <acceptor name="artemis-ssl">tcp://0.0.0.0:61617?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=CORE,AMQP,STOMP,HORNETQ,MQTT,OPENWIRE;useEpoll=true;amqpCredits=1000;amqpLowCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true;anycastPrefix=jms.queue.;multicastPrefix=jms.topic.</acceptor>
+                        <acceptor name="hornetq-ssl">tcp://0.0.0.0:5446?protocols=HORNETQ;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=false;anycastPrefix=jms.queue.;multicastPrefix=jms.topic.</acceptor>
                         <acceptor name="amqp-ssl">tcp://0.0.0.0:5671?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=AMQP;useEpoll=true;amqpCredits=1000;amqpMinCredits=300;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
                         <acceptor name="stomp-ssl">tcp://0.0.0.0:61612?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=STOMP;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>
                         <acceptor name="mqtt-ssl">tcp://0.0.0.0:8883?tcpSendBufferSize=1048576;tcpReceiveBufferSize=1048576;protocols=MQTT;useEpoll=true;connectionsAllowed=1000;sslEnabled=true;keyStorePath=/etc/amq-secret-volume/keystore.p12;keyStorePassword=password;trustStorePath=/etc/amq-secret-volume/truststore.p12;trustStorePassword=password;sslProvider=JDK;needClientAuth=true</acceptor>

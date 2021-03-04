@@ -381,8 +381,16 @@ keytool -genkey \
       -validity 365000 \
       -keystore amqbroker/tls/amq-broker-keystore.p12
 
+keytool -export \
+    -alias amq-broker \
+    -rfc \
+    -storepass password \
+    -keystore  amqbroker/tls/amq-broker-keystore.p12 \
+    -file amqbroker/tls/trusted-certs/amq-broker.pem
+
 keytool -list -storepass password -keystore amqbroker/tls/amq-broker-keystore.p12
 
+FILES=amqbroker/tls/trusted-certs/*
 for f in $FILES
 do
     full="${f##*/}"
@@ -411,6 +419,9 @@ oc project amq-messaging-a
 oc create secret generic amq-broker-a-tls-secret \
 --from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
 --from-file=truststore.p12=amqbroker/tls/truststore.p12
+
+oc delete -f amqbroker/amq-broker-a-custom-cluster.yml -n amq-messaging-a
+oc delete -f amqbroker/amq-broker-a-custom-network.yml -n amq-messaging-a
 
 oc apply -f amqbroker/amq-broker-a-custom-cluster.yml -n amq-messaging-a
 oc apply -f amqbroker/amq-broker-a-custom-network.yml -n amq-messaging-a
@@ -535,7 +546,6 @@ oc create secret generic amq-broker-a-hornetq-secret \
 --from-file=client.ts=amqbroker/tls/truststore.p12 \
 --from-literal=keyStorePassword=password \
 --from-literal=trustStorePassword=password
-
 
 oc apply -f amqbroker/amq-broker-a-simple-cluster.yml -n amq-messaging-a
 ```

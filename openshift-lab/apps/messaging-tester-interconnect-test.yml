@@ -3,14 +3,14 @@ apiVersion: "apps.openshift.io/v1"
 kind: "DeploymentConfig"
 metadata:
   labels:
-    app: "messaging-tester-interconnect-a"
+    app: "messaging-tester-interconnect-test"
     group: "demo"
-  name: "messaging-tester-interconnect-a"
+  name: "messaging-tester-interconnect-test"
 spec:
   replicas: 1
   revisionHistoryLimit: 2
   selector:
-    app: "messaging-tester-interconnect-a"
+    app: "messaging-tester-interconnect-test"
     group: "demo"
   strategy:
     rollingParams:
@@ -19,7 +19,7 @@ spec:
   template:
     metadata:
       labels:
-        app: "messaging-tester-interconnect-a"
+        app: "messaging-tester-interconnect-test"
         group: "demo"
     spec:
       containers:
@@ -75,11 +75,11 @@ spec:
       - name: "tls-secret-volume"
         secret:
           defaultMode: 420
-          secretName: "messaging-tester-interconnect-a-tls-secret"
+          secretName: "messaging-tester-interconnect-test-tls-secret"
       - name: "prop-secret-volume"
         secret:
           defaultMode: 420
-          secretName: "messaging-tester-interconnect-a-prop-secret"
+          secretName: "messaging-tester-interconnect-test-prop-secret"
   triggers:
   - type: "ConfigChange"
 ---
@@ -91,9 +91,9 @@ metadata:
     prometheus.io/scrape: "true"
   labels:
     expose: "true"
-    app: "messaging-tester-interconnect-a"
+    app: "messaging-tester-interconnect-test"
     group: "demo"
-  name: "messaging-tester-interconnect-a"
+  name: "messaging-tester-interconnect-test"
 spec:
   ports:
   - name: "http"
@@ -101,7 +101,7 @@ spec:
     protocol: "TCP"
     targetPort: 8080
   selector:
-    app: "messaging-tester-interconnect-a"
+    app: "messaging-tester-interconnect-test"
     group: "demo"
 ---
 apiVersion: "v1"
@@ -110,22 +110,22 @@ metadata:
   annotations:
     haproxy.router.openshift.io/balance: "roundrobin"
   labels:
-    app: "messaging-tester-interconnect-a"
+    app: "messaging-tester-interconnect-test"
     group: "demo"
-  name: "messaging-tester-interconnect-a"
+  name: "messaging-tester-interconnect-test"
 spec:
   port:
     targetPort: "http"
   to:
     kind: "Service"
-    name: "messaging-tester-interconnect-a"
+    name: "messaging-tester-interconnect-test"
 status: {}
 
 ---
 kind: Secret
 apiVersion: v1
 metadata:
-  name: "messaging-tester-interconnect-a-prop-secret"
+  name: "messaging-tester-interconnect-test-prop-secret"
 type: Opaque
 stringData: 
   application.properties: |
@@ -156,7 +156,7 @@ stringData:
     spring.resources.cache.cachecontrol.cache-public=true
     spring.resources.cache.cachecontrol.max-age=0
 
-    jms.uri=amqps://interconnect-cluster-a-5671-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com:443
+    jms.uri=amqps://router-mesh-5671-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com:443
     jms.java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory
     jms.connectionFactory.default=${jms.uri}?transport.trustAll=true
     jms.default.cnx.factory=default
@@ -164,7 +164,7 @@ stringData:
     jms.java.naming.security.credentials=password0!
 
     topic.loadtrigger=app.addr
-    queue.defaultapp=app.queue-a
+    queue.defaultapp=quarkusAddress.test
     queue.defaultapp.send=${queue.defaultapp}
 
     queue.perf=app.perf
@@ -173,7 +173,7 @@ stringData:
 kind: Secret
 apiVersion: v1
 metadata:
-  name: "messaging-tester-interconnect-a-tls-secret"
+  name: "messaging-tester-interconnect-test-tls-secret"
 type: Opaque
 data:
   keystore.p12: MIIJnwIBAzCCCVgGCSqGSIb3DQEHAaCCCUkEgglFMIIJQTCCBX0GCSqGSIb3DQEHAaCCBW4EggVqMIIFZjCCBWIGCyqGSIb3DQEMCgECoIIE+zCCBPcwKQYKKoZIhvcNAQwBAzAbBBTmRt05ZCd6yfsY4Vm8TqOWZzBWSAIDAMNQBIIEyJbNsaXjsP/N+eHHpPXM/dnYpQTg9c4vcNfayogx4ZZAQe2jnF8COQx7XX9XKDrqO0LpoT5vm1hb3KHwhTyAAdP3hSofpQCh26pGO7j7pwltFBWNdXkNOaSM6/M8BrqOneiAiY6fABDyKzo2pBOIX+UHuSRMY5Bx22xs98HYNLrgRT2ADrXXPtZqJZX3SrYE13bk5D+Iz2S+PvmCi4+DIIVh3GWj3FgV6ER2Kjs8IQ8L37RgP7lrLff4WoqDaJszmMS4UJ1ILG/4wU7ESVgp4SD9MJ5ZZzyOe7sdBR4BGJPt5Q0RSVB0Q0KS8/pTIHr05B04+U/uuphfCYtfFWxHvR+m1/5OvyfdKYF2oVUibq8z5BAruaxZdbvv7phlUzr39otnqBVP0UZqkaGhxwp8UzdsXeJ0vF5Sw5/rmGbsCFLnJb3WDg+J1/+3hzGgZRdOzbBpZNx3HKoV0uPT3SdwyDuxdfMFhatOJTznmptI0aZiSjo5JSkA32Itx/l1lNRehPT+ezfo4pNds3C8dbb+SOiqaHv1xA+dAWVUNMWP1HGpzWOlIjUlSs2cQ3pvDJ7L3RFhRrSFe8dZSUadMNpvzRqH3NCRpJIK7m4GKMyRIo6ozMP9sWjsTDHQ2/KSFKUHz+bBdU7LPYkDe5jRHVfYtnOQaAHexY3sV6m5RIn1q1Vxe6Irf4DjfFceE+35dttaf7j9WEUlcKjRGWclxXGkQN8vz1WMeqeccYrNwauLGy4URDRELcwMTef0xJibNxT/mNq2Li2QNG36jZv62aCv5oLuBZHBtChD9b4c15FplXJZGPV6+paEI772aH8c00PlXeppQtkMnMfl1p1b1Sd/AXNRVpabr0X9nv+UysQcSdSWgsybGE2YXNlJVrtlKheECpgxS0RAN5NED1NFEE5C7TebImm/2uSs7qfvft6q6uuvcHSW2t1m6sQpVkG5qKqHLCDMMEP13bCdg6wTdaIkEAJrf4KT4SpqCURQmQuhTa1AhfrEQ83MpxES55TzZaYCxctTlmjJZypd6AnqxrcB7vldkizY83ZE/erlho4wkMAH2MQVskBuU3Dj/X0Rn+alvoL23MrAtQMs2gAQ3oLRzJJL4LwpXROGipsLFfkVWKgX47JSdoO6Ts+gKwkhBjiF50Ut+D/CgqxNihuxH/XXP/nLAvlqapoPO8x7nwnhWpUsppE6eXV/UhwCdKeG5u8rKWMxJgd74jxMujtJgcKd5r0gq/RHetaI/WrO1IsAyB4vk5WgZNozyAwQUKfX1KYvJYbEQpGgJLTiA/RAFMzcD24zJlVafArSSzszoInmspYrZhI2M53DvZCkZAYPXOCeGS0B83fdfzP0UwCTCYC/1ZPFyvjeNAxfwsxhrrIa6mClP2E7nuQ0YiT3I6SdJplYRq8W1+lg1qJVIGyOSdjaljgO7eH9AuCTMiDxnbvbLPIoGmw9Zjsug5DldpYroMyH9eby9fl8vTrnryeWv9GZTujR1xBbd4mQwleKi0M7zAqWGL6xFl1e4zSGSAQmiZVstxdcEdg4EsAZSH3bfExBwOGcHQkL4vdHIltzHM0uNQDIQC2RZmNqQjt5GVvynEH98ARPwmHGZMauP2tnkTDvLJUyGeSYr1K0/TFUMC8GCSqGSIb3DQEJFDEiHiAAbQBlAHMAcwBhAGcAaQBuAGcALQB0AGUAcwB0AGUAcjAhBgkqhkiG9w0BCRUxFAQSVGltZSAxNjE0MDgxNzUxNzkwMIIDvAYJKoZIhvcNAQcGoIIDrTCCA6kCAQAwggOiBgkqhkiG9w0BBwEwKQYKKoZIhvcNAQwBBjAbBBTcXnmgdy4l8kFUr32nK3onKUOsCQIDAMNQgIIDaCoBaZ41meBfYl6ExKyGSBDdAHpih0W7zrsPEhCcRzU6E/xm2MbZYlGeBJ8CesUovRmbHDFUBiEiyQ5akxJpevITZ1gn3qmeRXp9mRx6+mJxZGLFYFvzKRUYJP+t0rop4XDVpNWf38WNi+LkBNWdwZGPnZwoIzDIK9N0bBOiwRGlyvy1xMe8ZIdebazVtzX787IOcKV/JWxvK5pq4Gpnj46wnCM2yYVmhug8v2iwIfG45QI4EBMLetatV7bvBrtRwPZd1toLMmQgfuQz/ZZhqamlDZozQvgb3/+thgGkFLr+YJyttIgT9hZPbtkD3sp+A4QmEmJvwx3iV5YzLkhrkn73rsvTm3vaC6NVMmFMD/duHiRFXCBddvbXqB+gPFoRG5Qs4BQi8taT1714SidY7HnfqJQsxo216KTj9SYkkUyI5k0aeLyOYUAviKUSylrErqoSd1OdwNK5VzvUw1qUvuqZk1Tjl//0xPbVaByMuXl3AR+JFjsah1dGTGp6GxmGmvNiLHARa5Oj6Z/EqbmNA61LSKU1sbRWjx5JAi6hJLqRh0Xh5PtEVad2OKTYCCuKy7N6iZcadnPuho3YO6EjbNQSFnau3l64KeNAFseXZJgosbe9/mquCgW1kGb1CzXUZNtP145KVLceVIIJnea+59zNpQja6tOe8Cvt1WjGSd+1H8cBzP1thJZ5JYfKGcpreX305KY4DlL2+Fa8AIZErNILDOdDjU6iMDdNIISZl2e2pcbXLo6cUesb87hRcRpkEGo72dKFx5Y7gMYNrUm1PjPwauSfcPqu8XfJgDbldzLCkVtYrjE8vv6X2qsJGZnYMP7GnwkylxjKM3+Mnv7N9hsnfR6wFYghGk8iKttLDqr3yS8DfdKYsQt7bEvIk+zSxBLeb/cPvHVgL7wbol8mPCSc+tEHjAWwnZZI4mLPAjWgHcpWG/OOsNbyo7Ur1FYzPfoYMyp3Fxgc2KpycDgGQGiHa8SXVysO73EpKU8vscpSgFW9oxF0bgXPhkiMgvT/k2eRDEHrBdZOfaaA3sGBZrqblHKiYKAcwhQh45yG2QFEnt/xPjjf3pRDHO11oSi25SuX+kH1O5widWaQN0wW/SVsTig5uLbJEOp2PsqZI1schD81+VXZFwGf+3IBMK/3tuOhT3sNNlaFMD4wITAJBgUrDgMCGgUABBTYha3lDsAFN7DrkPh9AsEeuQGUUwQUNe6a7c/Qv4JICe1qrpyM96dkmh4CAwGGoA==

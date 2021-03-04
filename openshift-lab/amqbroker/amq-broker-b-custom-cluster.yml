@@ -1,4 +1,17 @@
 ---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: "amq-broker-b-auth-secret"
+type: Opaque
+stringData: 
+  artemis-roles.properties: |
+    admin = admin
+    normalgroup = normaluser
+  artemis-users.properties: |
+    admin = adminpassword
+    normaluser= userpassword
+---
 kind: Route
 apiVersion: route.openshift.io/v1
 metadata:
@@ -119,6 +132,10 @@ spec:
           secret:
             secretName: amq-broker-b-tls-secret
             defaultMode: 420
+        - name: amq-broker-b-auth-secret-volume
+          secret:
+            secretName: amq-broker-b-auth-secret
+            defaultMode: 420
       containers:
         - name: amq-broker-b-container
           resources:
@@ -150,12 +167,14 @@ spec:
             - start
           terminationMessagePath: /dev/termination-log
           env:
+            - name: AMQ_ENABLE_MANAGEMENT_RBAC
+              value: 'true'          
             - name: AMQ_ROLE
               value: admin
             - name: AMQ_NAME
               value: amq-broker-b
             - name: AMQ_REQUIRE_LOGIN
-              value: "false"
+              value: "true"
             - name: AMQ_EXTRA_ARGS
               value: "--no-autotune"
             - name: AMQ_JOURNAL_TYPE

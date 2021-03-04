@@ -80,15 +80,15 @@ public class Application implements WebSocketConfigurer{
         */
         Map<String, Object> params = new HashMap<String, Object>();
 
-        params.put("host",  System.getenv("AMQHOST")); //export AMQHOST=amqbrokera0
-        params.put("port", System.getenv("AMQPORT")); //export AMQPORT=5446
+        params.put("host",  env.getProperty("amqhost")); //export AMQHOST=amqbrokera0
+        params.put("port", env.getProperty("amqport")); //export AMQPORT=5446
         params.put(TransportConstants.SSL_ENABLED_PROP_NAME, true);
-        params.put(TransportConstants.TRUSTSTORE_PATH_PROP_NAME,"/deployments/tls/truststore.jks");
-        params.put(TransportConstants.TRUSTSTORE_PASSWORD_PROP_NAME,"password");
+        params.put(TransportConstants.TRUSTSTORE_PATH_PROP_NAME,env.getProperty("truststore"));
+        params.put(TransportConstants.TRUSTSTORE_PASSWORD_PROP_NAME,env.getProperty("truststorepwd"));
         // params.put(TransportConstants.TRUSTSTORE_PROVIDER_PROP_NAME,"JKS");
 
-        params.put(TransportConstants.KEYSTORE_PATH_PROP_NAME,"/deployments/tls/keystore.jks");
-        params.put(TransportConstants.KEYSTORE_PASSWORD_PROP_NAME,"password");
+        params.put(TransportConstants.KEYSTORE_PATH_PROP_NAME,env.getProperty("keystore"));
+        params.put(TransportConstants.KEYSTORE_PASSWORD_PROP_NAME,env.getProperty("keystorepwd"));
 
         TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getName(), params);
         ConnectionFactory factory = (ConnectionFactory) HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
@@ -101,7 +101,7 @@ public class Application implements WebSocketConfigurer{
     public JmsComponent jms(CachingConnectionFactory cachingConnectionFactory) {
 
         JmsConfiguration jmsConfiguration =new JmsConfiguration(cachingConnectionFactory);
-        // jmsConfiguration.setCacheLevelName(env.getProperty("jms.cache.level"));
+        jmsConfiguration.setCacheLevelName(env.getProperty("jms.cache.level"));
         JmsComponent jmsComponent = new JmsComponent(jmsConfiguration);
 
         return jmsComponent;

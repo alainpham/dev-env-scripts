@@ -42,10 +42,17 @@ public class Application {
 
         // THIS WORKS*
         /* 
+
+            alternative amq-broker-a-acceptor-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
+
             cp tls/ocp/* /deployments/tls 
             export AMQHOST=amq-broker-a-acceptor-hornetq-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
             export AMQPORT=443
        
+            cp /home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/* /deployments/tls 
+            export AMQHOST=amq-broker-a-acceptor-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com 
+            export AMQPORT=443
+
             cp tls/local/* /deployments/tls 
             export AMQHOST=amqbrokera0
             export AMQPORT=5446

@@ -1,0 +1,59 @@
+apiVersion: interconnectedcloud.github.io/v1alpha1
+kind: Interconnect
+metadata:
+  name: router-mesh
+spec:
+  deploymentPlan:
+    role: interior
+    size: 1
+    placement:  Any
+  listeners:
+    - port: 5672
+    - authenticatePeer: false
+      expose: true
+      http: true
+      port: 8080
+    - port: 5671
+      sslProfile: default
+      expose: true
+  addresses:
+#    - prefix: demoAddress
+#      waypoint: true
+    - prefix: quarkusAddress
+      waypoint: true
+  connectors:
+    - name: amq-broker-a
+      host: amq-broker-a-hdls-svc.amq-messaging-a.svc.cluster.local
+      port: 5672
+      routeContainer: true
+  linkRoutes:
+#    - prefix: $coordinator
+#      direction: in
+#      connection: my-broker
+    - prefix: quarkusAddress
+      direction: in
+      connection: amq-broker-a
+    - prefix: quarkusAddress
+      direction: out
+      connection: amq-broker-a
+#  autoLinks:
+#    - address: demoAddress
+#      direction: in
+#      connection: my-broker
+#    - address: demoAddress
+#      direction: out
+#      connection: my-broker
+#    - address: quarkusAddress
+#      direction: in
+#      connection: my-broker
+#    - address: quarkusAddress
+#      direction: out
+#      connection: my-broker
+  interRouterListeners:
+    - port: 55671
+      sslProfile: default
+      expose: true
+  sslProfiles:
+  - name: default
+    credentials: interconnect-cluster-a-default-credentials
+    caCert: interconnect-cluster-a-default-credentials

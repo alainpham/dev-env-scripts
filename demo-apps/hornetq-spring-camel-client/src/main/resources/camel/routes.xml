@@ -21,25 +21,24 @@
         </unmarshal>
         <log message="${body}"/>
 
-        <bean ref="viewUpdate" method="upsertData(${body}, person, state-table)"/>
-        <bean ref="viewUpdate" method="appendData(${body}, person, log-table)"/>
-
         <marshal>
             <json library="Jackson"/>
         </marshal>
-        
+        <to uri="direct:test"/>
     </route>
 
     <route>
-        <from uri="timer:timerName?period=3s&amp;repeatCount=1"/>
-        <setBody>
-            <simple>{"id": "xx","TOTO" : "titi","tata":"tete"}</simple>
-        </setBody>
+        <from uri="direct:test"/>
         <inOnly uri="jms:queue:app.queue"/>
     </route>
 
     <route>
         <from uri="jms:queue:app.queue"/>
         <log message="${body}"/>
+        <unmarshal>
+            <json library="Jackson"/>
+        </unmarshal>
+        <bean ref="viewUpdate" method="upsertData(${body}, person, state-table)"/>
+        <bean ref="viewUpdate" method="appendData(${body}, person, log-table)"/>
     </route>
 </routes>

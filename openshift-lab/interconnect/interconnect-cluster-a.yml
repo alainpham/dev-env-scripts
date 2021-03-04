@@ -29,13 +29,21 @@ spec:
       host: amq-broker-a-hdls-svc.amq-messaging-a.svc.cluster.local
       port: 5672
       routeContainer: true
-  autoLinks:
-    - address: 'app.queue-a'
+  linkRoutes:
+    - prefix: 'app.queue-a.a'
       direction: in
       connection: amq-broker-a
-    - address: 'app.queue-a'
+    - prefix: 'app.queue-a'
       direction: out
       connection: amq-broker-a
+
+  # autoLinks:
+  #   - address: 'app.queue-a'
+  #     direction: in
+  #     connection: amq-broker-a
+  #   - address: 'app.queue-a'
+  #     direction: out
+  #     connection: amq-broker-a
   sslProfiles:
   - name: default
     credentials: interconnect-cluster-a-default-credentials

@@ -42,6 +42,10 @@ spec:
     name: amqp-ssl
     protocol: TCP
     targetPort: 5671
+  - port: 5446
+    name: hornetq-ssl
+    protocol: TCP
+    targetPort: 5446
   - port: 8883
     name: mqtt-ssl
     protocol: TCP
@@ -93,7 +97,25 @@ spec:
     name: amq-broker-a-0-svc
     weight: 100
   wildcardPolicy: None
-
+---
+kind: Route
+apiVersion: route.openshift.io/v1
+metadata:
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-0
+  name: amq-broker-a-acceptor-hornetq-0
+spec:
+  port:
+    targetPort: hornetq-ssl
+  tls:
+    termination: passthrough
+  to:
+    kind: Service
+    name: amq-broker-a-0-svc
+    weight: 100
+  wildcardPolicy: None
 
 # second instance
 

@@ -156,7 +156,7 @@ stringData:
     spring.resources.cache.cachecontrol.cache-public=true
     spring.resources.cache.cachecontrol.max-age=0
 
-    jms.uri=amqps://interconnect-cluster-b-5671-amq-messaging-b.apps.cluster-fbdc.fbdc.example.opentlc.com:443
+    jms.uri=amqps://interconnect-cluster-b-5671-amq-messaging-b.apps.cluster-33cc.33cc.example.opentlc.com:443
     jms.java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory
     jms.connectionFactory.default=${jms.uri}?transport.trustAll=true
     jms.default.cnx.factory=default

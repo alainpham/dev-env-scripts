@@ -38,16 +38,18 @@ spec:
       verifyHost: false
       expose: true
       amqpMinLargeMessageSize: 204800
+      anycastPrefix: jms.queue.
+      multicastPrefix: jms.topic.
     - name: hornetq
-      protocols: hornetq,stomp
+      protocols: hornetq
       port: 5446
       sslEnabled: true
       needClientAuth: false
       wantClientAuth: false
       verifyHost: false
       expose: true
-      anycastPrefix: jms.topic.
-      multicastPrefix: jms.queue.
+      anycastPrefix: jms.queue.
+      multicastPrefix: jms.topic.
     - name: amqp
       protocols: amqp
       port: 5672
@@ -56,10 +58,10 @@ spec:
     applyRule: merge_all
     addressSetting:
       - match: '#'
-        autoCreateAddresses: false
-        autoCreateQueues: false
-        autoCreateJmsQueues: false
-        autoCreateJmsTopics: false
+        autoCreateAddresses: true
+        autoCreateQueues: true
+        autoCreateJmsQueues: true
+        autoCreateJmsTopics: true
       - match: 'app.#'
         autoCreateAddresses: true
         autoCreateQueues: true

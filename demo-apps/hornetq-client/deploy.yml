@@ -27,7 +27,7 @@ spec:
         - name: "AMQHOST"
           value: "amq-broker-a-0-svc"
         - name: "AMQPORT"
-          value: "61617"
+          value: "5446"
         image: "alainpham/hornetq-client:latest"
         imagePullPolicy: "Always"
         name: "hornetq-client"

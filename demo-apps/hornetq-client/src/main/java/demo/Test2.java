@@ -35,7 +35,7 @@ import org.hornetq.core.remoting.impl.netty.TransportConstants;
 import org.hornetq.jms.client.HornetQConnectionFactory;
 import org.hornetq.jms.client.HornetQJMSConnectionFactory;
 
-public class Application {
+public class Test2 {
 
     public static void main(String[] args) throws Exception {
         Map<String, Object> params = new HashMap<String, Object>();
@@ -77,46 +77,12 @@ public class Application {
         
         TransportConfiguration config = new TransportConfiguration(NettyConnectorFactory.class.getName(), params);
         HornetQConnectionFactory factory = HornetQJMSClient.createConnectionFactoryWithoutHA(JMSFactoryType.CF, config);
-        // sl.createSessionFactory();
-        // factory.setConnectionLoadBalancingPolicyClassName("org.hornetq.api.core.client.loadbalance.FirstElementConnectionLoadBalancingPolicy");
-        // ServerLocator sl = HornetQClient.createServerLocator(false, config);
-        // sl.setInitialConnectAttempts(5);
-        // System.out.println(sl.getInitialConnectAttempts());
-        // factory=new HornetQJMSConnectionFactory(sl);
-        // ClientSession hqsess = sl.createSessionFactory(config).createSession("normaluser", "userpassword", false, true, true, true, 1000);
-        // ClientSessionFactory hqcf = factory.getServerLocator().createSessionFactory(config);
-        // System.out.println("ClientSessionFactory + " created );
-        // ClientSession hqsess = hqcf.createSession("normaluser", "userpassword", false, true, true, true, 1000);
-        // ClientProducer cp = hqsess.createProducer("app.queue");
-        // ClientMessage mess = hqsess.createMessage(true);
-        // mess.putStringProperty("test",  "value");
-        // cp.send(mess);
+        ServerLocator serverLocator =  HornetQClient.createServerLocator(false, config);
+        ClientSessionFactory clientSessionFactory = serverLocator.createSessionFactory(config,1,false);
+        System.out.println("creating session");
+        clientSessionFactory.createSession("normaluser", "userpassword", false, true, true, true, 1024 );
 
-        System.out.println("NB OF MEMBERS " + factory.getServerLocator().getTopology().getMembers().size());;
-        System.out.println(Arrays.asList(factory.getServerLocator().getStaticTransportConfigurations()));
-        System.out.println(factory.getServerLocator().isHA());
-        System.out.println(factory.getServerLocator().getTopology().describe());
-        System.out.println("Created factory..");
-        Connection connection = factory.createConnection("normaluser","userpassword");
-        System.out.println("Created...");
-
-        connection.start();
-        System.out.println("Created connection..");
-        Session session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-        Queue q = session.createQueue("app.queue");
-        MessageProducer producer = session.createProducer(q);
-        System.out.println("connected");
-        System.out.println("sending...");
-        int i =0;
-        TextMessage message = session.createTextMessage("{\"hello\":\"test "+ new Date() +" \"}");
-        producer.send(message);
-        System.out.println("sent " + i + " messages");
-
-        System.out.println(Arrays.asList(factory.getServerLocator().getStaticTransportConfigurations()));
-        System.out.println(factory.getServerLocator().isHA());
-        System.out.println(factory.getServerLocator().getTopology().describe());
-        System.out.println("SENT OK!!!");
-        Thread.sleep(100000);
+        System.out.println("end");
     }
 }
 

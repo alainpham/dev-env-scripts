@@ -36,6 +36,7 @@ public class Producer extends Client {
 
         message.setObjectProperty("JMS_AMQ_InputStream", bufferedInput);
         producer.send(message);
+        System.out.println("File has been sent!");
     }
     
 

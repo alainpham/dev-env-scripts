@@ -26,7 +26,7 @@ spec:
       expose: true
   connectors:
     - name: amq-broker-b
-      host: amq-broker-b-hdls-svc.amq-messaging-b.svc.cluster.local
+      host: amq-broker-b-amq-headless.amq-messaging-b.svc.cluster.local
       port: 5672
       routeContainer: true
   linkRoutes:
@@ -44,7 +44,8 @@ spec:
   #     direction: out
   #     connection: amq-broker-b
   interRouterConnectors:
-    - host: interconnect-cluster-a-55671-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
+    #https://interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com/
+    - host: interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com
       port: 443
       verifyHostname: false
       sslProfile: default

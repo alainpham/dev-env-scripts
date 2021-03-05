@@ -50,7 +50,7 @@ public class Application {
             export AMQPORT=443
        
             cp /home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/* /deployments/tls 
-            export AMQHOST=amq-broker-a-acceptor-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com 
+            export AMQHOST=amq-broker-a-generic-0-svc-rte-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
             export AMQPORT=443
 
             cp tls/local/* /deployments/tls 
@@ -115,7 +115,7 @@ public class Application {
         System.out.println("connected");
         System.out.println("sending...");
         int i =0;
-        TextMessage message = session.createTextMessage("{\"hello\":\"test "+ new Date() +" \"}");
+        TextMessage message = session.createTextMessage("{\"hello\":\"test "+ new Date() +" BALBALBALBAL\"}");
         producer.send(message);
         System.out.println("sent " + i + " messages");
 

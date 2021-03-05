@@ -1,7 +1,7 @@
 apiVersion: interconnectedcloud.github.io/v1alpha1
 kind: Interconnect
 metadata:
-  name: interconnect-cluster-b
+  name: interconnect-cluster-a
 spec:
   addresses:  
   - prefix: app
@@ -25,31 +25,32 @@ spec:
       sslProfile: default
       expose: true
   connectors:
-    - name: amq-broker-b
-      host: amq-broker-b-hdls-svc.amq-messaging-b.svc.cluster.local
+    - name: amq-broker-a
+      host: amq-broker-a-amq-headless.amq-messaging-a.svc.cluster.local
       port: 5672
       routeContainer: true
   linkRoutes:
-    - prefix: 'app.queue-b'
+    - prefix: 'app.queue-a'
       direction: in
-      connection: amq-broker-b
-    - prefix: 'app.queue-b'
+      connection: amq-broker-a
+    - prefix: 'app.queue-a'
       direction: out
-      connection: amq-broker-b
+      connection: amq-broker-a
   # autoLinks:
-  #   - address: 'app.queue-b'
+  #   - address: 'app.queue-a'
   #     direction: in
-  #     connection: amq-broker-b
-  #   - address: 'app.queue-b'
+  #     connection: amq-broker-a
+  #   - address: 'app.queue-a'
   #     direction: out
-  #     connection: amq-broker-b
+  #     connection: amq-broker-a
   interRouterConnectors:
-    - host: interconnect-cluster-a-55671-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
+    #https://interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com/
+    - host: interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com
       port: 443
       verifyHostname: false
       sslProfile: default
       name: interconnect-cluster
   sslProfiles:
   - name: default
-    credentials: interconnect-cluster-b-default-credentials
-    caCert: interconnect-cluster-b-default-credentials
+    credentials: interconnect-cluster-a-default-credentials
+    caCert: interconnect-cluster-a-default-credentials

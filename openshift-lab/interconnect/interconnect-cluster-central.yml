@@ -1,0 +1,30 @@
+apiVersion: interconnectedcloud.github.io/v1alpha1
+kind: Interconnect
+metadata:
+  name: interconnect-cluster-central
+spec:
+  addresses:  
+  - prefix: app
+    distribution: balanced
+    waypoint: true
+  deploymentPlan:
+    role: interior
+    placement: Any
+    size: 1
+  listeners:  
+    - port: 5672
+    - authenticatePeer: false
+      expose: true
+      http: true
+      port: 8080
+    - port: 5671
+      sslProfile: default
+      expose: true
+  interRouterListeners:
+    - port: 55671
+      sslProfile: default
+      expose: true
+  sslProfiles:
+  - name: default
+    credentials: interconnect-cluster-central-default-credentials
+    caCert: interconnect-cluster-central-default-credentials

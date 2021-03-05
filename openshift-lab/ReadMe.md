@@ -26,6 +26,7 @@
 - [Deploy Local Monitoring](#deploy-local-monitoring)
 - [Install Interconnect](#install-interconnect)
   - [Self sign tls keys](#self-sign-tls-keys-1)
+  - [Deploy central cluster](#deploy-central-cluster)
   - [Deploy main cluster](#deploy-main-cluster-2)
   - [Deploy second interrconnect](#deploy-second-interrconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
@@ -428,6 +429,19 @@ oc apply -f amqbroker/amq-broker-a-custom-network.yml -n amq-messaging-a
 
 ```
 
+no auth
+
+```
+oc delete -f amqbroker/statefulset-noauth/amq-broker-a-custom-cluster.yml -n amq-messaging-a
+oc delete -f amqbroker/statefulset-noauth/amq-broker-a-custom-network.yml -n amq-messaging-a
+
+oc delete pvc --all -n  amq-messaging-a
+
+oc apply -f amqbroker/statefulset-noauth/amq-broker-a-custom-cluster.yml -n amq-messaging-a
+oc apply -f amqbroker/statefulset-noauth/amq-broker-a-custom-network.yml -n amq-messaging-a
+
+```
+
 ## Deploy second cluster
 
 ```
@@ -437,8 +451,23 @@ oc create secret generic amq-broker-b-tls-secret \
 --from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
 --from-file=truststore.p12=amqbroker/tls/truststore.p12
 
+oc delete -f amqbroker/amq-broker-b-custom-cluster.yml -n amq-messaging-b
+oc delete -f amqbroker/amq-broker-b-custom-network.yml -n amq-messaging-b
+
 oc apply -f amqbroker/amq-broker-b-custom-cluster.yml -n amq-messaging-b
 oc apply -f amqbroker/amq-broker-b-custom-network.yml -n amq-messaging-b
+
+```
+
+no auth
+
+```
+oc delete -f amqbroker/statefulset-noauth/amq-broker-b-custom-cluster.yml -n amq-messaging-b
+oc delete -f amqbroker/statefulset-noauth/amq-broker-b-custom-network.yml -n amq-messaging-b
+oc delete pvc --all -n  amq-messaging-b
+
+oc apply -f amqbroker/statefulset-noauth/amq-broker-b-custom-cluster.yml -n amq-messaging-b
+oc apply -f amqbroker/statefulset-noauth/amq-broker-b-custom-network.yml -n amq-messaging-b
 
 ```
 
@@ -547,7 +576,9 @@ oc create secret generic amq-broker-a-hornetq-secret \
 --from-literal=keyStorePassword=password \
 --from-literal=trustStorePassword=password
 
+oc delete -f amqbroker/amq-broker-a-simple-cluster.yml -n amq-messaging-a
 oc apply -f amqbroker/amq-broker-a-simple-cluster.yml -n amq-messaging-a
+oc delete pvc --all -n amq-messaging-a
 ```
 
 ##  deploy second cluster
@@ -561,7 +592,10 @@ oc create secret generic amq-broker-b-generic-secret \
 --from-literal=keyStorePassword=password \
 --from-literal=trustStorePassword=password
 
-oc apply -f amqbroker/amq-broker-b-simple-cluster.yml
+oc delete -f amqbroker/amq-broker-b-simple-cluster.yml  -n amq-messaging-b
+oc apply -f amqbroker/amq-broker-b-simple-cluster.yml  -n amq-messaging-b
+oc delete pvc --all -n amq-messaging-b
+
 ```
 
 # Deploy Local Monitoring
@@ -576,6 +610,7 @@ https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kuber
 ```
 oc new-project amq-messaging-a
 oc new-project amq-messaging-b
+oc new-project amq-messaging-central
 ```
 
 Install the operator through operator hub
@@ -584,6 +619,14 @@ Custom install on another namespace
 
 ```
 oc project amq-messaging-b
+oc create -f interconnect/deploy/service_account.yaml
+oc create -f interconnect/deploy/role.yaml
+oc create -f interconnect/deploy/role_binding.yaml
+oc create -f interconnect/deploy/operator.yaml
+```
+
+```
+oc project amq-messaging-central
 oc create -f interconnect/deploy/service_account.yaml
 oc create -f interconnect/deploy/role.yaml
 oc create -f interconnect/deploy/role_binding.yaml
@@ -606,6 +649,17 @@ openssl req -new -batch -subj "/CN=amq-interconnect.amq-messaging.svc.cluster.lo
 openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.crt -CAkey interconnect/tls/ca-key.pem -out interconnect/tls/tls.crt -CAcreateserial
 ```
 
+## Deploy central cluster
+
+```
+oc project amq-messaging-central
+
+oc create secret generic interconnect-cluster-central-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt -n  amq-messaging-central
+
+oc delete -f interconnect/interconnect-cluster-central.yml -n amq-messaging-central
+oc apply -f interconnect/interconnect-cluster-central.yml -n amq-messaging-central
+```
+
 ## Deploy main cluster
 
 ```
@@ -616,6 +670,7 @@ oc create secret generic interconnect-cluster-a-default-credentials --from-file=
 oc delete -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
 oc apply -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
 
+oc apply -f interconnect/interconnect-cluster-a-custom.yml -n amq-messaging-a
 ```
 
 ## Deploy second interrconnect 
@@ -638,6 +693,9 @@ oc create secret generic interconnect-cluster-b-default-credentials --from-file=
 
 oc delete -f interconnect/interconnect-cluster-b.yml -n amq-messaging-b
 oc apply -f interconnect/interconnect-cluster-b.yml -n amq-messaging-b
+
+
+oc apply -f interconnect/interconnect-cluster-b-custom.yml -n amq-messaging-b
 
 ```
 
@@ -673,7 +731,25 @@ oc apply -f apps/messaging-tester-route-b0.yml  -n apps
 oc delete -f apps/messaging-tester-route-b1.yml  -n apps
 oc apply -f apps/messaging-tester-route-b1.yml  -n apps
 
+
+The follwoing deployments connect directly to the AMQ 7 broker cluster with custom statefulset
+
 ```
+oc new-project apps
+
+oc delete -f apps/messaging-tester-route-a0-custom.yml  -n apps
+oc apply -f apps/messaging-tester-route-a0-custom.yml  -n apps
+
+oc delete -f apps/messaging-tester-route-a1-custom.yml  -n apps
+oc apply -f apps/messaging-tester-route-a1-custom.yml  -n apps
+
+oc delete -f apps/messaging-tester-route-b0-custom.yml  -n apps
+oc apply -f apps/messaging-tester-route-b0-custom.yml  -n apps
+
+oc delete -f apps/messaging-tester-route-b1-custom.yml  -n apps
+oc apply -f apps/messaging-tester-route-b1-custom.yml  -n apps
+
+``````
 
 
 The follwoing deployments connect directly to the AMQ Interconnect Layer

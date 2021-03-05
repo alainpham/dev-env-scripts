@@ -22,7 +22,7 @@
         <dependency>
             <groupId>org.apache.activemq</groupId>
             <artifactId>artemis-jms-client</artifactId>
-            <version>2.13.0.redhat-00006</version>
+            <version>2.16.0</version>
         </dependency>
         <dependency>
             <groupId>commons-io</groupId>

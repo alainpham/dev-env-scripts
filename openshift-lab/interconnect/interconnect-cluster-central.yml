@@ -10,7 +10,7 @@ spec:
   deploymentPlan:
     role: interior
     placement: Any
-    size: 1
+    size: 3
   listeners:  
     - port: 5672
     - authenticatePeer: false

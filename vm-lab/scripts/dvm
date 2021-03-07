@@ -1,0 +1,9 @@
+#!/bin/bash
+VMS_DIR=/home/workdrive/virt
+sudo virsh destroy $1
+sudo virsh undefine $1
+rm -f $VMS_DIR/runtime/$1.qcow2
+rm -f $VMS_DIR/$1-cidata.iso
+echo "$(date -R) Removing ip from dhcp server..."
+sudo virsh net-update default delete ip-dhcp-host "<host name='$1' />" --live --config
+ansible 127.0.0.1 -m lineinfile --become -a "path=/etc/hosts regexp='^.*$1.*$' state=absent"

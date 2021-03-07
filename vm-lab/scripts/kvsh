@@ -1,0 +1,2 @@
+#!/bin/bash
+ssh cloud-user@"$1"

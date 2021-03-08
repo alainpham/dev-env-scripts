@@ -1,4 +1,11 @@
 #!/bin/bash
+
+# Take one argument from the commandline: VM name
+if ! [ $# -eq 1 ]; then
+    echo "Usage: $0 <node-name>"
+    exit 1
+fi
+
 VMS_DIR=/home/workdrive/virt/runtime
 sudo virsh destroy $1
 sudo virsh undefine $1

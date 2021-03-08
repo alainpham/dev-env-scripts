@@ -165,7 +165,7 @@ Cluster Provides
 oc create secret generic interconnect-cluster-a-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
 
-oc apply -f interconnect/interconnect-cluster-a-custom.yml -n amq-messaging-a
+oc apply -f interconnect/interconnect-cluster-a-custom.yml
 ```
 
 ### Deploy Interconnect B Cluster
@@ -178,7 +178,7 @@ Cluster Provides
 ```
 oc create secret generic interconnect-cluster-b-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
 
-oc apply -f interconnect/interconnect-cluster-b-custom.yml -n amq-messaging-b
+oc apply -f interconnect/interconnect-cluster-b-custom.yml
 ```
 
 ## Deploy client demo apps
@@ -193,8 +193,8 @@ Both clients will be able to publish and subscribe to the queues
 * app.queue.perf
 
 ```
-oc apply -f apps/messaging-tester-interconnect-a.yml  -n apps
-oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
+oc apply -f apps/messaging-tester-interconnect-a.yml 
+oc apply -f apps/messaging-tester-interconnect-b.yml
 ```
 
 Open the webapps of these testers through their routes and test sending messages from one app to another. Hit send on either app instance.

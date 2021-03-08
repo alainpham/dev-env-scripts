@@ -118,6 +118,7 @@
 
     <route id="receive-msg">
         <from uri="jms:queue:{{queue.defaultapp}}"/>
+        <from uri="jms:queue:{{queue.defaultapp.alt}}"/>
         <unmarshal>
             <json library="Jackson"/>
         </unmarshal>

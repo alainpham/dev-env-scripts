@@ -156,18 +156,19 @@ stringData:
     spring.resources.cache.cachecontrol.cache-public=true
     spring.resources.cache.cachecontrol.max-age=0
 
-    jms.uri=amqps://interconnect-cluster-a-5671-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com:443
+    jms.uri=amqps://interconnect-cluster-a:5671
     jms.java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory
     jms.connectionFactory.default=${jms.uri}?transport.trustAll=true
     jms.default.cnx.factory=default
     jms.java.naming.security.principal=jmsuser
     jms.java.naming.security.credentials=password0!
 
-    topic.loadtrigger=app.addr
-    queue.defaultapp=app.queue-b
+    topic.loadtrigger=app.addr.a
+    queue.defaultapp=app.queue.a
+    queue.defaultapp.alt=app.queue.b
     queue.defaultapp.send=${queue.defaultapp}
 
-    queue.perf=app.perf
+    queue.perf=app.queue.perf
 
 ---
 kind: Secret

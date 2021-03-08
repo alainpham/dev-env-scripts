@@ -4,13 +4,15 @@ metadata:
   name: interconnect-cluster-central
 spec:
   addresses:  
-  - prefix: app
+  - prefix: app.queue
     distribution: balanced
     waypoint: true
+  - prefix: app.addr
+    distribution: multicast
   deploymentPlan:
     role: interior
     placement: Any
-    size: 3
+    size: 1
   listeners:  
     - port: 5672
     - authenticatePeer: false

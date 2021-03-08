@@ -4,9 +4,11 @@ metadata:
   name: interconnect-cluster-b
 spec:
   addresses:  
-  - prefix: app
+  - prefix: app.queue
     distribution: balanced
     waypoint: true
+  - prefix: app.addr
+    distribution: multicast
   deploymentPlan:
     role: interior
     placement: Any
@@ -26,27 +28,33 @@ spec:
       expose: true
   connectors:
     - name: amq-broker-b
-      host: amq-broker-b-amq-headless.amq-messaging-b.svc.cluster.local
+      host: amq-broker-b-amq-headless
       port: 5672
       routeContainer: true
   linkRoutes:
-    - prefix: 'app.queue-b'
+    - prefix: 'app.queue.b'
       direction: in
       connection: amq-broker-b
-    - prefix: 'app.queue-b'
+    - prefix: 'app.queue.b'
       direction: out
       connection: amq-broker-b
-  # autoLinks:
-  #   - address: 'app.queue-b'
-  #     direction: in
-  #     connection: amq-broker-b
-  #   - address: 'app.queue-b'
-  #     direction: out
-  #     connection: amq-broker-b
+  autoLinks:
+    # - address: 'app.queue.b'
+    #   direction: in
+    #   connection: amq-broker-b
+    # - address: 'app.queue.b'
+    #   direction: out
+    #   connection: amq-broker-b
+    - address: 'app.perf'
+      direction: in
+      connection: amq-broker-b
+    - address: 'app.perf'
+      direction: out
+      connection: amq-broker-b
   interRouterConnectors:
     #https://interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com/
-    - host: interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com
-      port: 443
+    - host: interconnect-cluster-central
+      port: 55671
       verifyHostname: false
       sslProfile: default
       name: interconnect-cluster

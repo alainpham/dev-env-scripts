@@ -1,0 +1,167 @@
+kind: Deployment
+apiVersion: apps/v1
+metadata:
+  name: interconnect-cluster-central
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      application: interconnect-cluster-central
+      interconnect_cr: interconnect-cluster-central
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        application: interconnect-cluster-central
+        interconnect_cr: interconnect-cluster-central
+      annotations:
+        prometheus.io/port: '8888'
+        prometheus.io/scrape: 'true'
+    spec:
+      restartPolicy: Always
+      serviceAccountName: interconnect-cluster-central
+      terminationGracePeriodSeconds: 30
+      containers:
+        - resources:
+            limits:
+              cpu: "0.5"
+              memory: "1024Mi"
+            requests:
+              cpu: "0.5"
+              memory: "1024Mi"
+          terminationMessagePath: /dev/termination-log
+          name: interconnect-cluster-central
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 8888
+              scheme: HTTP
+            initialDelaySeconds: 60
+            timeoutSeconds: 1
+            periodSeconds: 10
+            successThreshold: 1
+            failureThreshold: 3
+          env:
+            - name: APPLICATION_NAME
+              value: interconnect-cluster-central
+            - name: QDROUTERD_CONF
+              value: |
+                router {
+                    mode: interior
+                    id: ${HOSTNAME}
+                }
+
+                listener {
+                    host: 0.0.0.0
+                    port: 5672
+                    role: normal
+                }
+                listener {
+                    host: 0.0.0.0
+                    port: 8080
+                    role: normal
+                    http: true
+                }
+                listener {
+                    host: 0.0.0.0
+                    port: 5671
+                    role: normal
+                    sslProfile: default
+                }
+                listener {
+                    name: health-and-stats
+                    port: 8888
+                    http: true
+                    healthz: true
+                    metrics: true
+                    websockets: false
+                    httpRootDir: invalid
+                }
+
+                listener {
+                    role: inter-router
+                    host: 0.0.0.0
+                    port: 55671
+                    sslProfile: default
+                }
+
+                listener {
+                    role: edge
+                    host: 0.0.0.0
+                    port: 45672
+                }
+
+                sslProfile {
+                   name: default
+                   certFile: /etc/qpid-dispatch-certs/default/interconnect-cluster-central-default-credentials/tls.crt
+                   privateKeyFile: /etc/qpid-dispatch-certs/default/interconnect-cluster-central-default-credentials/tls.key
+                   caCertFile: /etc/qpid-dispatch-certs/default/interconnect-cluster-central-default-credentials/ca.crt
+                }
+
+                address {
+                    prefix: app
+                    distribution: balanced
+                    waypoint: true
+                }
+            - name: QDROUTERD_AUTO_CREATE_SASLDB_SOURCE
+              value: /etc/qpid-dispatch/sasl-users/
+            - name: QDROUTERD_AUTO_CREATE_SASLDB_PATH
+              value: /tmp/qdrouterd.sasldb
+            - name: POD_COUNT
+              value: '1'
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: metadata.namespace
+            - name: POD_IP
+              valueFrom:
+                fieldRef:
+                  apiVersion: v1
+                  fieldPath: status.podIP
+            - name: QDROUTERD_AUTO_MESH_DISCOVERY
+              value: QUERY
+          ports:
+            - name: port-5672
+              containerPort: 5672
+              protocol: TCP
+            - name: port-8080
+              containerPort: 8080
+              protocol: TCP
+            - name: port-5671
+              containerPort: 5671
+              protocol: TCP
+            - name: port-55671
+              containerPort: 55671
+              protocol: TCP
+          imagePullPolicy: IfNotPresent
+          volumeMounts:
+            - name: interconnect-cluster-central-default-credentials
+              mountPath: >-
+                /etc/qpid-dispatch-certs/default/interconnect-cluster-central-default-credentials
+            - name: sasl-users
+              mountPath: /etc/qpid-dispatch/sasl-users
+            - name: sasl-config
+              mountPath: /etc/sasl2
+          terminationMessagePolicy: File
+          image: 'amq7/amq-interconnect:1.10'
+      serviceAccount: interconnect-cluster-central
+      volumes:
+        - name: interconnect-cluster-central-default-credentials
+          secret:
+            secretName: interconnect-cluster-central-default-credentials
+            defaultMode: 420
+        - name: sasl-users
+          secret:
+            secretName: interconnect-cluster-central-users
+            defaultMode: 420
+        - name: sasl-config
+          configMap:
+            name: interconnect-cluster-central-sasl-config
+            defaultMode: 420
+      dnsPolicy: ClusterFirst
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 25%
+      maxSurge: 25%

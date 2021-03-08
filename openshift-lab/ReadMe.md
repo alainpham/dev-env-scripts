@@ -25,10 +25,11 @@
   - [deploy second cluster](#deploy-second-cluster-1)
 - [Deploy Local Monitoring](#deploy-local-monitoring)
 - [Install Interconnect](#install-interconnect)
+  - [Notes](#notes)
   - [Self sign tls keys](#self-sign-tls-keys-1)
   - [Deploy central cluster](#deploy-central-cluster)
   - [Deploy main cluster](#deploy-main-cluster-2)
-  - [Deploy second interrconnect](#deploy-second-interrconnect)
+  - [Deploy second interconnect](#deploy-second-interconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
   - [Using openshift routes](#using-openshift-routes)
 
@@ -419,7 +420,7 @@ oc project amq-messaging-a
 
 oc create secret generic amq-broker-a-tls-secret \
 --from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
---from-file=truststore.p12=amqbroker/tls/truststore.p12
+--from-file=truststore.p12=amqbroker/tls/truststore.p12 -n amq-messaging-a
 
 oc delete -f amqbroker/amq-broker-a-custom-cluster.yml -n amq-messaging-a
 oc delete -f amqbroker/amq-broker-a-custom-network.yml -n amq-messaging-a
@@ -449,7 +450,7 @@ oc project amq-messaging-b
 
 oc create secret generic amq-broker-b-tls-secret \
 --from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
---from-file=truststore.p12=amqbroker/tls/truststore.p12
+--from-file=truststore.p12=amqbroker/tls/truststore.p12 -n amq-messaging-b
 
 oc delete -f amqbroker/amq-broker-b-custom-cluster.yml -n amq-messaging-b
 oc delete -f amqbroker/amq-broker-b-custom-network.yml -n amq-messaging-b
@@ -539,7 +540,7 @@ keytool -genkey \
 
 keytool -list -storepass password -keystore amqbroker/tls/amq-broker-keystore.p12
 
-
+FILES=amqbroker/tls/trusted-certs/*
 for f in $FILES
 do
     full="${f##*/}"
@@ -607,6 +608,14 @@ https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kuber
 
 # Install Interconnect
 
+## Notes
+
+LinkRoutes create direct sessions between client and broker while autoLinks create an independant session on the broker and act like a
+normal producer. Link Routes allow you to use roundrobin mechanismes of the broker queues while autoLinks will be using the balanced and credit to route according load while privilegin closest (lowest) consumer.
+
+Link Routes allow to have local transactions on brokers. It also means that an address of linkRoute must be unique in an interconnect mesh while autolinks can have multiple locations and act as "sharded queues" so that consumers can consume from multiple queues at the same time.
+
+
 ```
 oc new-project amq-messaging-a
 oc new-project amq-messaging-b
@@ -639,20 +648,22 @@ oc create -f interconnect/deploy/operator.yaml
 mkdir interconnect/tls
 
 openssl genrsa -out interconnect/tls/ca-key.pem 2048
-openssl req -new -batch -key interconnect/tls/ca-key.pem -out interconnect/tls/ca-csr.pem
-openssl x509 -req -in interconnect/tls/ca-csr.pem -signkey interconnect/tls/ca-key.pem -out interconnect/tls/ca.crt
+openssl req -new -batch -subj "/CN=interconnect-cloud" -key interconnect/tls/ca-key.pem -out interconnect/tls/ca-csr.pem
+openssl x509 -req -in interconnect/tls/ca-csr.pem -signkey interconnect/tls/ca-key.pem -out interconnect/tls/ca.crt -days 365000
 
 
 openssl genrsa -out interconnect/tls/tls.key 2048
 openssl req -new -batch -subj "/CN=amq-interconnect.amq-messaging.svc.cluster.local" -key interconnect/tls/tls.key -out interconnect/tls/server-csr.pem
 
-openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.crt -CAkey interconnect/tls/ca-key.pem -out interconnect/tls/tls.crt -CAcreateserial
+openssl x509 -req -in interconnect/tls/server-csr.pem -CA interconnect/tls/ca.crt -CAkey interconnect/tls/ca-key.pem -out interconnect/tls/tls.crt -CAcreateserial -days 365000
 ```
 
 ## Deploy central cluster
 
 ```
 oc project amq-messaging-central
+
+oc delete secret interconnect-cluster-central-default-credentials -n  amq-messaging-central
 
 oc create secret generic interconnect-cluster-central-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt -n  amq-messaging-central
 
@@ -665,6 +676,9 @@ oc apply -f interconnect/interconnect-cluster-central.yml -n amq-messaging-centr
 ```
 oc project amq-messaging-a
 
+oc delete secret interconnect-cluster-a-default-credentials -n  amq-messaging-a
+
+
 oc create secret generic interconnect-cluster-a-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt -n  amq-messaging-a
 
 oc delete -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
@@ -673,7 +687,7 @@ oc apply -f interconnect/interconnect-cluster-a.yml -n amq-messaging-a
 oc apply -f interconnect/interconnect-cluster-a-custom.yml -n amq-messaging-a
 ```
 
-## Deploy second interrconnect 
+## Deploy second interconnect 
 
 Make sure to change the url of the interRouter Connection file interconnect/interconnect-cluster-mirror.yml
 
@@ -688,6 +702,8 @@ Make sure to change the url of the interRouter Connection file interconnect/inte
 
 ```
 oc project amq-messaging-b
+
+oc delete secret interconnect-cluster-b-default-credentials -n  amq-messaging-a
 
 oc create secret generic interconnect-cluster-b-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt  -n amq-messaging-b
 

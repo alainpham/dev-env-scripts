@@ -163,8 +163,9 @@ stringData:
     jms.java.naming.security.principal=jmsuser
     jms.java.naming.security.credentials=password0!
 
-    topic.loadtrigger=app.addr
-    queue.defaultapp=app.queue-a
+    topic.loadtrigger=app.addr.a
+    queue.defaultapp=app.queue.a
+    queue.defaultapp.alt=app.queue.b
     queue.defaultapp.send=${queue.defaultapp}
 
     queue.perf=app.perf

@@ -37,11 +37,19 @@ echo "$(date -R) creating machine named $1 with $MEM MB of RAM and $CPUS vcpu(s)
 echo "$(date -R) creating cloud-init iso"
 SSH_PUB_KEY=`cat ~/.ssh/id_rsa.pub`
 
+SSH_PRIVVM_KEY=`cat ~/.ssh/vm | sed 's/^/    /'`
+SSH_PUBVM_KEY=`cat ~/.ssh/vm.pub`
+
+
 cat > $USER_DATA << _EOF_
 #cloud-config
 ssh_pwauth: True
 ssh_authorized_keys:
   - $SSH_PUB_KEY
+ssh_keys:
+  rsa_private: | 
+$SSH_PRIVVM_KEY
+  rsa_public: $SSH_PUBVM_KEY
 users:
   - name: cloud-user
     gecos: cloud-user

@@ -48,16 +48,20 @@ address=/secondary.loc/192.168.122.11
 
 # Create a VM
 
+
+```
+ssh-keygen -f ~/.ssh/vm
+```
+
+
 ```
 vmcreate prime 2048 4 debian 10 40G debian10
 vmcreate second 2048 4 debian 11 40G debian10
-
 ```
 
 # Delete vms example
 
 ```
-
 dvm prime
 dvm second
 ```

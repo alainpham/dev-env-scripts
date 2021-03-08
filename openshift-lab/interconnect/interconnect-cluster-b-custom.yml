@@ -45,10 +45,10 @@ spec:
     # - address: 'app.queue.b'
     #   direction: out
     #   connection: amq-broker-b
-    - address: 'app.perf'
+    - address: 'app.queue.perf'
       direction: in
       connection: amq-broker-b
-    - address: 'app.perf'
+    - address: 'app.queue.perf'
       direction: out
       connection: amq-broker-b
   interRouterConnectors:

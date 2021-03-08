@@ -9,6 +9,15 @@
 - [AMQ Broker](#amq-broker)
   - [Import images](#import-images-1)
   - [Install hotfix](#install-hotfix)
+- [Full Red Hat Interconnect/Red Hat AMQ Broker Mesh Demo](#full-red-hat-interconnectred-hat-amq-broker-mesh-demo)
+  - [Deploy clusters of Brokers](#deploy-clusters-of-brokers)
+    - [Deploy Cluster A](#deploy-cluster-a)
+    - [Deploy Cluster B](#deploy-cluster-b)
+  - [Deploy Interconnect Mesh](#deploy-interconnect-mesh)
+    - [Deploy Interconnect Central Cluster](#deploy-interconnect-central-cluster)
+    - [Deploy Interconnect A Cluster](#deploy-interconnect-a-cluster)
+    - [Deploy Interconnect B Cluster](#deploy-interconnect-b-cluster)
+  - [Deploy client demo apps](#deploy-client-demo-apps)
 - [AMQ Broker Federation](#amq-broker-federation)
   - [Setting up vars for custom federation coniguration](#setting-up-vars-for-custom-federation-coniguration)
   - [Creating keystores and truststores](#creating-keystores-and-truststores)
@@ -90,6 +99,109 @@ oc project openshift
 oc new-build --strategy docker --binary -i amq-broker:7.8 --name amq-broker-hotfix
 oc start-build amq-broker-hotfix --from-dir=amqbroker/hotfix/build --follow
 ```
+
+# Full Red Hat Interconnect/Red Hat AMQ Broker Mesh Demo
+
+The purpose of this section is to show quickly the benefits combining brokers and routers to build a multi environment, multi cloud, multi region Messaging Mesh.
+
+The properties of this topology are
+
+* Each region or environment can bring it's own broker and set of addresses and queues to the mesh dynamically.
+* Able to provide location transparency for consumers and producers to the entire Mesh.
+
+We will deploy of the following topology.
+
+* One Central Red Hat Interconnect Router Cluster to serve as a hub for the Messaging Mesh
+* All participants of the Mesh will have their own Interconnect Routers with attached Broker clusters
+* All participants will connect to the central router and declare addresses and queues with linkRoutes or autoLinks.
+* In this demo we show 2 partiticpants/regions/evironments
+
+![topolgy](assets/interconnect-mesh.png)
+
+## Deploy clusters of Brokers
+
+### Deploy Cluster A
+
+```
+oc create secret generic amq-broker-a-tls-secret \
+--from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=truststore.p12=amqbroker/tls/truststore.p12
+
+oc apply -f amqbroker/statefulset-noauth/amq-broker-a-custom-cluster.yml
+oc apply -f amqbroker/statefulset-noauth/amq-broker-a-custom-network.yml
+```
+
+### Deploy Cluster B
+
+```
+oc create secret generic amq-broker-b-tls-secret \
+--from-file=keystore.p12=amqbroker/tls/amq-broker-keystore.p12 \
+--from-file=truststore.p12=amqbroker/tls/truststore.p12
+
+oc apply -f amqbroker/statefulset-noauth/amq-broker-b-custom-cluster.yml
+oc apply -f amqbroker/statefulset-noauth/amq-broker-b-custom-network.yml
+```
+
+## Deploy Interconnect Mesh
+
+Make sure Interconnect Operator is installed on the namespace
+
+### Deploy Interconnect Central Cluster
+
+```
+oc create secret generic interconnect-cluster-central-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+
+
+oc apply -f interconnect/interconnect-cluster-central.yml
+```
+### Deploy Interconnect A Cluster
+
+Cluster Provides 
+* app.queue.a.# as linkRoute
+* app.queue.perf as autoLink
+* app.addr.# as multicast address
+
+```
+oc create secret generic interconnect-cluster-a-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+
+
+oc apply -f interconnect/interconnect-cluster-a-custom.yml -n amq-messaging-a
+```
+
+### Deploy Interconnect B Cluster
+
+Cluster Provides 
+* app.queue.b.# as linkRoute
+* app.queue.perf as autoLink
+* app.addr.# as multicast address
+
+```
+oc create secret generic interconnect-cluster-b-default-credentials --from-file=tls.crt=interconnect/tls/tls.crt  --from-file=tls.key=interconnect/tls/tls.key  --from-file=ca.crt=interconnect/tls/ca.crt
+
+oc apply -f interconnect/interconnect-cluster-b-custom.yml -n amq-messaging-b
+```
+
+## Deploy client demo apps
+
+We will deploy 2 clients, each connect to interconnect a and b respectively.
+
+Both clients will be able to publish and subscribe to the queues
+* app.queue.a
+* app.queue.b
+* app.addr.a for tirggering load producing on A client towards queue app.queue.perf
+* app.addr.b for triggering load producing on B client towards queue app.queue.perf
+* app.queue.perf
+
+```
+oc apply -f apps/messaging-tester-interconnect-a.yml  -n apps
+oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
+```
+
+Open the webapps of these testers through their routes and test sending messages from one app to another. Hit send on either app instance.
+
+![testers](assets/tester.png)
+
+Observe message flow with the Interconnect console on the Topology page.
 
 # AMQ Broker Federation
 
@@ -746,7 +858,7 @@ oc apply -f apps/messaging-tester-route-b0.yml  -n apps
 
 oc delete -f apps/messaging-tester-route-b1.yml  -n apps
 oc apply -f apps/messaging-tester-route-b1.yml  -n apps
-
+```
 
 The follwoing deployments connect directly to the AMQ 7 broker cluster with custom statefulset
 
@@ -765,7 +877,7 @@ oc apply -f apps/messaging-tester-route-b0-custom.yml  -n apps
 oc delete -f apps/messaging-tester-route-b1-custom.yml  -n apps
 oc apply -f apps/messaging-tester-route-b1-custom.yml  -n apps
 
-``````
+```
 
 
 The follwoing deployments connect directly to the AMQ Interconnect Layer
@@ -782,3 +894,4 @@ oc apply -f apps/messaging-tester-interconnect-b.yml  -n apps
 oc delete -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 oc apply -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 ```
+

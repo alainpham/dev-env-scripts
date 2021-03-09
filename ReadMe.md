@@ -117,7 +117,10 @@ This is to have some static name resolution docker containers we run locally
 # Portainer
 
 ```
-docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer:linux-amd64-1.24.1
+docker stop portainer
+docker rm portainer
+docker rmi portainer/portainer:linux-amd64-1.24.1
+docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docker.sock:/var/run/docker.sock portainer/portainer-ce:2.1.1
 ```
 
 # Nexus

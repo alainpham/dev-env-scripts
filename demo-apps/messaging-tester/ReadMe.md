@@ -216,3 +216,5 @@ docker build -t messaging-tester -f DockerfileCommunity .
 docker tag messaging-tester:latest alainpham/messaging-tester:latest
 docker push alainpham/messaging-tester:latest
 ```
+
+

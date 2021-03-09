@@ -18,6 +18,7 @@
     - [Deploy Interconnect A Cluster](#deploy-interconnect-a-cluster)
     - [Deploy Interconnect B Cluster](#deploy-interconnect-b-cluster)
   - [Deploy client demo apps](#deploy-client-demo-apps)
+  - [Deploy some Monitoring](#deploy-some-monitoring)
 - [AMQ Broker Federation](#amq-broker-federation)
   - [Setting up vars for custom federation coniguration](#setting-up-vars-for-custom-federation-coniguration)
   - [Creating keystores and truststores](#creating-keystores-and-truststores)
@@ -202,6 +203,15 @@ Open the webapps of these testers through their routes and test sending messages
 ![testers](assets/tester.png)
 
 Observe message flow with the Interconnect console on the Topology page.
+
+## Deploy some Monitoring
+
+Follow these instructions 
+
+https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kubernetesopenshift-namespace-for-monitoring
+
+
+
 
 # AMQ Broker Federation
 

@@ -1,10 +1,10 @@
 <factorypath>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-jms-client/2.3.25.SP31-redhat-00001/hornetq-jms-client-2.3.25.SP31-redhat-00001.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-core-client/2.3.25.SP31-redhat-00001/hornetq-core-client-2.3.25.SP31-redhat-00001.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-jms-client/2.3.25.SP29-redhat-1/hornetq-jms-client-2.3.25.SP29-redhat-1.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-core-client/2.3.25.SP29-redhat-1/hornetq-core-client-2.3.25.SP29-redhat-1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/jgroups/jgroups/3.2.13.Final/jgroups-3.2.13.Final.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-commons/2.3.25.SP31-redhat-00001/hornetq-commons-2.3.25.SP31-redhat-00001.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-commons/2.3.25.SP29-redhat-1/hornetq-commons-2.3.25.SP29-redhat-1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/jboss/logging/jboss-logging/3.1.0.GA/jboss-logging-3.1.0.GA.jar" enabled="true" runInBatchMode="false"/>
-    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-journal/2.3.25.SP31-redhat-00001/hornetq-journal-2.3.25.SP31-redhat-00001.jar" enabled="true" runInBatchMode="false"/>
+    <factorypathentry kind="VARJAR" id="M2_REPO/org/hornetq/hornetq-journal/2.3.25.SP29-redhat-1/hornetq-journal-2.3.25.SP29-redhat-1.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/io/netty/netty/3.6.10.Final/netty-3.6.10.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/jboss/spec/javax/jms/jboss-jms-api_1.1_spec/1.0.0.Final/jboss-jms-api_1.1_spec-1.0.0.Final.jar" enabled="true" runInBatchMode="false"/>
     <factorypathentry kind="VARJAR" id="M2_REPO/org/apache/logging/log4j/log4j-core/2.13.3.redhat-00003/log4j-core-2.13.3.redhat-00003.jar" enabled="true" runInBatchMode="false"/>

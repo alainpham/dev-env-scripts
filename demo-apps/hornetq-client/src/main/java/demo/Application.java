@@ -44,13 +44,13 @@ public class Application {
         /* 
 
             alternative amq-broker-a-acceptor-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
-
+https://amq-broker-a-acceptor-0-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es/
             cp tls/ocp/* /deployments/tls 
             export AMQHOST=amq-broker-a-acceptor-hornetq-0-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
             export AMQPORT=443
        
             cp /home/workdrive/TAZONE/RUN/apps/messaging-tester/tls/* /deployments/tls 
-            export AMQHOST=amq-broker-a-generic-0-svc-rte-amq-messaging-a.apps.cluster-33cc.33cc.example.opentlc.com
+            export AMQHOST=amq-broker-a-acceptor-0-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es
             export AMQPORT=443
 
             cp tls/local/* /deployments/tls 

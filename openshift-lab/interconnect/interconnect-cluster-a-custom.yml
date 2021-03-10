@@ -57,10 +57,10 @@ spec:
     #   connection: amq-broker-a
     - address: 'app.queue.perf'
       direction: in
-      connection: amq-broker-a
+      connection: amq-broker-a-0
     - address: 'app.queue.perf'
       direction: out
-      connection: amq-broker-a
+      connection: amq-broker-a-0
   interRouterConnectors:
     #https://interconnect-cluster-central-55671-amq-messaging-central.apps.cluster-33cc.33cc.example.opentlc.com/
     - host: interconnect-cluster-central

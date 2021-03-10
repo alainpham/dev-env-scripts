@@ -42,8 +42,7 @@ Setup custom locations
 ```
 
 #/etc/NetworkManager/dnsmasq.d/dev.conf
-address=/prime.loc/192.168.122.10
-address=/secondary.loc/192.168.122.11
+address=/kube.loc/192.168.122.100
 ```
 
 # Create a VM
@@ -55,15 +54,18 @@ ssh-keygen -f ~/.ssh/vm
 
 
 ```
-vmcreate prime 2048 4 debian 10 40G debian10
-vmcreate second 2048 4 debian 11 40G debian10
+vmcreate master 4048 4 debian 10 40G debian10
+vmcreate node01 4048 4 debian 11 40G debian10
+vmcreate node02 4048 4 debian 12 40G debian10
 ```
 
 # Delete vms example
 
 ```
-dvm prime
-dvm second
+dvm master
+dvm node01
+dvm node02
+
 ```
 
 #(Draft) Install vanilla Kubernetes
@@ -77,7 +79,10 @@ br_netfilter
 
 update-alternatives --config iptables 
 
+
 select legacy
+
+update-alternatives --set iptables /usr/sbin/iptables-legacy
 
 cat > /etc/docker/daemon.json <<EOF
 {
@@ -123,4 +128,8 @@ kubectl get pods --all-namespaces
 on worker node
 kubeadm join 192.168.122.10:6443 --token xxipx5.8yhjqrhdt4hx1thp \
     --discovery-token-ca-cert-hash sha256:837e6e5f83fa5f4abfcbb4f646026937f15205c7c2fb791b53e160fe65c6a799
+
+
+kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
+
 ```

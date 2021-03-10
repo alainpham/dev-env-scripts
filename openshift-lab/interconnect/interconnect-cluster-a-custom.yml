@@ -27,17 +27,27 @@ spec:
       sslProfile: default
       expose: true
   connectors:
-    - name: amq-broker-a
-      host: amq-broker-a-amq-headless
+    - name: amq-broker-a-0
+      host: amq-broker-a-0-svc
+      port: 5672
+      routeContainer: true
+    - name: amq-broker-a-1
+      host: amq-broker-a-1-svc
       port: 5672
       routeContainer: true
   linkRoutes:
     - prefix: 'app.queue.a'
       direction: in
-      connection: amq-broker-a
+      connection: amq-broker-a-0
     - prefix: 'app.queue.a'
       direction: out
-      connection: amq-broker-a
+      connection: amq-broker-a-0
+    - prefix: 'app.queue.a'
+      direction: in
+      connection: amq-broker-a-1
+    - prefix: 'app.queue.a'
+      direction: out
+      connection: amq-broker-a-1
   autoLinks:
     # - address: 'app.queue.a'
     #   direction: in

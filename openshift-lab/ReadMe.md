@@ -159,7 +159,7 @@ oc apply -f interconnect/interconnect-cluster-central.yml
 
 Cluster Provides 
 * app.queue.a.# as linkRoute
-* app.queue.perf as autoLink
+* app.queue.perf as autoLink. Note that this queue is distributed/shared on both clusters A and B. Clients can consume and produce on this queue. The messages will be distributed on both clusters.
 * app.addr.# as multicast address
 
 ```

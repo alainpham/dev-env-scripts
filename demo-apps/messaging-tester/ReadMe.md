@@ -22,7 +22,15 @@ Example running with docker
 
 ```
 docker run -it --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFILES_ACTIVE=dev-core -e JMS_CONNECTIONFACTORY_DEFAULT=tcp://amqbrokera0:61616 -e THEME=main-dark-blue -e QUEUE_DEFAULTAPP=app.queue-a --name messaging-tester alainpham/messaging-tester:latest
+
 ```
+with amqp trustall=true
+```
+docker run -p 8090:8090 -it --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443 -e THEME=main-dark-blue -e QUEUE_DEFAULTAPP=app.queue.a --name messaging-tester alainpham/messaging-tester:latest
+
+docker run -p 8090:8090 -it --rm --net primenet --ip 172.18.0.11 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443 -e THEME=main-dark-red -e QUEUE_DEFAULTAPP=app.queue.a -e JMS_CACHE_LEVEL=CACHE_CONNECTION --name messaging-tester alainpham/messaging-tester:latest
+```
+
 
 
 ## To build this project use
@@ -87,9 +95,26 @@ do
         -file $f
 done
 
+FILES=tls/trusted-certs/*
+for f in $FILES
+do
+    full="${f##*/}"
+    extension="${full##*.}"
+    filename="${full%.*}"
+    echo "importing $full in alias $filename"
+
+    keytool -import \
+        -alias $filename \
+        -storepass ""\
+        -storetype PKCS12 \
+        -noprompt \
+        -keystore tls/truststore-nopw.p12 \
+        -file $f
+done
+
 keytool -list -storepass password -keystore tls/keystore.p12 -v
 keytool -list -storepass password -keystore tls/truststore.p12 -v
-
+keytool -list -keystore tls/truststore-nopw.p12 -v
 ```
 
 turning a binary file into base64 string to be able to put into yaml files

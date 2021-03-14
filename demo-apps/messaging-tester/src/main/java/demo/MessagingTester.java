@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Value;
 import java.util.Hashtable;
 
 import javax.jms.ConnectionFactory;
+import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -82,7 +83,7 @@ public class MessagingTester implements WebSocketConfigurer{
     public JmsComponent jms(CachingConnectionFactory cachingConnectionFactory) {
 
         JmsConfiguration jmsConfiguration =new JmsConfiguration(cachingConnectionFactory);
-        jmsConfiguration.setCacheLevelName(env.getProperty("jms.cache.level"));
+        // jmsConfiguration.setCacheLevelName(env.getProperty("jms.cache.level"));
 
         JmsComponent jmsComponent = new JmsComponent(jmsConfiguration);
 

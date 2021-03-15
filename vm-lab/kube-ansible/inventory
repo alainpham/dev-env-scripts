@@ -1,0 +1,7 @@
+
+[masters]
+master ansible_connection=ssh ansible_user=cloud-user ansible_become=true
+
+[nodes]
+node01 ansible_connection=ssh ansible_user=cloud-user ansible_become=true
+node02 ansible_connection=ssh ansible_user=cloud-user ansible_become=true

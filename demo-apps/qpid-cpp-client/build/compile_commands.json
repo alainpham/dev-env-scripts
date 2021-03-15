@@ -1,0 +1,12 @@
+[
+{
+  "directory": "/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/build",
+  "command": "/usr/bin/c++   -I/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/include/qpid-cpp-client  -g   -o CMakeFiles/qpid-cpp-client.dir/src/HelloWorld.cpp.o -c /home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/src/HelloWorld.cpp",
+  "file": "/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/src/HelloWorld.cpp"
+},
+{
+  "directory": "/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/build",
+  "command": "/usr/bin/c++   -I/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/include/qpid-cpp-client  -g   -o CMakeFiles/qpid-cpp-client.dir/src/Main.cpp.o -c /home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/src/Main.cpp",
+  "file": "/home/workdrive/TAZONE/WORKSPACES/ws-dev-env-as-code/demo-apps/qpid-cpp-client/src/Main.cpp"
+}
+]

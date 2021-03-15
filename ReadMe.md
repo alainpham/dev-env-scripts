@@ -461,10 +461,19 @@ docker run \
 
 ```
 docker run \
+    -p 5672:5672 \
     -e QDROUTERD_CONF="$(cat interconnect/qdrouterd-mesh.conf)" \
     --memory="1g" \
     -d --name interconnect  \
     -d --net primenet --ip 172.18.0.68 \
+    registry.redhat.io/amq7/amq-interconnect:latest
+
+
+docker run \
+    -p 5672:5672 \
+    -e QDROUTERD_CONF="$(cat interconnect/qdrouterd-mesh.conf)" \
+    --memory="1g" \
+    -d --name interconnect  \
     registry.redhat.io/amq7/amq-interconnect:latest
 ```
 

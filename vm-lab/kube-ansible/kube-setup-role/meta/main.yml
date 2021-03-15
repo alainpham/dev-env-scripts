@@ -1,0 +1,19 @@
+galaxy_info:
+  author: Alain Pham
+  description: "Install Vanilla Kubernetes on Debian 10"
+  company:
+  license: license (Apache)
+  min_ansible_version: 2.2
+
+  platforms:
+  - name: EL
+    versions:
+      - 6
+      - 7
+
+  galaxy_tags:
+    - debian
+    - kubernetes
+    - vanilla
+
+dependencies: []

@@ -40,8 +40,8 @@ struct receive_handler : public proton::messaging_handler {
 		ssl_client_options sslclientopts(keystore,"tls/truststore.pem", proton::ssl::VERIFY_PEER);
 		opts.ssl_client_options(sslclientopts);
 		cont.connect(conn_url_, opts);
-		std::cout << "connected\n";
 
+		std::cout << "connected\n";
 	}
 
 	void on_connection_open(proton::connection& conn) override {

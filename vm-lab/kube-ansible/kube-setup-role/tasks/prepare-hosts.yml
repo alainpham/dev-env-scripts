@@ -1,0 +1,91 @@
+---
+- name: Activate Kernel Modules
+  lineinfile: 
+    dest: "/etc/modules"
+    regexp: "br_netfilter"
+    line: "br_netfilter"
+
+- name: Activate Kernel Modules
+  lineinfile: 
+    dest: "/etc/modules"
+    regexp: "ip_vs"
+    line: "ip_vs"
+
+- name: Activate Kernel Modules
+  lineinfile: 
+    dest: "/etc/modules"
+    regexp: "ip_vs_rr"
+    line: "ip_vs_rr"
+
+- name: Activate Kernel Modules
+  lineinfile: 
+    dest: "/etc/modules"
+    regexp: "ip_vs_wrr"
+    line: "ip_vs_wrr"
+
+- name: Activate Kernel Modules
+  lineinfile: 
+    dest: "/etc/modules"
+    regexp: "ip_vs_sh"
+    line: "ip_vs_sh"
+
+- name: Update all packages to the latest version
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Install packages
+  apt:
+    name: 
+      - docker.io
+      - apt-transport-https
+      - gnupg2
+      - curl
+    state: present
+
+- name: Configure legacy iptables
+  shell: update-alternatives --set iptables /usr/sbin/iptables-legacy
+
+- name: Configure docker
+  shell: |
+    cat > /etc/docker/daemon.json <<EOF
+    {
+      "exec-opts": ["native.cgroupdriver=systemd"],
+      "log-driver": "json-file",
+      "log-opts": {
+        "max-size": "100m"
+      },
+      "storage-driver": "overlay2"
+    }
+    EOF
+
+- name: Restart docker
+  systemd:
+    state: restarted
+    name: docker
+
+- name: Add an Kubernetes Apt Signing key
+  shell: "curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | apt-key add -"
+
+- name: Add Kubernetes Repo
+  apt_repository:
+    repo: deb http://apt.kubernetes.io/ kubernetes-xenial main
+    state: present
+
+- name: Install Kube packages
+  apt:
+    name: 
+      - kubeadm
+      - kubelet 
+      - kubectl
+    update_cache: yes
+    state: present
+
+- name: Enable Kubelet
+  systemd:
+    enabled: yes 
+    name: kubelet
+
+- name: Reboot
+  reboot:
+    reboot_timeout: 30

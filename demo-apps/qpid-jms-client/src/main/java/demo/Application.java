@@ -26,6 +26,7 @@ public class Application {
                         return;
                     } catch (JMSException e) {
                         System.out.println("Unable to recreate consumer at the moment retrying in a moment ...");
+                        e.printStackTrace();
                     }
 
                     // waiting for before retrying
@@ -51,6 +52,7 @@ public class Application {
                 i++;
             } catch (JMSException e) {
                 System.err.println("Message Producer is in error state, recreating producer...");
+                e.printStackTrace();
                 try {
                     producer = JMSSingleton.createQueueProducer(queueName);
                 } catch (JMSException e1) {

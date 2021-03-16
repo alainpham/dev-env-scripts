@@ -114,6 +114,8 @@
         </marshal>
         <convertBodyTo type="java.lang.String"/>
         <inOnly uri="jms:queue:{{queue.defaultapp.send}}"/>
+        <log message="${headers}"/>
+        <log message="${exchange.properties}"/>
     </route>
 
     <route id="receive-msg">

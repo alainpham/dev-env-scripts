@@ -44,6 +44,7 @@
   - [EAP 7](#eap-7)
   - [EAP 6](#eap-6)
 - [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
+- [Getting](#getting)
 
 # Purpose of this repo
 
@@ -746,9 +747,9 @@ cd ubi-station
 docker build -t ubi-station:8 .
 cd ..
 
-# docker run -it --name ubi-station --net primenet --ip 172.18.0.120 --entrypoint "/bin/bash" -v /home/workdrive/TAZONE/MISSIONS/2020-11-Eurofins/hotfix/amq-broker-7.8.0.GA-src/:/home/jboss/source registry.redhat.io/ubi8/openjdk-8 
+# docker run -it --name ubi-station --net primenet --ip 172.18.0.120 --entrypoint "/bin/bash" -v FOLDER amq-broker-7.8.0.GA-src/:/home/jboss/source registry.redhat.io/ubi8/openjdk-8 
 
-docker run -it --name ubi-station --net primenet --ip 172.18.0.120 --entrypoint "/bin/bash" -v /home/workdrive/TAZONE/MISSIONS/2020-11-Eurofins/hotfix/:/home/jboss/source ubi-station:8
+docker run -it --name ubi-station --net primenet --ip 172.18.0.120 --entrypoint "/bin/bash" -v FOLDER:/home/jboss/source ubi-station:8
 docker exec -it ubi-station /bin/bash
 
 
@@ -756,3 +757,5 @@ docker stop ubi-station
 docker rm ubi-station
 docker rmi ubi-station:8
 ```
+
+# Getting 

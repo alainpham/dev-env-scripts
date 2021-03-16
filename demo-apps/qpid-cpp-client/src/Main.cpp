@@ -62,6 +62,7 @@ struct receive_handler : public proton::messaging_handler {
 
 	void on_message(proton::delivery& dlv, proton::message& msg) override {
 		std::cout << received_ << " RECEIVE: Received message '" << msg.body() << "  times '\n";
+		dlv.reject();
 		received_++;
 	}
 };
@@ -71,7 +72,7 @@ int main(int argc, char** argv) {
 	receive_handler handler{};
 	//handler.conn_url_ = "amqp://192.168.122.1:5672";https://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es/
 	handler.conn_url_ = "amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443";
-	handler.address_ = "app.queue.a";
+	handler.address_ = "test";
 	handler.usr_ = "testuser";
 	handler.pwd_ = "testpwd";
 	proton::container cont{ handler };

@@ -305,37 +305,6 @@ docker run \
     registry.redhat.io/amq7/amq-broker:latest
 ```
 
-```
-docker run \
-    -e AMQ_USER="adm" \
-    -e AMQ_PASSWORD="password" \
-    -e AMQ_ROLE="admin" \
-    -e AMQ_NAME="amqbroker" \
-    -e AMQ_TRANSPORTS="openwire,amqp,stomp,mqtt,hornetq" \
-    -e AMQ_QUEUES="app.queue" \
-    -e AMQ_ADDRESSES="app.addr" \
-    -e AMQ_GLOBAL_MAX_SIZE="100 gb" \
-    -e AMQ_REQUIRE_LOGIN="false" \
-    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
-    -e AMQ_JOURNAL_TYPE="nio" \
-    -e AMQ_DATA_DIR="/opt/amq/data" \
-    -e AMQ_DATA_DIR_LOGGING="true" \
-    -e AMQ_CLUSTERED="false" \
-    -e AMQ_REPLICAS="0" \
-    -e AMQ_CLUSTER_USER="amq-cluster-user" \
-    -e AMQ_CLUSTER_PASSWORD="password" \
-    -e AMQ_KEYSTORE_TRUSTSTORE_DIR="/etc/amq-secret-volume" \
-    -e AMQ_TRUSTSTORE="broker-truststore.p12" \
-    -e AMQ_TRUSTSTORE_PASSWORD="password" \
-    -e AMQ_KEYSTORE="broker-keystore.p12" \
-    -e AMQ_KEYSTORE_PASSWORD="password" \
-    -e AMQ_SSL_PROVIDER="JDK" \
-    -e BROKER_XML="$(cat amqbroker/broker.xml)" \
-    -d --name amqbroker  \
-    -d --net primenet --ip 172.18.0.65 \
-    registry.redhat.io/amq7/amq-broker:latest
-```
-
 
 ### Generate keystores and truststores
 
@@ -475,7 +444,7 @@ runbrokers
 
 ##### Broker removal
 ```
-
+stopbrokers
 ```
 
 ## Interconnect (enterprise version)

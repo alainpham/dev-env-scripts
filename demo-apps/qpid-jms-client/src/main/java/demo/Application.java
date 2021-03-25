@@ -1,5 +1,8 @@
 package demo;
 
+import java.time.Instant;
+
+import javax.jms.DeliveryMode;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.MessageProducer;
@@ -41,14 +44,20 @@ public class Application {
 
         // creatin producer
         MessageProducer producer = JMSSingleton.createQueueProducer(queueName);
+        producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
         Integer i=0;
         while (true) {
 
             System.out.println("PRODUCER : Trying to send.. " + "{\"id\":"+i+"}" );
             try {
+                producer = JMSSingleton.createQueueProducer(queueName);
+                producer.setDeliveryMode(DeliveryMode.NON_PERSISTENT);
                 TextMessage m = JMSSingleton.getSingletonSession().createTextMessage("{\"id\":"+i+"}");
+                int begin = Instant.now().getNano();
                 producer.send(m);
+                System.out.println(Double.valueOf(Instant.now().getNano() - begin) / 1000000.00);
                 System.out.println("PRODUCER : " + Thread.currentThread().getName() + " sending done " + m.getText());
+                producer.close();
                 i++;
             } catch (JMSException e) {
                 System.err.println("Message Producer is in error state, recreating producer...");
@@ -59,7 +68,7 @@ public class Application {
                     System.out.println("Unable to recreate producer at the moment");
                 }
             }
-            Thread.sleep(2000);
+            Thread.sleep(5000);
 
         }
     }

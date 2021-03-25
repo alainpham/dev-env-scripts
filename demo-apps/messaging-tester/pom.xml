@@ -201,7 +201,10 @@
             <artifactId>camel-ognl-starter</artifactId>
           </dependency>
 
-
+          <dependency>
+            <groupId>org.messaginghub</groupId>
+            <artifactId>pooled-jms</artifactId>
+          </dependency>
           <!-- Hornet -->
 
 

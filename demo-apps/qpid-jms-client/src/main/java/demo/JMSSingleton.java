@@ -12,7 +12,11 @@ import org.apache.qpid.jms.JmsSession;
 
 public class JMSSingleton {
 
-    private static final String URL = "failover:(amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443)?failover.nested.transport.trustAll=true";
+    private static final String URL = 
+        System.getenv().getOrDefault
+            ("BROKER_URL", 
+            "failover:(amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443)?failover.nested.transport.trustAll=true");
+            // "amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443?transport.trustAll=true");
     private static Connection singletonConnection=null;
     private static Session singletonSession=null;
     private static JmsConnectionFactory connectionFactory=null;

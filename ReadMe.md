@@ -8,6 +8,7 @@
 - [Hosts /etc/hosts](#hosts-etchosts)
 - [Portainer](#portainer)
 - [Nexus](#nexus)
+- [Container Registry](#container-registry)
 - [Databases](#databases)
   - [Mysql Database](#mysql-database)
   - [Oracle DB](#oracle-db)
@@ -44,7 +45,8 @@
   - [EAP 7](#eap-7)
   - [EAP 6](#eap-6)
 - [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
-- [Getting](#getting)
+- [Getting CENTOS 7](#getting-centos-7)
+- [Getting debian](#getting-debian)
 
 # Purpose of this repo
 
@@ -76,6 +78,7 @@ This is to have some static name resolution docker containers we run locally
 
 172.18.0.40 portainer
 172.18.0.41 nexus
+172.18.0.42 registry
 
 172.18.0.50 mysql
 172.18.0.51 oracle
@@ -112,7 +115,11 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.111 amqbrokerb1
 
 172.18.0.120 ubi-station
+172.18.0.121 centos
+172.18.0.122 debian
 
+
+172.18.0.130 ems 
 ```
 
 # Portainer
@@ -127,10 +134,21 @@ docker run -d --name=portainer --net primenet --ip 172.18.0.40 -v /var/run/docke
 # Nexus
 
 ```
-
 docker run --name nexus \
     -d --net primenet --ip 172.18.0.41 \
 	sonatype/nexus3:3.28.1
+
+
+docker run --name nexus  --restart always \
+    -d --net primenet --ip 172.18.0.41 -p 8081:8081 \
+	sonatype/nexus3:3.28.1
+```
+
+# Container Registry
+
+```
+docker run -d --net primenet --ip 172.18.0.42 -p 5000:5000 --restart always --name registry registry:2
+
 ```
 
 # Databases
@@ -275,6 +293,17 @@ docker run -d --name artemis --net primenet --ip 172.18.0.60  \
 
 
 ### simplest variant no ssl no custom broker.xml
+
+```
+docker run \
+    -e AMQ_USER="adm" \
+    -e AMQ_PASSWORD="password" \
+    -e AMQ_ROLE="admin" \
+    -e AMQ_REQUIRE_LOGIN="false" \
+    -d --name amqbroker  \
+    -d --net primenet --ip 172.18.0.65 \
+    registry.redhat.io/amq7/amq-broker:latest
+```
 
 ```
 docker run \
@@ -653,7 +682,7 @@ docker run -d --name schemareg --net primenet --ip 172.18.0.80 \
     -e QUARKUS_DATASOURCE_URL=jdbc:postgresql://postgres:5432/db \
     -e QUARKUS_DATASOURCE_USERNAME=user \
     -e QUARKUS_DATASOURCE_PASSWORD=password \
-    apicurio/apicurio-registry-jpa:1.2.2.Final
+    apicurio/apicurio-registry-jpa:1.3.2.Final
 ```
 Console 
 http://schemareg:8080/ui/artifacts
@@ -662,7 +691,7 @@ http://schemareg:8080/api
 in memory
 ```
 docker run -d --name schemareg --net primenet --ip 172.18.0.80 \
-    apicurio/apicurio-registry-mem:1.3.2.Final
+    apicurio/apicurio-registry-mem:2.0.0.RC1
 
 ```
 Console 
@@ -758,4 +787,14 @@ docker rm ubi-station
 docker rmi ubi-station:8
 ```
 
-# Getting 
+# Getting CENTOS 7
+```
+docker run -it --name centos --net primenet --ip 172.18.0.121 --entrypoint "/bin/bash" i386/centos:7
+docker exec -it centos /bin/bash
+```
+
+# Getting debian
+```
+docker run -it --name debian --net primenet --ip 172.18.0.122 --entrypoint "/bin/bash" debian:buster
+docker exec -it debian /bin/bash
+```

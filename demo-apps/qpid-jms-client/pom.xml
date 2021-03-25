@@ -22,8 +22,14 @@
         <dependency>
             <groupId>org.apache.qpid</groupId>
             <artifactId>qpid-jms-client</artifactId>
-            <version>0.55.0.redhat-00001</version>
-            <scope>compile</scope>
+            <version>0.55.0.alainhotfix2</version>
+            <!-- <version>0.55.0.redhat-00001</version> -->
+            <!-- <version>0.57.0</version> -->
+        </dependency>
+        <dependency>
+            <groupId>org.messaginghub</groupId>
+            <artifactId>pooled-jms</artifactId>
+            <version>1.2.1.redhat-00003</version>
         </dependency>
         <dependency> 
             <groupId>org.slf4j</groupId>

@@ -44,6 +44,8 @@
 - [Application Servers](#application-servers)
   - [EAP 7](#eap-7)
   - [EAP 6](#eap-6)
+  - [Node Red](#node-red)
+  - [Eclipse Kura](#eclipse-kura)
 - [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
 - [Getting CENTOS 7](#getting-centos-7)
 - [Getting debian](#getting-debian)
@@ -107,12 +109,17 @@ This is to have some static name resolution docker containers we run locally
 
 172.18.0.90 eap
 172.18.0.91 eap6
+172.18.0.92 nodered
+172.18.0.93 kura
+
 
 172.18.0.100 amqbrokera0
 172.18.0.101 amqbrokera1
 
 172.18.0.110 amqbrokerb0
 172.18.0.111 amqbrokerb1
+172.18.0.115 amqbroker
+
 
 172.18.0.120 ubi-station
 172.18.0.121 centos
@@ -301,7 +308,7 @@ docker run \
     -e AMQ_ROLE="admin" \
     -e AMQ_REQUIRE_LOGIN="false" \
     -d --name amqbroker  \
-    -d --net primenet --ip 172.18.0.65 \
+    -d --net primenet --ip 172.18.0.115 \
     registry.redhat.io/amq7/amq-broker:latest
 ```
 
@@ -735,6 +742,22 @@ docker run -d --name eap6 --net primenet --ip 172.18.0.91 \
     eap6:6.4
 
 ```
+
+## Node Red
+
+```
+docker run -d --name nodered --net primenet --ip 172.18.0.92 nodered/node-red
+```
+
+http://nodered:1880/
+
+## Eclipse Kura
+
+```
+docker run -d --name kura  --net primenet --ip 172.18.0.93 eclipse/kura
+```
+
+http://kura:8080/
 
 # Getting a RHEL Compatible JDK8 container
 

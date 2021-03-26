@@ -31,6 +31,15 @@ docker run -p 8090:8090 -it --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFI
 docker run -p 8090:8090 -it --rm --net primenet --ip 172.18.0.11 -e SPRING_PROFILES_ACTIVE=dev -e JMS_URI=amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443 -e THEME=main-dark-red -e QUEUE_DEFAULTAPP=app.queue.a -e JMS_CACHE_LEVEL=CACHE_CONNECTION --name messaging-tester alainpham/messaging-tester:latest
 ```
 
+```
+docker run -it --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFILES_ACTIVE=dev-amqp \
+    -e JMS_CONNECTIONFACTORY_DEFAULT=amqp://amqbroker:61616 \
+    -e THEME=main-dark-blue \
+    -e QUEUE_DEFAULTAPP=app.queue.a \
+    -e QUEUE_DEFAULTAPP_ALT=app.queue.b \
+    -e QUEUE_DEFAULTAPP_SEND=app.queue.a \
+    --name messaging-tester alainpham/messaging-tester:latest
+```
 
 
 ## To build this project use

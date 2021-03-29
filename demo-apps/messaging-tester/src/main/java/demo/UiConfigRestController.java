@@ -15,7 +15,7 @@ public class UiConfigRestController {
     public UiConfigRestController(Environment environment) {
         uiConfig = new TreeMap<String,String>();
         uiConfig.put("theme", environment.getProperty("theme"));
-        uiConfig.put("jms.uri", environment.getProperty("jms.uri"));
+        uiConfig.put("jms.uri", environment.getProperty("jms.connectionFactory.default"));
         uiConfig.put("queue.defaultapp", environment.getProperty("queue.defaultapp"));
 
     }

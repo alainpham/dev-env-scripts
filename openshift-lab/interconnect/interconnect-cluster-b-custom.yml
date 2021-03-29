@@ -27,17 +27,33 @@ spec:
       sslProfile: default
       expose: true
   connectors:
-    - name: amq-broker-b
-      host: amq-broker-b-amq-headless
+    - name: amq-broker-b-0
+      host: amq-broker-b-0-svc
+      port: 5672
+      routeContainer: true
+    - name: amq-broker-b-1
+      host: amq-broker-b-1-svc
       port: 5672
       routeContainer: true
   linkRoutes:
+    - prefix: $coordinator
+      direction: in
+      connection: amq-broker-b-0
     - prefix: 'app.queue.b'
       direction: in
-      connection: amq-broker-b
+      connection: amq-broker-b-0
     - prefix: 'app.queue.b'
       direction: out
-      connection: amq-broker-b
+      connection: amq-broker-b-0
+    - prefix: $coordinator
+      direction: in
+      connection: amq-broker-b-1
+    - prefix: 'app.queue.b'
+      direction: in
+      connection: amq-broker-b-1
+    - prefix: 'app.queue.b'
+      direction: out
+      connection: amq-broker-b-1
   autoLinks:
     # - address: 'app.queue.b'
     #   direction: in

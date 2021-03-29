@@ -36,12 +36,18 @@ spec:
       port: 5672
       routeContainer: true
   linkRoutes:
+    - prefix: $coordinator
+      direction: in
+      connection: amq-broker-a-0
     - prefix: 'app.queue.a'
       direction: in
       connection: amq-broker-a-0
     - prefix: 'app.queue.a'
       direction: out
       connection: amq-broker-a-0
+    - prefix: $coordinator
+      direction: in
+      connection: amq-broker-a-1
     - prefix: 'app.queue.a'
       direction: in
       connection: amq-broker-a-1

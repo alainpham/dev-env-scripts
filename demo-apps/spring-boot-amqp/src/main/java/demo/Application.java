@@ -1,17 +1,23 @@
 package demo;
 
 
+import java.util.Arrays;
+
 import javax.jms.ConnectionFactory;
 import javax.jms.JMSException;
 import javax.jms.Message;
 import javax.jms.TextMessage;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.jms.annotation.EnableJms;
 import org.springframework.jms.annotation.JmsListener;
 import org.springframework.jms.config.DefaultJmsListenerContainerFactory;
+import org.springframework.jms.config.JmsListenerEndpointRegistry;
 
 @EnableJms
 @SpringBootApplication
@@ -24,9 +30,11 @@ public class Application {
         SpringApplication.run(Application.class, args);
     }
 
+    @Autowired
+    ApplicationContext applicationContext;
 
-    @Bean("listenerContainerFactory")
-    public DefaultJmsListenerContainerFactory containerFactory(ConnectionFactory connectionFactory) {
+    @Bean
+    public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
         return factory;
@@ -52,7 +60,7 @@ public class Application {
     // }
 
 
-    @JmsListener(destination = queue,containerFactory = "listenerContainerFactory")
+    @JmsListener(destination = queue)
     public void receiveMessage(Message message){
         TextMessage txt = (TextMessage)message;
         try {
@@ -60,6 +68,7 @@ public class Application {
         } catch (JMSException e) {
             e.printStackTrace();
         }
-    } 
+        // System.out.println(Arrays.asList(applicationContext.getBeanDefinitionNames()));
+    }
 
 }

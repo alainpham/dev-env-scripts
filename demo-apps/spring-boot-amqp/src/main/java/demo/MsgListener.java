@@ -12,7 +12,7 @@ public class MsgListener implements MessageListener{
         TextMessage txt = (TextMessage)message;
         try {
             System.out.println(txt.getText());
-            txt.acknowledge();
+            // txt.acknowledge();
         } catch (JMSException e) {
             e.printStackTrace();
         }

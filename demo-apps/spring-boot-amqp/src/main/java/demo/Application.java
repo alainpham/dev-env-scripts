@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.jms.annotation.EnableJms;
+import org.springframework.jms.listener.DefaultMessageListenerContainer;
 import org.springframework.jms.listener.SimpleMessageListenerContainer;
 
 @EnableJms
@@ -32,12 +33,21 @@ public class Application {
     //     return factory;
     // }
 
+    // @Bean
+    // SimpleMessageListenerContainer container(ConnectionFactory connectionFactory){
+    //     SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    //     container.setConnectionFactory(connectionFactory);
+    //     container.setDestinationName(queue);
+    //     container.setMessageListener(new MsgListener());
+    //     return container;
+    // }
     @Bean
-    SimpleMessageListenerContainer container(ConnectionFactory connectionFactory){
-        SimpleMessageListenerContainer container = new SimpleMessageListenerContainer();
+    DefaultMessageListenerContainer dcontainer(ConnectionFactory connectionFactory){
+        DefaultMessageListenerContainer container = new DefaultMessageListenerContainer();
         container.setConnectionFactory(connectionFactory);
         container.setDestinationName(queue);
         container.setMessageListener(new MsgListener());
         return container;
+
     }
 }

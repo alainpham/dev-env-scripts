@@ -24,7 +24,8 @@
             <artifactId>qpid-jms-client</artifactId>
             <!-- <version>0.55.0.alainhotfix2</version> -->
             <!-- <version>0.55.0.redhat-00001</version> -->
-            <version>0.57.0</version>
+            <!-- <version>0.57.0</version> -->
+            <version>0.55.0.timbish-alain-fix</version>
         </dependency>
         <dependency>
             <groupId>org.messaginghub</groupId>

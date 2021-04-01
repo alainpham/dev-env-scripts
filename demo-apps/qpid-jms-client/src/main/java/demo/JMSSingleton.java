@@ -14,7 +14,7 @@ public class JMSSingleton {
         System.getenv().getOrDefault
             ("BROKER_URL", 
             // "failover:(amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443)?failover.nested.transport.trustAll=true");
-            "failover:(amqps://localhost:443,amqps://127.0.0.2:443,amqps://amq-broker-a-acceptor-0-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443,amqps://amq-broker-a-acceptor-1-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443)?failover.nested.transport.trustAll=true&failover.amqpOpenServerListAction=REPLACE");
+            "failover:(amqps://amq-broker-a-acceptor-0-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443,amqps://amq-broker-a-acceptor-1-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443)?failover.nested.transport.trustAll=true&failover.amqpOpenServerListAction=REPLACE");
             // "amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443?transport.trustAll=true");
     private static Connection singletonConnection=null;
     private static Session singletonSession=null;

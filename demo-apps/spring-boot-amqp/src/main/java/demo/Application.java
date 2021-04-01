@@ -33,10 +33,12 @@ public class Application {
     @Autowired
     ApplicationContext applicationContext;
 
+
     @Bean
     public DefaultJmsListenerContainerFactory jmsListenerContainerFactory(ConnectionFactory connectionFactory) {
         DefaultJmsListenerContainerFactory factory = new DefaultJmsListenerContainerFactory();
         factory.setConnectionFactory(connectionFactory);
+        factory.setReceiveTimeout(1000l);
         return factory;
     }
 

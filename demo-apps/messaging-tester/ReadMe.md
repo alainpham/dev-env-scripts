@@ -43,7 +43,7 @@ docker run -it --rm --net primenet --ip 172.18.0.10 -e SPRING_PROFILES_ACTIVE=de
 
 ```
 docker run -it --rm -p 8090:8090 -e SPRING_PROFILES_ACTIVE=dev-amqp \
-    -e JMS_CONNECTIONFACTORY_DEFAULT=amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443?trustAll=true \
+    -e JMS_CONNECTIONFACTORY_DEFAULT=amqps://interconnect-cluster-a-5671-appdev-amq-interconnect.apps.my-cluster.ocp4.openshift.es:443?transport.trustAll=true \
     -e THEME=main-dark-blue \
     -e QUEUE_DEFAULTAPP=app.queue.a \
     -e QUEUE_DEFAULTAPP_ALT=app.queue.b \

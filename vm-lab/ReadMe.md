@@ -9,6 +9,8 @@
 - [Setup dnsmasq with Networkmanager](#setup-dnsmasq-with-networkmanager)
 - [Create a VM](#create-a-vm)
 - [Delete vms example](#delete-vms-example)
+- [Run Ansible to install Kubernetes](#run-ansible-to-install-kubernetes)
+- [(Draft) Install vanilla Kubernetes](#draft-install-vanilla-kubernetes)
 
 
 # Purpose of this repo 
@@ -68,7 +70,14 @@ dvm node02
 
 ```
 
-#(Draft) Install vanilla Kubernetes
+# Run Ansible to install Kubernetes
+
+```
+cd kube-ansible
+ansible-playbook install.yml
+```
+
+# (Draft) Install vanilla Kubernetes
 
 ```
 kvsh prime
@@ -78,7 +87,6 @@ vi /etc/modules
 br_netfilter
 
 update-alternatives --config iptables 
-
 
 select legacy
 
@@ -111,6 +119,7 @@ apt -y install kubeadm kubelet kubectl
 
 systemctl enable kubelet
 
+on master node specifically
 
 kubeadm init --apiserver-advertise-address=192.168.122.10 --pod-network-cidr=10.244.0.0/16
 
@@ -132,4 +141,47 @@ kubeadm join 192.168.122.10:6443 --token xxipx5.8yhjqrhdt4hx1thp \
 
 kubectl apply -f https://raw.githubusercontent.com/kubernetes/dashboard/master/aio/deploy/recommended.yaml
 
+
+helm repo add haproxytech https://haproxytech.github.io/helm-charts
+helm repo update
+helm search repo haproxy --versions
+helm install kubernetes-ingress haproxytech/kubernetes-ingress
+kubectl get pods -A
+kubectl get svc -A
+
+install kubernetes dashboard
+
+kubectl apply -f kube-yaml/kubernetes-dashboard-ingress.yml -n kubernetes-dashboard
+
+visit https://admin.kube.loc:30350/#/login
+
+get token
+
+kubectl -n kube-system describe $(kubectl -n kube-system get secret -n kube-system -o name | grep namespace)
+
+
+Operator hub
+
+kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.17.0/crds.yaml
+kubectl apply -f https://github.com/operator-framework/operator-lifecycle-manager/releases/download/v0.17.0/olm.yaml
+```
+
+create a certificate for ha proxy ingress
+
+
+kubectl get secret haproxy-ingress-tls -o yaml
+
+
+kubectl create secret tls  haproxy-ingress-tls \
+  --key="tls/kube.loc.key" \
+  --cert="tls/kube.loc.crt"
+
+```
+openssl req -x509 \
+  -newkey rsa:2048 \
+  -keyout tls/kube.loc.key \
+  -out tls/kube.loc.crt \
+  -days 365000 \
+  -nodes \
+  -subj "/CN=*.kube.loc"
 ```

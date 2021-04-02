@@ -1,0 +1,9 @@
+---
+- name: Setup Masters
+  hosts:
+    - masters
+  tasks:
+  - name: Setup Masters
+    include_role:
+      name: kube-setup-role
+      tasks_from: setup-master

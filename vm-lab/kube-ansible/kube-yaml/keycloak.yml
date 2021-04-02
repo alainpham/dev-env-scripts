@@ -1,0 +1,89 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: keycloak
+  template:
+    metadata:
+      labels:
+        app: keycloak
+    spec:
+      containers:
+      - name: keycloak
+        image: quay.io/keycloak/keycloak:12.0.4
+        env:
+        - name: DB_VENDOR
+          value: h2
+        - name: KEYCLOAK_USER
+          value: "admin"
+        - name: KEYCLOAK_PASSWORD
+          value: "admin"
+        - name: PROXY_ADDRESS_FORWARDING
+          value: "true"
+        ports:
+        - name: http
+          containerPort: 8080
+        - name: https
+          containerPort: 8443
+        readinessProbe:
+          httpGet:
+            path: /auth/realms/master
+            port: 8080
+        volumeMounts:
+          - name: keycloak-tls
+            mountPath: "/etc/x509/https"
+      volumes:
+        - name: keycloak-tls
+          secret:
+            secretName: keycloak-tls
+            items:
+            - key: kube.loc.key
+              path: tls.key
+              mode: 420
+            - key: kube.loc.crt
+              path: tls.crt
+              mode: 420
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+  annotations:
+    haproxy.org/ssl-passthrough: "true"
+spec:
+  rules:
+  - host: keycloak.kube.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: keycloak
+            port:
+              number: 8443
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: keycloak
+  namespace: keycloak
+  labels:
+    app: keycloak
+spec:
+  ports:
+    - port: 8443
+      targetPort: 8443
+  selector:
+    app: keycloak

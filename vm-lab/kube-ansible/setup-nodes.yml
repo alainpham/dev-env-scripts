@@ -1,0 +1,9 @@
+---
+- name: Setup nodes
+  hosts:
+    - nodes
+  tasks:
+  - name: Setup kube nodes
+    include_role:
+      name: kube-setup-role
+      tasks_from: setup-node

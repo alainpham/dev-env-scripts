@@ -81,10 +81,27 @@
     update_cache: yes
     state: present
 
+
 - name: Enable Kubelet
   systemd:
     enabled: yes 
     name: kubelet
+
+# Helm install
+- name: Install Helm keys
+  shell: "curl https://baltocdn.com/helm/signing.asc | sudo apt-key add -"
+
+- name: Add Helm Repo
+  apt_repository:
+    repo: deb https://baltocdn.com/helm/stable/debian/ all main
+    state: present
+
+- name: Install helm 
+  apt:
+    name: 
+      - helm
+    update_cache: yes
+    state: present
 
 - name: Reboot
   reboot:

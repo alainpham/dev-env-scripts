@@ -1,0 +1,4 @@
+---
+- name: reset hosts
+  shell: kubeadm reset -f
+

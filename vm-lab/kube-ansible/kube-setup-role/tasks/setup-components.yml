@@ -1,0 +1,81 @@
+---
+- name: Ensures /root/install/ dir exists
+  file: 
+    path: /root/install
+    state: directory
+
+- name: Ensures /root/install/tls dir exists
+  file: 
+    path: /root/install/tls
+    state: directory
+
+- name: Copy all yaml files
+  copy:
+    src: kube-yaml/
+    dest: /root/install/
+
+- name: create self signed certificate for https access
+  shell: |
+    openssl req -x509 \
+    -newkey rsa:2048 \
+    -keyout /root/install/tls/kube.loc.key \
+    -out /root/install/tls/kube.loc.crt \
+    -days 365000 \
+    -nodes \
+    -subj "/CN=*.kube.loc"
+  args:
+    creates: /root/install/tls/kube.loc.key
+
+
+#ingress 
+- name: Create ha proxy ingress controller namespace
+  shell: kubectl apply -f /root/install/haproxy-ingress-ns.yml
+
+- name: create self signed certificate in kube
+  shell: |
+    kubectl create secret tls  haproxy-ingress-tls  --key="/root/install/tls/kube.loc.key"   --cert="/root/install/tls/kube.loc.crt" -n haproxy-controller  --dry-run=true -o yaml | kubectl apply -f -
+
+- name: install haproxy ingress controller
+  shell: kubectl apply -f /root/install/haproxy-ingress-daemonset.yml
+
+# - name: install ingress controller
+#   shell: |
+#     helm repo add haproxytech https://haproxytech.github.io/helm-charts
+#     helm install haproxy-kubernetes-ingress haproxytech/kubernetes-ingress --set controller.kind=DaemonSet--set controller.daemonset.useHostPort=true --create-namespace --namespace haproxy-ingress-controller
+
+#dashboard
+
+- name: create self signed certificate for dashboard
+  shell: |
+    kubectl create secret generic kubernetes-dashboard-certs --from-file=/root/install/tls/ -n kubernetes-dashboard --dry-run=true -o yaml | kubectl apply -f -
+
+- name: install dashboard 
+  shell: |
+    kubectl apply -f /root/install/kubernetes-dashboard.yml
+
+
+#Install keycloak
+- name: Create keycloak namespace
+  shell: kubectl apply -f /root/install/keycloak-ns.yml
+
+- name: create self signed certificate for keycloak
+  shell: |
+    kubectl create secret generic  keycloak-tls --from-file=/root/install/tls/ -n keycloak --dry-run=true -o yaml | kubectl apply -f -
+
+- name: Install keycloak 
+  shell: kubectl apply -f /root/install/keycloak.yml
+
+#create cluster admin user
+
+- name: cluster admin user creation
+  shell: |
+    kubectl apply -f /root/install/kube-admin-user.yml
+
+- name: get admin user token
+  shell: |
+    kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubeadm | awk '{print $1}')
+  register: token
+
+- name: print token
+  debug: 
+    var: token.stdout_lines

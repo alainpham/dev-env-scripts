@@ -1,0 +1,33 @@
+---
+- name: Check if kube exists
+  uri:
+    url: "https://{{ansible_ssh_host}}:6443"
+    method: GET
+    status_code: 403
+    validate_certs: no
+  register: result
+  ignore_errors: yes
+
+- name: Init Kubeadmin
+  shell: "kubeadm init --pod-network-cidr=10.244.0.0/16"
+  when: result.status != 403
+
+- name: Ensures /root/.kube/ dir exists
+  file: 
+    path: /root/.kube
+    state: directory
+
+- name: Copy kubeconfig
+  copy:
+    src: /etc/kubernetes/admin.conf
+    remote_src: yes
+    mode: '0600'
+    dest: /root/.kube/config
+
+- name: install flannel
+  shell: kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+
+
+- name: create join token
+  shell: kubeadm token create helloo.mynameiskubeadm0
+  ignore_errors: yes

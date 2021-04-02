@@ -1,0 +1,9 @@
+---
+- name: Setup components
+  hosts:
+    - master
+  tasks:
+  - name: Setup components
+    include_role:
+      name: kube-setup-role
+      tasks_from: setup-components

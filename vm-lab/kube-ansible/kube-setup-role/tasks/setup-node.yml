@@ -1,0 +1,3 @@
+---
+- name: join cluster
+  shell: "kubeadm join master:6443 --token helloo.mynameiskubeadm0 --discovery-token-unsafe-skip-ca-verification"

@@ -10,8 +10,12 @@
         fi
       become: true
 
-- name: Prepare hosts
-  hosts: all
-  roles:
-    - kube-setup-role
-  
+- name: Prepare Hosts
+  hosts:
+    - all
+  tasks:
+  - name: Prepare Kube Hosts
+    include_role:
+      name: kube-setup-role
+      tasks_from: prepare-hosts
+

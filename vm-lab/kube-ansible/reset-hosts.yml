@@ -1,0 +1,9 @@
+---
+- name: Reset kube
+  hosts:
+    - all
+  tasks:
+  - name: Reset kube hosts
+    include_role:
+      name: kube-setup-role
+      tasks_from: reset-hosts

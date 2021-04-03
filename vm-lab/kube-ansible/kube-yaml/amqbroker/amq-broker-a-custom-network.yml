@@ -1,0 +1,216 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-0
+  name: amq-broker-a-0-svc
+  annotations:
+    prometheus.io/path: /metrics/
+    prometheus.io/port: '8161'
+    prometheus.io/scheme: https
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+  - port: 61616
+    name: all
+    protocol: TCP
+    targetPort: 61616
+  - port: 8161
+    name: console-jolokia
+    protocol: TCP
+    targetPort: 8161
+  - port: 5672
+    name: amqp
+    protocol: TCP
+    targetPort: 5672
+  - port: 1883
+    name: mqtt
+    protocol: TCP
+    targetPort: 1883
+  - port: 61613
+    name: stomp
+    protocol: TCP
+    targetPort: 61613
+  - port: 61617
+    name: all-ssl
+    protocol: TCP
+    targetPort: 61617
+  - port: 5671
+    name: amqp-ssl
+    protocol: TCP
+    targetPort: 5671
+  - port: 5446
+    name: hornetq-ssl
+    protocol: TCP
+    targetPort: 5446
+  - port: 8883
+    name: mqtt-ssl
+    protocol: TCP
+    targetPort: 8883
+  - port: 61612
+    name: stomp-ssl
+    protocol: TCP
+    targetPort: 61612
+  selector:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-0
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: amq-broker-a-console-0
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-0
+  annotations:
+    haproxy.org/ssl-passthrough: "true"
+spec:
+  rules:
+  - host: amq-broker-a-console-0.amq-messaging.kube.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: amq-broker-a-0-svc
+            port:
+              number: 8161
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: amq-broker-a-acceptor-0
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-0
+  annotations:
+    haproxy.org/ssl-passthrough: "true"
+spec:
+  rules:
+  - host: amq-broker-a-acceptor-0.amq-messaging.kube.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: amq-broker-a-0-svc
+            port:
+              number: 61617
+# second instance
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-1
+  name: amq-broker-a-1-svc
+  annotations:
+    prometheus.io/path: /metrics/
+    prometheus.io/port: '8161'
+    prometheus.io/scheme: https
+    prometheus.io/scrape: 'true'
+spec:
+  ports:
+  - port: 61616
+    name: all
+    protocol: TCP
+    targetPort: 61616
+  - port: 8161
+    name: console-jolokia
+    protocol: TCP
+    targetPort: 8161
+  - port: 5672
+    name: amqp
+    protocol: TCP
+    targetPort: 5672
+  - port: 1883
+    name: mqtt
+    protocol: TCP
+    targetPort: 1883
+  - port: 61613
+    name: stomp
+    protocol: TCP
+    targetPort: 61613
+  - port: 61617
+    name: all-ssl
+    protocol: TCP
+    targetPort: 61617
+  - port: 5671
+    name: amqp-ssl
+    protocol: TCP
+    targetPort: 5671
+  - port: 5446
+    name: hornetq-ssl
+    protocol: TCP
+    targetPort: 5446
+  - port: 8883
+    name: mqtt-ssl
+    protocol: TCP
+    targetPort: 8883
+  - port: 61612
+    name: stomp-ssl
+    protocol: TCP
+    targetPort: 61612
+  selector:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-1
+  type: ClusterIP
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: amq-broker-a-console-1
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-1
+  annotations:
+    haproxy.org/ssl-passthrough: "true"
+spec:
+  rules:
+  - host: amq-broker-a-console-1.amq-messaging.kube.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: amq-broker-a-1-svc
+            port:
+              number: 8161
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: amq-broker-a-acceptor-1
+  labels:
+    ActiveMQArtemis: amq-broker-a
+    application: amq-broker-a-app
+    statefulset.kubernetes.io/pod-name: amq-broker-a-ss-1
+  annotations:
+    haproxy.org/ssl-passthrough: "true"
+spec:
+  rules:
+  - host: amq-broker-a-acceptor-1.amq-messaging.kube.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: amq-broker-a-1-svc
+            port:
+              number: 61617

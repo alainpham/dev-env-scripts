@@ -65,6 +65,21 @@
 - name: Install keycloak 
   shell: kubectl apply -f /root/install/keycloak.yml
 
+# Pull secrets
+- name: Copy pull secrets
+  copy:
+    src: kube-pullsecrets/
+    dest: /root/install/
+
+- name: Apply pull secrets
+  shell: | 
+    kubectl apply -f /root/install/kube-pull-secret.yaml -n {{item}}
+    kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "kube-pull-secret"}]}' -n {{item}}
+  loop:
+    - default
+    - amq-messaging
+    
+
 #create cluster admin user
 
 - name: cluster admin user creation

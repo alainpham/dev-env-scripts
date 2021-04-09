@@ -1,0 +1,8 @@
+- name: get admin user token
+  shell: |
+    kubectl -n kube-system describe secret $(kubectl -n kube-system get secret | grep kubeadm | awk '{print $1}')
+  register: token
+
+- name: print token
+  debug: 
+    var: token.stdout_lines

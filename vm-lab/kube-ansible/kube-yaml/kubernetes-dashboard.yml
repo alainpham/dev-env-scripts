@@ -12,11 +12,6 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-apiVersion: v1
-kind: Namespace
-metadata:
-  name: kubernetes-dashboard
-
 ---
 
 apiVersion: v1
@@ -54,6 +49,7 @@ metadata:
     k8s-app: kubernetes-dashboard
   annotations:
     haproxy.org/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   rules:
   - host: admin.kube.loc

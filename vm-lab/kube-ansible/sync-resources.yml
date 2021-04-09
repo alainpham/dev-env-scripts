@@ -1,0 +1,9 @@
+---
+- name: sync-resources
+  hosts:
+    - master
+  tasks:
+  - name: sync-resources
+    include_role:
+      name: kube-setup-role
+      tasks_from: sync-resources

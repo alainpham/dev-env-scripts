@@ -1,0 +1,9 @@
+---
+- name: Get token
+  hosts:
+    - master
+  tasks:
+  - name: Get components
+    include_role:
+      name: kube-setup-role
+      tasks_from: get-token

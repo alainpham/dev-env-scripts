@@ -1,0 +1,9 @@
+apiVersion: kafka.strimzi.io/v1beta2
+kind: KafkaUser
+metadata:
+  name: kafka-user
+  labels:
+    strimzi.io/cluster: event-broker
+spec:
+  authentication:
+    type: scram-sha-512

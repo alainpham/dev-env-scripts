@@ -1,0 +1,6 @@
+---
+- name: Create kafka cluster
+  shell: |
+    kubectl create secret generic  kafka-tls --from-file=/root/install/tls/ -n kafka --dry-run=true -o yaml | kubectl apply -f -
+    kubectl delete -n kafka -f /root/install/strimzi-kafka/event-broker.yaml
+    kubectl apply -n kafka -f /root/install/strimzi-kafka/event-broker.yaml

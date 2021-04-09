@@ -1,0 +1,15 @@
+---
+- name: Ensures /root/install/ dir exists
+  file: 
+    path: /root/install
+    state: directory
+
+- name: Ensures /root/install/tls dir exists
+  file: 
+    path: /root/install/tls
+    state: directory
+
+- name: Copy all yaml files
+  synchronize:
+    src: kube-yaml/
+    dest: /root/install/

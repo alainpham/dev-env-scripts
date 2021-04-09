@@ -1,0 +1,189 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: "messaging-tester-ingress-b1"
+    group: "demo"
+  name: "messaging-tester-ingress-b1"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    matchLabels:
+      app: "messaging-tester-ingress-b1"
+      group: "demo"
+  strategy:
+    type: "RollingUpdate"
+  template:
+    metadata:
+      labels:
+        app: "messaging-tester-ingress-b1"
+        group: "demo"
+    spec:
+      containers:
+      - env:
+        - name: "AB_JMX_EXPORTER_CONFIG"
+          value: "prometheus-config.yml"
+        image: "alainpham/messaging-tester:latest"
+        imagePullPolicy: "Always"
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: "/actuator/health"
+            port: 8081
+            scheme: "HTTP"
+          initialDelaySeconds: 180
+          successThreshold: 1
+        name: "spring-boot"
+        ports:
+        - containerPort: 8080
+          name: "http"
+          protocol: "TCP"
+        - containerPort: 9779
+          name: "prometheus"
+          protocol: "TCP"
+        - containerPort: 8778
+          name: "jolokia"
+          protocol: "TCP"
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: "/actuator/health"
+            port: 8081
+            scheme: "HTTP"
+          initialDelaySeconds: 10
+          successThreshold: 1
+        resources:
+          limits:
+            cpu: "1"
+            memory: "256Mi"
+          requests:
+            cpu: "0.2"
+            memory: "256Mi"
+        securityContext:
+          privileged: false
+        volumeMounts:
+        - mountPath: "/deployments/tls"
+          name: "tls-secret-volume"
+          readOnly: true
+        - mountPath: "/deployments/config"
+          name: "prop-secret-volume"
+          readOnly: true
+      volumes:
+      - name: "tls-secret-volume"
+        secret:
+          defaultMode: 420
+          secretName: "messaging-tester-ingress-b1-tls-secret"
+      - name: "prop-secret-volume"
+        secret:
+          defaultMode: 420
+          secretName: "messaging-tester-ingress-b1-prop-secret"
+---
+apiVersion: "v1"
+kind: "Service"
+metadata:
+  annotations:
+    prometheus.io/port: "9779"
+    prometheus.io/scrape: "true"
+  labels:
+    expose: "true"
+    app: "messaging-tester-ingress-b1"
+    group: "demo"
+  name: "messaging-tester-ingress-b1"
+spec:
+  ports:
+  - name: "http"
+    port: 8080
+    protocol: "TCP"
+    targetPort: 8080
+  selector:
+    app: "messaging-tester-ingress-b1"
+    group: "demo"
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: messaging-tester-ingress-b1
+  labels:
+    app: "messaging-tester-ingress-b1"
+    group: "demo"
+spec:
+  rules:
+  - host: messaging-tester-ingress-b1.amq-messaging.kube.loc
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: messaging-tester-ingress-b1
+            port:
+              number: 8080
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: "messaging-tester-ingress-b1-prop-secret"
+type: Opaque
+stringData: 
+  application.properties: |
+    logging.config=classpath:logback-dev.xml
+
+    # the options from org.apache.camel.spring.boot.CamelConfigurationProperties can be configured here
+    camel.springboot.name=messaging-tester
+
+    # lets listen on all ports to ensure we can be invoked from the pod IP
+    server.address=0.0.0.0
+    management.server.address=0.0.0.0
+    # lets use a different management port in case you need to listen to HTTP requests on 8080
+    server.port=8080
+    management.server.port=8081
+
+    # disable all management enpoints except health
+    endpoints.enabled = false
+    endpoints.health.enabled = true
+
+    cxf.path=/services
+
+    camel.component.servlet.mapping.contextPath=/camel/*
+    camelrest.contextPath=/camel
+    camelrest.apiversion=1.0-SNAPSHOT
+
+    theme=main-dark-orange
+    
+    spring.resources.cache.cachecontrol.cache-public=true
+    spring.resources.cache.cachecontrol.max-age=0
+
+    jms.uri=failover:(amqps://amq-broker-b-acceptor-1.amq-messaging.kube.loc:443)
+    jms.user=user
+    jms.pwd=password
+    jms.trustStorePath=tls/truststore.p12
+    jms.trustStorePassword=password
+    jms.keyStorePath=tls/keystore.p12
+    jms.keyStorePassword=password
+    jms.java.naming.factory.initial=org.apache.qpid.jms.jndi.JmsInitialContextFactory
+    jms.connectionFactory.default=${jms.uri}?failover.nested.transport.keyStoreLocation=${jms.keyStorePath}&failover.nested.transport.keyStorePassword=${jms.keyStorePassword}&failover.nested.transport.trustStoreLocation=${jms.trustStorePath}&failover.nested.transport.trustStorePassword=${jms.keyStorePassword}&failover.nested.transport.storeType=PKCS12&failover.nested.transport.verifyHost=false&failover.amqpOpenServerListAction=IGNORE&failover.nested.transport.trustAll=true
+    #jms.connectionFactory.default=${jms.uri}?transport.keyStoreLocation=${jms.keyStorePath}&transport.keyStorePassword=${jms.keyStorePassword}&transport.trustStoreLocation=${jms.trustStorePath}&transport.trustStorePassword=${jms.trustStorePassword}&transport.storeType=PKCS12&transport.verifyHost=false
+    #jms.connectionFactory.default=${jms.uri}?jms.username=${jms.user}&jms.password=${jms.pwd}&transport.keyStoreLocation=${jms.keyStorePath}&transport.keyStorePassword=${jms.keyStorePassword}&transport.trustStoreLocation=${jms.trustStorePath}&transport.trustStorePassword=${jms.trustStorePassword}&transport.storeType=PKCS12&transport.verifyHost=false
+    #jms.connectionFactory.default=${jms.uri}?jms.username=${jms.user}&jms.password=${jms.pwd}
+    jms.default.cnx.factory=default
+    jms.java.naming.security.principal=jmsuser
+    jms.java.naming.security.credentials=password0!
+
+    topic.loadtrigger=app.addr
+    queue.defaultapp=app.queue.b
+    queue.defaultapp.alt=app.queue.a
+    queue.defaultapp.send=${queue.defaultapp}
+
+    queue.perf=app.perf
+
+---
+kind: Secret
+apiVersion: v1
+metadata:
+  name: "messaging-tester-ingress-b1-tls-secret"
+type: Opaque
+data:
+  keystore.p12: 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
+  truststore.p12: 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

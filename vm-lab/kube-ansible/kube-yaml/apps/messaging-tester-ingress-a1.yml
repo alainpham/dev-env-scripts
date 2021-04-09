@@ -56,11 +56,11 @@ spec:
           successThreshold: 1
         resources:
           limits:
-            cpu: "2.0"
-            memory: "512Mi"
+            cpu: "1"
+            memory: "256Mi"
           requests:
             cpu: "0.2"
-            memory: "128Mi"
+            memory: "256Mi"
         securityContext:
           privileged: false
         volumeMounts:
@@ -155,7 +155,7 @@ stringData:
     spring.resources.cache.cachecontrol.cache-public=true
     spring.resources.cache.cachecontrol.max-age=0
 
-    jms.uri=failover:(amqps://amq-broker-a-acceptor-1.amq-messaging.kube.loc:30443)
+    jms.uri=failover:(amqps://amq-broker-a-acceptor-1.amq-messaging.kube.loc:443)
     jms.user=user
     jms.pwd=password
     jms.trustStorePath=tls/truststore.p12

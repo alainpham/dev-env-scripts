@@ -41,6 +41,7 @@
       - apt-transport-https
       - gnupg2
       - curl
+      - rsync
     state: present
 
 - name: Configure legacy iptables

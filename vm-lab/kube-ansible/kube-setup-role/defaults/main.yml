@@ -1,0 +1,5 @@
+---
+initial_app_namespaces:
+  - amq-messaging
+  - keycloak
+  - kafka

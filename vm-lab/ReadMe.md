@@ -11,6 +11,10 @@
 - [Delete vms example](#delete-vms-example)
 - [Run Ansible to install Kubernetes](#run-ansible-to-install-kubernetes)
 - [(Draft) Install vanilla Kubernetes](#draft-install-vanilla-kubernetes)
+- [Using ansible playbooks](#using-ansible-playbooks)
+  - [prepare hosts](#prepare-hosts)
+  - [setup masters and workers](#setup-masters-and-workers)
+  - [setup different components](#setup-different-components)
 
 
 # Purpose of this repo 
@@ -184,4 +188,35 @@ openssl req -x509 \
   -days 365000 \
   -nodes \
   -subj "/CN=*.kube.loc"
+
+
+```
+
+If you have pullsecrets to add put them in file with name kube-pull-secret kube-ansible/kube-pullsecrets/kube-pull-secret.yaml
+
+
+# Using ansible playbooks
+
+```
+cd kube-ansible
+```
+
+## prepare hosts
+
+```
+ansible-playbook prepare-hosts.yml
+```
+
+## setup masters and workers
+
+```
+ansible-playbook setup-master.yml
+ansible-playbook setup-node.yml
+```
+
+## setup different components
+
+```
+ansible-playbook setup-master.yml
+ansible-playbook setup-node.yml
 ```

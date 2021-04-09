@@ -1,0 +1,16 @@
+---
+#ingress 
+- name: Create ha proxy ingress controller namespace
+  shell: kubectl apply -f /root/install/haproxy-ingress-ns.yml
+
+- name: create self signed certificate in kube
+  shell: |
+    kubectl create secret tls  haproxy-ingress-tls  --key="/root/install/tls/kube.loc.key"   --cert="/root/install/tls/kube.loc.crt" -n haproxy-controller  --dry-run=true -o yaml | kubectl apply -f -
+
+- name: install haproxy ingress controller
+  shell: kubectl apply -f /root/install/haproxy-ingress-daemonset.yml
+
+# - name: install ingress controller
+#   shell: |
+#     helm repo add haproxytech https://haproxytech.github.io/helm-charts
+#     helm install haproxy-kubernetes-ingress haproxytech/kubernetes-ingress --set controller.kind=DaemonSet--set controller.daemonset.useHostPort=true --create-namespace --namespace haproxy-ingress-controller

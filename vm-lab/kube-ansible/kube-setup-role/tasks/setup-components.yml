@@ -10,7 +10,7 @@
     state: directory
 
 - name: Copy all yaml files
-  copy:
+  synchronize:
     src: kube-yaml/
     dest: /root/install/
 
@@ -28,22 +28,20 @@
 
 
 #ingress 
-- name: Create ha proxy ingress controller namespace
-  shell: kubectl apply -f /root/install/haproxy-ingress-ns.yml
+- name: Create ingress controller namespace
+  shell: kubectl apply -f /root/install/ingress-nginx-ns.yml
 
 - name: create self signed certificate in kube
   shell: |
-    kubectl create secret tls  haproxy-ingress-tls  --key="/root/install/tls/kube.loc.key"   --cert="/root/install/tls/kube.loc.crt" -n haproxy-controller  --dry-run=true -o yaml | kubectl apply -f -
+    kubectl create secret tls ingress-nginx-tls  --key="/root/install/tls/kube.loc.key"   --cert="/root/install/tls/kube.loc.crt" -n ingress-nginx  --dry-run=true -o yaml | kubectl apply -f -
 
-- name: install haproxy ingress controller
-  shell: kubectl apply -f /root/install/haproxy-ingress-daemonset.yml
-
-# - name: install ingress controller
-#   shell: |
-#     helm repo add haproxytech https://haproxytech.github.io/helm-charts
-#     helm install haproxy-kubernetes-ingress haproxytech/kubernetes-ingress --set controller.kind=DaemonSet--set controller.daemonset.useHostPort=true --create-namespace --namespace haproxy-ingress-controller
+- name: install ingress controller
+  shell: kubectl apply -f /root/install/ingress-nginx-daemonset.yml
 
 #dashboard
+
+- name: Create dashboard namespace
+  shell: kubectl apply -f /root/install/kubernetes-dashboard-ns.yml
 
 - name: create self signed certificate for dashboard
   shell: |
@@ -65,6 +63,12 @@
 - name: Install keycloak 
   shell: kubectl apply -f /root/install/keycloak.yml
 
+# Create
+- name: Apply pull secrets
+  shell: | 
+    kubectl create ns {{ item }}  --dry-run=true -o yaml | kubectl apply -f -
+  loop: "{{ initial_app_namespaces }}"
+    
 # Pull secrets
 - name: Copy pull secrets
   copy:
@@ -75,10 +79,18 @@
   shell: | 
     kubectl apply -f /root/install/kube-pull-secret.yaml -n {{item}}
     kubectl patch serviceaccount default -p '{"imagePullSecrets": [{"name": "kube-pull-secret"}]}' -n {{item}}
-  loop:
-    - default
-    - amq-messaging
-    
+  loop: "{{ initial_app_namespaces }}"
+
+
+# Install Strimzi Operator
+- name: Deploy Strimzi Operator
+  shell: |
+    kubectl apply -f /root/install/kafka-ns.yml
+    sed -i 's/namespace: .*/namespace: kafka/' /root/install/strimzi-kafka/install/cluster-operator/*RoleBinding*.yaml
+    kubectl create -f /root/install/strimzi-kafka/install/cluster-operator/ -n kafka
+    kubectl replace -f /root/install/strimzi-kafka/install/cluster-operator/ -n kafka
+    kubectl create secret generic  kafka-tls --from-file=/root/install/tls/ -n kafka --dry-run=true -o yaml | kubectl apply -f -
+
 
 #create cluster admin user
 

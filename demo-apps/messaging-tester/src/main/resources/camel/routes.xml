@@ -27,11 +27,11 @@
             <simple>${body[size]}</simple>
         </setHeader>
         <log message="${body}"></log>
-        <to pattern="InOnly" uri="jms:topic:{{topic.loadtrigger}}" />
+        <to pattern="InOnly" uri="{{endpoint.topic}}{{topic.loadtrigger}}" />
     </route>
 
     <route id="data-generation-route">
-        <from id="data-generation-from" uri="jms:topic:{{topic.loadtrigger}}?concurrentConsumers={{jms.concurrentConsumers}}"/>
+        <from id="data-generation-from" uri="{{endpoint.topic}}{{topic.loadtrigger}}"/>
         <log message="start sending data.."></log>
         <bean id="bean-generate-data" ref="dataGenerator" method="spamData"/>
         <log message="done sending"></log>
@@ -40,11 +40,11 @@
     <route id="send-to-target-route">
         <from id="send-to-target-from" uri="direct:send"/>
         <removeHeaders pattern="*"/>
-        <to id="to-target" uri="jms:queue:{{queue.perf}}"/>
+        <to id="to-target" uri="{{endpoint.queue}}{{queue.perf}}"/>
     </route>
 
     <route id="receive-perf">
-        <from uri="jms:queue:{{queue.perf}}"/>
+        <from uri="{{endpoint.queue}}{{queue.perf}}"/>
         <sample messageFrequency="1000">
             <log message="1000 messages have been processed since last log..."></log>
         </sample>
@@ -113,14 +113,14 @@
             <json library="Jackson"/>
         </marshal>
         <convertBodyTo type="java.lang.String"/>
-        <inOnly uri="jms:queue:{{queue.defaultapp.send}}"/>
+        <inOnly uri="{{endpoint.queue}}{{queue.defaultapp.send}}"/>
         <log message="${headers}"/>
         <log message="${exchange.properties}"/>
     </route>
 
     <route id="receive-msg">
-        <from uri="jms:queue:{{queue.defaultapp}}"/>
-        <from uri="jms:queue:{{queue.defaultapp.alt}}"/>
+        <from uri="{{endpoint.queue}}{{queue.defaultapp}}"/>
+        <from uri="{{endpoint.queue}}{{queue.defaultapp.alt}}"/>
         <unmarshal>
             <json library="Jackson"/>
         </unmarshal>

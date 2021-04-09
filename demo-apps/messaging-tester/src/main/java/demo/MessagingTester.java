@@ -1,6 +1,7 @@
 package demo;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.web.servlet.ServletRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ImportResource;
@@ -60,6 +61,10 @@ public class MessagingTester implements WebSocketConfigurer{
     private final static String CNX_FACTORY_NAME = "default";
 
     @Bean
+    @ConditionalOnProperty(
+        value = InitialContext.INITIAL_CONTEXT_FACTORY,
+        matchIfMissing = false
+    )
     CachingConnectionFactory cachingConnectionFactory() throws JMSException, NamingException {
         Hashtable<String,String>  jndiConfig = new Hashtable<String,String>();
         
@@ -80,6 +85,10 @@ public class MessagingTester implements WebSocketConfigurer{
     }
 
     @Bean
+    @ConditionalOnProperty(
+        value = InitialContext.INITIAL_CONTEXT_FACTORY,
+        matchIfMissing = false
+    )
     public JmsComponent jms(CachingConnectionFactory cachingConnectionFactory) {
 
         JmsConfiguration jmsConfiguration =new JmsConfiguration(cachingConnectionFactory);

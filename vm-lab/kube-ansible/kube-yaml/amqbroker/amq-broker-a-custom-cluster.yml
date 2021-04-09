@@ -132,9 +132,11 @@ spec:
         - name: amq-broker-a-container
           resources:
             limits:
-              cpu: "1.0"
+              cpu: "1"
+              memory: "256Mi"
             requests:
-              cpu: "1.0"
+              cpu: "0.6"
+              memory: "256Mi"
           readinessProbe:
             exec:
               command:

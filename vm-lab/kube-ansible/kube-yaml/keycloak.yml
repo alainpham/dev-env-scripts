@@ -61,6 +61,7 @@ metadata:
     app: keycloak
   annotations:
     haproxy.org/ssl-passthrough: "true"
+    nginx.ingress.kubernetes.io/ssl-passthrough: "true"
 spec:
   rules:
   - host: keycloak.kube.loc

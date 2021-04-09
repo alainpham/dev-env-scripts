@@ -42,6 +42,7 @@
   - [Deploy second interconnect](#deploy-second-interconnect)
 - [Deploy Messaging tester](#deploy-messaging-tester)
   - [Using openshift routes](#using-openshift-routes)
+- [Kafka](#kafka)
 
 
 
@@ -905,3 +906,8 @@ oc delete -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 oc apply -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 ```
 
+# Kafka
+
+oc new-app obsidiandynamics/kafdrop --name=event-broker-kafdrop -e "KAFKA_BROKERCONNECT=event-broker-kafka-bootstrap:9092" -e SERVER_SERVLET_CONTEXTPATH="/" -e JVM_OPTS="-Xms32M -Xmx512M"
+oc expose dc/event-broker-kafdrop --port=9000
+oc expose svc event-broker-kafdrop

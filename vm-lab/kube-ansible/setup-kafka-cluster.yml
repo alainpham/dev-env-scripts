@@ -1,0 +1,9 @@
+---
+- name: Setup kafka
+  hosts:
+    - master
+  tasks:
+  - name: Setup kafka
+    include_role:
+      name: kube-setup-role
+      tasks_from: setup-kafka-cluster

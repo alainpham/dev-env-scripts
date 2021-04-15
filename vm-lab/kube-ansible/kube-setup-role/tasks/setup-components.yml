@@ -26,6 +26,17 @@
   args:
     creates: /root/install/tls/kube.loc.key
 
+- name: create self signed certificate for kafka ingress access
+  shell: |
+    openssl req -x509 \
+    -newkey rsa:2048 \
+    -keyout /root/install/tls/event-broker-kafka.key \
+    -out /root/install/tls/event-broker-kafka.crt \
+    -days 365000 \
+    -nodes \
+    -subj "/CN=event-broker-kafka"
+  args:
+    creates: /root/install/tls/event-broker-kafka.key
 
 #ingress 
 - name: Create ingress controller namespace

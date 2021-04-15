@@ -16,12 +16,12 @@ spec:
         type: ingress
         tls: true
         authentication:
-          type: tls
+          type: scram-sha-512
         configuration:
           brokerCertChainAndKey:
             secretName: kafka-tls
-            certificate: kube.loc.crt
-            key: kube.loc.key
+            certificate: event-broker-kafka.crt
+            key: event-broker-kafka.key
           bootstrap:
             host: event-broker-bootstrap.kafka.kube.loc
           brokers:

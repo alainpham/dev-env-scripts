@@ -183,13 +183,19 @@ kubectl create secret tls  haproxy-ingress-tls \
 ```
 openssl req -x509 \
   -newkey rsa:2048 \
-  -keyout tls/kube.loc.key \
-  -out tls/kube.loc.crt \
+  -keyout kube-yaml/tls/kube.loc.key \
+  -out kube-yaml/tls/kube.loc.crt \
   -days 365000 \
   -nodes \
   -subj "/CN=*.kube.loc"
 
-
+openssl req -x509 \
+  -newkey rsa:2048 \
+  -keyout kube-yaml/tls/event-broker-kafka.key \
+  -out kube-yaml/tls/event-broker-kafka.crt \
+  -days 365000 \
+  -nodes \
+  -subj "/CN=event-broker-kafka"
 ```
 
 If you have pullsecrets to add put them in file with name kube-pull-secret kube-ansible/kube-pullsecrets/kube-pull-secret.yaml

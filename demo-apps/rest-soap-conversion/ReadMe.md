@@ -147,5 +147,5 @@ oc start-build rest-soap-conversion-s2i --from-dir=deploy --follow
 ```
 docker login
 docker build -t rest-soap-conversion -f DockerfileCommunity .
-docker tag rest-soap-conversion:latest YOUR_REPO/rest-soap-conversion:latest
+docker tag rest-soap-conversion:latest alainpham/rest-soap-conversion:latest
 ```

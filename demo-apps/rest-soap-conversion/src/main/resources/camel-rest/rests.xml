@@ -11,6 +11,7 @@
     <rest id="person-service" path="/person">
         <post id="get-person-by-id" uri="/query" produces="application/json" type="com.demo.businessservice.QueryPerson" outType="com.demo.businessservice.Person">
             <route id="get-person-by-id">
+                <to uri="bean:eventLogger?method=logStartAndBody" />
                 <to uri="cxf:bean:cxfClient?defaultOperationName=getPersonOp"/>
                 <setBody>
                     <simple>${body[0]}</simple>
@@ -18,6 +19,7 @@
                 <setHeader headerName="Content-Type">
                     <constant>application/json</constant>
                 </setHeader>
+                <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
             </route>
         </post>
     </rest>

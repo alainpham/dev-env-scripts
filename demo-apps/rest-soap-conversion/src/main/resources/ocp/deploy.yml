@@ -129,7 +129,7 @@ metadata:
 type: Opaque
 stringData: 
   application.properties: |
-    logging.config=classpath:logback-dev.xml
+    logging.config=classpath:logback.xml
 
     # the options from org.apache.camel.spring.boot.CamelConfigurationProperties can be configured here
     camel.springboot.name=rest-soap-conversion
@@ -151,7 +151,12 @@ stringData:
     camelrest.contextPath=/camel
     camelrest.apiversion=1.0-SNAPSHOT
 
-    theme=main-dark-green
+    theme=main-dark-orange
+
+    spring.resources.cache.cachecontrol.cache-public=true
+    spring.resources.cache.cachecontrol.max-age=0
+
+    soap-url=http://soap-svc:8080/services/soappojo
 
 ---
 kind: Secret

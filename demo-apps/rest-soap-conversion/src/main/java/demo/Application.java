@@ -29,6 +29,9 @@ public class Application implements WebSocketConfigurer{
     @Value("${cxf.path}")
     private String cxfPath;
 
+    @Value("${soap-url}")
+    private String soapUrl;
+
     @Bean
     public ServletRegistrationBean cxfServletRegistrationBean() {
         ServletRegistrationBean mapping = new ServletRegistrationBean();
@@ -73,7 +76,7 @@ public class Application implements WebSocketConfigurer{
     public CxfEndpoint configureCxfClient(){
                 		// SOAP endpoint
 		CxfEndpoint cxf = new CxfEndpoint();
-		cxf.setAddress("http://current:8090/services/soappojo");
+		cxf.setAddress(soapUrl);
         cxf.setServiceClass(PersonPortType.class);
 		Map<String,Object> props = new HashMap<String,Object>();
 		props.put("dataFormat", "POJO");

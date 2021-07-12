@@ -1,0 +1,24 @@
+<rests xmlns="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+    <rest id="rest-svc" path="/restsvc">
+        <get id="get-ping" uri="/ping">
+            <route id="get-ping-route">
+                <setBody id="set-body-get-ping-route">
+                    <method ref="myTransformer" />
+                </setBody>
+            </route>
+        </get>
+    </rest>
+    <rest id="person-service" path="/person">
+        <post id="get-person-by-id" uri="/query" produces="application/json" type="com.demo.businessservice.QueryPerson" outType="com.demo.businessservice.Person">
+            <route id="get-person-by-id">
+                <to uri="cxf:bean:cxfClient?defaultOperationName=getPersonOp"/>
+                <setBody>
+                    <simple>${body[0]}</simple>
+                </setBody>
+                <setHeader headerName="Content-Type">
+                    <constant>application/json</constant>
+                </setHeader>
+            </route>
+        </post>
+    </rest>
+</rests>

@@ -147,5 +147,5 @@ oc start-build soap-svc-s2i --from-dir=deploy --follow
 ```
 docker login
 docker build -t soap-svc -f DockerfileCommunity .
-docker tag soap-svc:latest YOUR_REPO/soap-svc:latest
+docker tag soap-svc:latest alainpham/soap-svc:latest
 ```

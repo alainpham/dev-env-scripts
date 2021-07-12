@@ -1,0 +1,14 @@
+---
+apiVersion: v1
+kind: ImageStream
+metadata:
+  labels:
+    component: "${project.artifactId}"
+    group: "${project.groupId}"
+    app: "${project.artifactId}"
+    provider: fabric8
+    version: "${project.version}"
+  name: "${project.artifactId}"
+spec: {}
+status:
+  dockerImageRepository: ""

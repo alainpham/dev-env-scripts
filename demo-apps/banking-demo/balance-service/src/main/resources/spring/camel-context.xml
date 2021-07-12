@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:cxf="http://camel.apache.org/schema/cxf"
+       xsi:schemaLocation="
+       http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+       http://camel.apache.org/schema/spring http://camel.apache.org/schema/spring/camel-spring.xsd
+       http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+       http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
+       ">
+<!-- 
+    <camelContext id="balance-service" xmlns="http://camel.apache.org/schema/spring">
+
+		<rest id="restsvc"  path="/restsvc">
+			<get id="get-ping" uri="/ping">
+				<route id="get-pring-route">
+					<setBody>
+						<method ref="myTransformer" />
+					</setBody>
+				</route>
+			</get>
+		</rest>
+
+        <route id="http-receiver">
+            <from id="http-receiver-starter" uri="servlet://ping" />
+            <to uri="bean:eventLogger?method=logStartAndBody" />
+            <setHeader id="set-header-http-receiver" headerName="Content-Type">
+                <constant>application/json</constant>
+            </setHeader>
+            <setBody  id="set-body-http-receiver">
+                <constant>{"msg" : "HELLO"}</constant>
+            </setBody>
+            <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
+        </route>
+
+        <route id="balance-service-sample-route">
+            <from id="balance-service-sample-route-starter" uri="timer:start"/>
+            <transform id="route-transform">
+                <method ref="myTransformer"/>
+            </transform>
+            <log id="log-body" message=">>> ${body}"/>
+        </route>
+    </camelContext>
+-->
+</beans> 

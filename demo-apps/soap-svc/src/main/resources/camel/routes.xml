@@ -13,14 +13,6 @@
         <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
     </route>
 
-    <route id="soap-svc-sample-route">
-        <from id="soap-svc-sample-route-starter" uri="timer:start"/>
-        <transform id="route-transform">
-            <method ref="myTransformer"/>
-        </transform>
-        <log id="log-body" message=">>> ${body}"/>
-    </route>
-
     <route id="send-msg">
         <from id="send-socket-msg-to-all-starter" uri="servlet:/send-msg"/>
         <convertBodyTo type="java.lang.String"/>
@@ -43,8 +35,10 @@
     </route>
     <route>
         <from uri="cxf:bean:cxfPojo"/>
+        <to uri="bean:eventLogger?method=logStartAndBody" />
         <setBody>
             <method bean="personDB" method="getPersonById(${body[0].id})"/>
         </setBody>
+        <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
     </route>
 </routes>

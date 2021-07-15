@@ -35,6 +35,7 @@
     </route>
     <route>
         <from uri="cxf:bean:cxfPojo"/>
+        <log message="queyring : ${body[0].id}"></log>
         <to uri="bean:eventLogger?method=logStartAndBody" />
         <setBody>
             <method bean="personDB" method="getPersonById(${body[0].id})"/>

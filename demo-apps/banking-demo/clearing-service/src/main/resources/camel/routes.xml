@@ -13,14 +13,6 @@
         <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
     </route>
 
-    <route id="payment-service-sample-route">
-        <from id="payment-service-sample-route-starter" uri="timer:start"/>
-        <transform id="route-transform">
-            <method ref="myTransformer"/>
-        </transform>
-        <log id="log-body" message=">>> ${body}"/>
-    </route>
-
     <route id="send-msg">
         <from id="send-socket-msg-to-all-starter" uri="servlet:/send-msg"/>
         <convertBodyTo type="java.lang.String"/>
@@ -35,6 +27,25 @@
         <marshal>
             <json library="Jackson"/>
         </marshal>
+    </route>
+
+    <route id="clearing-route">
+        <from uri="kafka:transaction-history"/>
+        <log message="${body}"/>
+        <delay>
+            <simple>random(1000,8000)</simple>
+        </delay>
+        <unmarshal>
+            <json library="Jackson" unmarshalTypeName="demo.model.UpdateBalanceResponse"/>
+        </unmarshal>
+        <transform>
+            <method beanType="demo.model.UpdateBalanceResponse" method="clear"/>
+        </transform>
+        <log message="cleared ${body.id}"/>
+        <marshal>
+            <json library="Jackson"/>
+        </marshal>
+        <to uri="kafka:transaction-clearing"/>
     </route>
 
 </routes>

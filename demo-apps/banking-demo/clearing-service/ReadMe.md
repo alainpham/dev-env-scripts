@@ -1,4 +1,4 @@
-# Spring Boot with camel and other useful things payment-service 
+# Spring Boot with camel and other useful things clearing-service 
 
 
 ## To build this project use
@@ -19,20 +19,20 @@ Generate some private keys and truststores
 
 ```
 keytool -genkey \
-    -alias payment-service  \
+    -alias clearing-service  \
     -storepass password \
     -keyalg RSA \
     -storetype PKCS12 \
-    -dname "cn=payment-service" \
+    -dname "cn=clearing-service" \
     -validity 365000 \
     -keystore tls/keystore.p12
 
 keytool -export \
-    -alias payment-service \
+    -alias clearing-service \
     -rfc \
     -storepass password \
     -keystore tls/broker-keystore.p12 \
-    -file tls/payment-service.pem
+    -file tls/clearing-service.pem
 
 FILES=tls/trusted-certs/*
 for f in $FILES
@@ -68,11 +68,11 @@ oc replace -n openshift -f ${BASEURL}/fis-image-streams.json
 ```
 
 ```
-oc create secret generic payment-service-tls-secret \
+oc create secret generic clearing-service-tls-secret \
 --from-file=keystore.p12=tls/keystore.p12 \
 --from-file=truststore.p12=tls/truststore.p12
 
-oc create secret generic payment-service-prop-secret \
+oc create secret generic clearing-service-prop-secret \
 --from-file=application.properties=src/main/resources/application.properties
 
 mvn -P ocp fabric8:deploy fabric8:build
@@ -101,11 +101,11 @@ curl http://localhost:8090/camel/restsvc/ping
 
 
 ```
-docker stop payment-service
-docker rm payment-service
-docker rmi payment-service
-docker build -t payment-service .
-docker run -d --net primenet --ip 172.18.0.10 --name payment-service -e SPRING_PROFILES_ACTIVE=dev payment-service
+docker stop clearing-service
+docker rm clearing-service
+docker rmi clearing-service
+docker build -t clearing-service .
+docker run -d --net primenet --ip 172.18.0.10 --name clearing-service -e SPRING_PROFILES_ACTIVE=dev clearing-service
 ```
 
 Stop or launch multple instaces
@@ -114,16 +114,16 @@ Stop or launch multple instaces
 NB_CONTAINERS=2
 for (( i=0; i<$NB_CONTAINERS; i++ ))
 do
-   docker stop payment-service-$i
-   docker rm payment-service-$i
+   docker stop clearing-service-$i
+   docker rm clearing-service-$i
 done
 
-docker rmi payment-service
-docker build -t payment-service .
+docker rmi clearing-service
+docker build -t clearing-service .
 
 for (( i=0; i<$NB_CONTAINERS; i++ ))
 do
-    docker run -d --net primenet --ip 172.18.0.1$i --name payment-service-$i -e SPRING_PROFILES_ACTIVE=dev payment-service
+    docker run -d --net primenet --ip 172.18.0.1$i --name clearing-service-$i -e SPRING_PROFILES_ACTIVE=dev clearing-service
 done
 ```
 
@@ -136,16 +136,16 @@ mvn  -P ocp package
 ## To deploy using binary build on ocp
 
 ```
-tar xzvf payment-service-ocp.tar.gz
-cd payment-service
+tar xzvf clearing-service-ocp.tar.gz
+cd clearing-service
 oc apply -f openshift.yml
-oc start-build payment-service-s2i --from-dir=deploy --follow
+oc start-build clearing-service-s2i --from-dir=deploy --follow
 ```
 
 ## Push on dockerhub
 
 ```
 docker login
-docker build -t payment-service -f DockerfileCommunity .
-docker tag payment-service:latest YOUR_REPO/payment-service:latest
+docker build -t clearing-service -f DockerfileCommunity .
+docker tag clearing-service:latest YOUR_REPO/clearing-service:latest
 ```

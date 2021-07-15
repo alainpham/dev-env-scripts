@@ -25,15 +25,23 @@ public class BalanceProcessor {
     public UpdateBalanceResponse performUpdate(@Body UpdateBalanceRequest request)
     {
         UpdateBalanceResponse response = new UpdateBalanceResponse();
-        AccountBalance balance = entityManager.createQuery("select accountBalance from AccountBalance accountBalance where id = :id",AccountBalance.class).setParameter("id",request.getId()).getSingleResult();
+        AccountBalance balance = entityManager.
+            createQuery("select accountBalance from AccountBalance accountBalance where id = :id",AccountBalance.class).
+            setParameter("id",request.getId()).
+            getSingleResult();
+
         if (balance.getCurrentBalance().compareTo(request.getAmount()) == -1){
-            response.setSucceded(false);
+            response.setStatus("failed");
         }else{
-            response.setSucceded(true);
+            response.setStatus("clearing");
             balance.setCurrentBalance(balance.getCurrentBalance().subtract(request.getAmount()));
             balance.setUpdateDate(new Date());
         }
-        response.setBalance(balance);
+
+
+        response.setLastTransactionAmount(request.getAmount());
+        response.setCurrentBalance(balance.getCurrentBalance());
+        response.setId(request.getId());
         return response;
 
     }

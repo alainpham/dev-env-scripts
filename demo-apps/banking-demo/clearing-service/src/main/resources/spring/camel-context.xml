@@ -10,7 +10,7 @@
        http://camel.apache.org/schema/cxf http://camel.apache.org/schema/cxf/camel-cxf.xsd
        ">
 <!-- 
-    <camelContext id="payment-service" xmlns="http://camel.apache.org/schema/spring">
+    <camelContext id="clearing-service" xmlns="http://camel.apache.org/schema/spring">
 
 		<rest id="restsvc"  path="/restsvc">
 			<get id="get-ping" uri="/ping">
@@ -34,8 +34,8 @@
             <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
         </route>
 
-        <route id="payment-service-sample-route">
-            <from id="payment-service-sample-route-starter" uri="timer:start"/>
+        <route id="clearing-service-sample-route">
+            <from id="clearing-service-sample-route-starter" uri="timer:start"/>
             <transform id="route-transform">
                 <method ref="myTransformer"/>
             </transform>

@@ -48,6 +48,10 @@ body {
 	background-color:var(--tmpl-negative-color-dark);
 }
 
+.warn {
+	background-color:var(--tmpl-warn-color-dark);
+}
+
 .positive {
 	background-color:var(--tmpl-positive-color-dark);
 }

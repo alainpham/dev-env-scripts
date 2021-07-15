@@ -3,8 +3,6 @@ package demo.model;
 import java.io.Serializable;
 import java.math.BigDecimal;
 
-import demo.entities.AccountBalance;
-
 public class UpdateBalanceResponse implements Serializable{
     
     private Long id;
@@ -12,6 +10,11 @@ public class UpdateBalanceResponse implements Serializable{
     private BigDecimal currentBalance;
     private BigDecimal lastTransactionAmount;
 
+
+    public static UpdateBalanceResponse clear(UpdateBalanceResponse r){
+        r.status="success";
+        return r;
+    }
 
     public BigDecimal getLastTransactionAmount() {
         return lastTransactionAmount;

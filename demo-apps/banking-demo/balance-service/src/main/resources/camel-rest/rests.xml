@@ -20,9 +20,27 @@
         </get>
         <post id="update-balance" uri="/update" type="demo.model.UpdateBalanceRequest" outType="demo.model.UpdateBalanceResponse">
             <route id="update-balance-route">
+                <setHeader headerName="requestAmount">
+                    <simple>${body.amount}</simple>
+                </setHeader>
                 <setBody>
                     <method ref="balanceProcessor" method="performUpdate"/>
                 </setBody>
+                <choice>
+                    <when>
+                        <simple>${body.status} == 'clearing'</simple>
+                        <setHeader headerName="CamelHttpResponseCode">
+                            <constant>200</constant>
+                        </setHeader>
+                        <wireTap uri="direct:stream-transaction-history"/>
+                    </when>
+                    <otherwise>
+                        <setHeader headerName="CamelHttpResponseCode">
+                            <constant>304</constant>
+                        </setHeader>
+                    </otherwise>
+                </choice>
+                <bean ref="viewUpdate" method="upsertData(${body}, balance, state-table)"/>
             </route>
         </post>
     </rest>

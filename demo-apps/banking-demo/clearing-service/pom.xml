@@ -3,11 +3,11 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
     <groupId>demo</groupId>
-    <artifactId>payment-service</artifactId>
+    <artifactId>clearing-service</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>payment-service</name>
-    <description>payment-service</description>
+    <name>clearing-service</name>
+    <description>clearing-service</description>
     <properties>
         <fuse.version>7.8.0.fuse-sb2-780048-redhat-00001</fuse.version>
 		<version.org.apache.camel>2.23.2.fuse-780036-redhat-00001</version.org.apache.camel>
@@ -168,6 +168,15 @@
             <artifactId>camel-ahc-ws-starter</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-kafka-starter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.kafka</groupId>
+            <artifactId>kafka-clients</artifactId>
+        </dependency> 
+
     </dependencies>
 
 
@@ -209,7 +218,7 @@
                         <profile>dev</profile>
                     </profiles>
                     <jvmArguments>
-                        -javaagent:${user.home}/.m2/repository/io/prometheus/jmx/jmx_prometheus_javaagent/${jmx.prometheus.javaagent.version}/jmx_prometheus_javaagent-${jmx.prometheus.javaagent.version}.jar=9779:${project.basedir}/src/main/fabric8-includes/prometheus-config.yml
+                        -javaagent:${user.home}/.m2/repository/io/prometheus/jmx/jmx_prometheus_javaagent/${jmx.prometheus.javaagent.version}/jmx_prometheus_javaagent-${jmx.prometheus.javaagent.version}.jar=9709:${project.basedir}/src/main/fabric8-includes/prometheus-config.yml
                     </jvmArguments>
                 </configuration>
             </plugin>

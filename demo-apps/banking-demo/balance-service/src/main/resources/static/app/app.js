@@ -8,16 +8,20 @@ global.listeners.uiconfig.push(
 // function is executed when socket message arrives
 function functionalProcessing(jsonMsg){
     data = jsonMsg.data;
+    console.log(data);
     type = jsonMsg.type;
+    console.log(type);
     // do you custom functional stuff here
     switch (type) {
-        case "person":
+        case "balance":
             jsonMsg.formatting = {
-                vote: function (value){
-                    if (value=="yes"){
+                status: function (value){
+                    if (value == "success"){
                         return "positive";
-                    }else{
+                    }else if (value == "failed"){
                         return "negative";
+                    }else if (value == "clearing"){
+                        return "warn";
                     }
                 }
             }

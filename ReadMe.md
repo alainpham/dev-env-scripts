@@ -40,6 +40,7 @@
   - [Grafana](#grafana)
 - [Management](#management)
   - [Apicurio Schema Registry](#apicurio-schema-registry)
+  - [Red Hat Service Registry (Enterprise version)](#red-hat-service-registry-enterprise-version)
   - [API Man](#api-man)
 - [Application Servers](#application-servers)
   - [EAP 7](#eap-7)
@@ -106,6 +107,8 @@ This is to have some static name resolution docker containers we run locally
 
 172.18.0.80 schemareg
 172.18.0.81 apiman
+172.18.0.82 servicereg
+
 
 172.18.0.90 eap
 172.18.0.91 eap6
@@ -549,7 +552,7 @@ docker run -d --name dbz --net primenet --ip 172.18.0.64 \
    -e CONFIG_STORAGE_TOPIC="dbz-config" \
    -e OFFSET_STORAGE_TOPIC="dbz-offset" \
    -e STATUS_STORAGE_TOPIC="dbz-status" \
-   -e BOOTSTRAP_SERVERS="kafka:9092" \
+   -e BOOTSTRAP_SERVERS="amqstreams:9092" \
    debezium/connect:1.2
 ```
 
@@ -573,7 +576,7 @@ curl -X POST \
         "database.server.id": "1000",
         "database.server.name": "mysqldbsvr",
         "database.whitelist": "mysqldb",
-        "database.history.kafka.bootstrap.servers": "kafka:9092",
+        "database.history.kafka.bootstrap.servers": "amqstreams:9092",
         "database.history.kafka.topic": "schema-changes.mysqldb"
     }
 }
@@ -674,6 +677,14 @@ Console
 http://schemareg:8080/ui/artifacts
 http://schemareg:8080/api
 
+## Red Hat Service Registry (Enterprise version)
+
+
+docker run -d --name servicereg --net primenet --ip 172.18.0.82 \
+    -e REGISTRY_DATASOURCE_URL=jdbc:postgresql://postgres:5432/servicereg \
+    -e REGISTRY_DATASOURCE_USERNAME=user \
+    -e REGISTRY_DATASOURCE_PASSWORD=password \
+    registry.redhat.io/integration/service-registry-sql-rhel8:2.0.0
 
 
 ## API Man

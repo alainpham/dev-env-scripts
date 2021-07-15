@@ -15,6 +15,11 @@
 	--tmpl-negative-color:  #E92C00;
 	--tmpl-negative-color-light: #FF8B96;
 	
+	--tmpl-warn-color-darker: #663200;;
+	--tmpl-warn-color-dark: #b35800;;
+	--tmpl-warn-color: #ff7d00;
+	--tmpl-warn-color-light: #ffbe80;
+
 	--tmpl-positive-color-darker: #2f4f4f;;
 	--tmpl-positive-color-dark: #3b6547;;
 	--tmpl-positive-color: #719d7d;

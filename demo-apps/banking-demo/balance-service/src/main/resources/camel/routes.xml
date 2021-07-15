@@ -13,20 +13,19 @@
         <to uri="bean:eventLogger?method=logElapsedTimeAndBody" />
     </route>
 
-    <route id="send-msg">
-        <from id="send-socket-msg-to-all-starter" uri="servlet:/send-msg"/>
-        <convertBodyTo type="java.lang.String"/>
-        <unmarshal>
-            <json library="Jackson"/>
-        </unmarshal>
-        <log message="${body}"/>
-
-        <bean ref="viewUpdate" method="upsertData(${body}, person, state-table)"/>
-        <bean ref="viewUpdate" method="appendData(${body}, person, log-table)"/>
-
+    <route>
+        <from uri="direct:stream-transaction-history"/>
         <marshal>
             <json library="Jackson"/>
         </marshal>
+        <to uri="kafka:transaction-history"/>
     </route>
 
+    <route>
+        <from uri="kafka:transaction-clearing"/>
+        <unmarshal>
+            <json library="Jackson" unmarshalTypeName="demo.model.UpdateBalanceResponse"/>
+        </unmarshal>
+        <bean ref="viewUpdate" method="upsertData(${body}, balance, state-table)"/>
+    </route>
 </routes>

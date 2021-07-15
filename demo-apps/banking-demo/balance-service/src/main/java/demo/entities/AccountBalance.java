@@ -1,5 +1,6 @@
 package demo.entities;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -9,7 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 
 @Entity
-public class AccountBalance {
+public class AccountBalance implements Serializable{
     
     @Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

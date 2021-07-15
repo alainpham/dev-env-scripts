@@ -1,12 +1,13 @@
 package demo.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
-public class UpdateBalanceRequest {
+public class UpdateBalanceRequest implements Serializable{
     
     private Long id;
     private BigDecimal amount;
-    
+
     public Long getId() {
         return id;
     }

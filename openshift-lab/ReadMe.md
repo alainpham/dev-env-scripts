@@ -43,6 +43,14 @@
 - [Deploy Messaging tester](#deploy-messaging-tester)
   - [Using openshift routes](#using-openshift-routes)
 - [Kafka](#kafka)
+  - [Intro](#intro)
+    - [Custom Resource Definitions](#custom-resource-definitions)
+    - [Cluster Operator](#cluster-operator)
+    - [Topic Operator](#topic-operator)
+    - [User Operator](#user-operator)
+  - [Cluster creation](#cluster-creation)
+  - [Kafdrop](#kafdrop)
+  - [Creation and scaling of topics](#creation-and-scaling-of-topics)
 
 
 
@@ -908,6 +916,84 @@ oc apply -f apps/messaging-tester-interconnect-a-failover.yml  -n apps
 
 # Kafka
 
+## Intro
+
+
+### Custom Resource Definitions
+
+Custom resources definition (CRD) is a powerful feature introduced in Kubernetes 1.7 which enables users to add their own/custom objects to the Kubernetes cluster and use it like any other native Kubernetes objects.
+
+For AMQ Streams we will be creating our own resources to maintain the topology and configurations of our clusters.
+
+### Cluster Operator
+
+Responsible for deploying and managing Apache Kafka clusters within OpenShift cluster. 
+
+![Cluster Operator](https://access.redhat.com/webassets/avalon/d/Red_Hat_AMQ-7.3-Using_AMQ_Streams_on_OpenShift_Container_Platform-en-US/images/a48fd4be1526fc37853a46ddfdaf9daa/cluster-operator.png)
+
+The Cluster Operator can be configured to watch for more OpenShift projects or Kubernetes namespaces. Cluster Operator watches the following resources that are defined by Custom Resource Definitions (CRDs) :
+
+- A Kafka resource for the Kafka cluster.
+- A KafkaConnect resource for the Kafka Connect cluster.
+- A KafkaConnectS2I resource for the Kafka Connect cluster with Source2Image support.
+- A KafkaMirrorMaker resource for the Kafka Mirror Maker instance.
+
+### Topic Operator
+
+Responsible for managing Kafka topics within a Kafka cluster running within OpenShift cluster. 
+
+![Topic Operator](https://access.redhat.com/webassets/avalon/d/Red_Hat_AMQ-7.3-Using_AMQ_Streams_on_OpenShift_Container_Platform-en-US/images/58c0e59c4f691d4e5f50f9a23417c916/topic_operator.png)
+
+ The role of the Topic Operator is to keep a set of KafkaTopic OpenShift resources describing Kafka topics in-sync with corresponding Kafka topics.
+
+Specifically:
+
+- if a KafkaTopic is created, the operator will create the topic it describes
+- if a KafkaTopic is deleted, the operator will delete the topic it describes
+- if a KafkaTopic is changed, the operator will update the topic it describes 
+
+And also, in the other direction:
+
+- if a topic is created within the Kafka cluster, the operator will create a KafkaTopic describing it
+- if a topic is deleted from the Kafka cluster, the operator will delete the KafkaTopic describing it
+- if a topic in the Kafka cluster is changed, the operator will update the KafkaTopic describing it 
+
+### User Operator
+
+Responsible for managing Kafka users within a Kafka cluster running within OpenShift cluster. 
+
+- if a KafkaUser is created, the User Operator will create the user it describes
+- if a KafkaUser is deleted, the User Operator will delete the user it describes
+- if a KafkaUser is changed, the User Operator will update the user it describes 
+
+Unlike the Topic Operator, the User Operator does not sync any changes from the Kafka cluster with the OpenShift resources. Unlike the Kafka topics which might be created by applications directly in Kafka, it is not expected that the users will be managed directly in the Kafka cluster in parallel with the User Operator, so this should not be needed.
+
+The User Operator allows you to declare a KafkaUser as part of your application’s deployment. When the user is created, the credentials will be created in a Secret. Your application needs to use the user and its credentials for authentication and to produce or consume messages.
+
+In addition to managing credentials for authentication, the User Operator also manages authorization rules by including a description of the user’s rights in the KafkaUser declaration. 
+
+Install operator from operatorhub
+
+## Cluster creation
+
+```
+oc new-project amq-streams
+oc apply -f  amqstreams/event-broker.yaml 
+oc apply -f amqstreams/kafka-user.yaml 
+```
+
+## Kafdrop
+
+```
 oc new-app obsidiandynamics/kafdrop --name=event-broker-kafdrop -e "KAFKA_BROKERCONNECT=event-broker-kafka-bootstrap:9092" -e SERVER_SERVLET_CONTEXTPATH="/" -e JVM_OPTS="-Xms32M -Xmx512M"
 oc expose deployment/event-broker-kafdrop --port=9000
 oc expose svc event-broker-kafdrop
+```
+
+## Creation and scaling of topics
+
+```
+
+oc apply -f amqstreams/lines-topic.yml
+
+```

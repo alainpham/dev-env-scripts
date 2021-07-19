@@ -262,3 +262,8 @@ docker push alainpham/messaging-tester:latest
 ```
 
 
+## Getting kafka certificates
+
+oc extract secret/event-broker-cluster-ca-cert --keys=ca.crt --to=- >tls/trusted-certs/event-broker-kafka.crt
+
+oc get secret kafka-user -o yaml | grep password | head -1 |  sed -E 's/.*password: (.*)/\1/'  | base64 -d

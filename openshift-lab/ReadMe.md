@@ -51,6 +51,8 @@
   - [Cluster creation](#cluster-creation)
   - [Kafdrop](#kafdrop)
   - [Creation and scaling of topics](#creation-and-scaling-of-topics)
+  - [Deploy an consumer app](#deploy-an-consumer-app)
+- [Change Data Capture](#change-data-capture)
 
 
 
@@ -997,3 +999,36 @@ oc expose svc event-broker-kafdrop
 oc apply -f amqstreams/lines-topic.yml
 
 ```
+
+## Deploy an consumer app
+
+```
+oc delete -f apps/messaging-tester-amqstreams.yml 
+oc apply -f apps/messaging-tester-amqstreams.yml
+
+```
+
+
+# Change Data Capture
+
+```
+
+create a mysqldb with sampledb
+
+oc new-build --binary --name=dbz
+cd debezium
+oc start-build dbz --from-dir=. --follow
+
+oc apply -f kafka-connect.yaml
+oc apply -f kafka-connector.yaml
+
+mysql -u user -p sampledb
+
+CREATE TABLE pet (name VARCHAR(20), owner VARCHAR(20),
+       species VARCHAR(20), gender CHAR(1), birth DATE, death DATE);
+
+INSERT INTO pet
+(name, owner, species, gender)
+VALUES('jim', 'john', 'bird', 'm');
+```
+

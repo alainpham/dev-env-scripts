@@ -92,6 +92,17 @@ scrape_configs:
           namespace: "camel"
           kubernetes_pod_name: "172.18.0.11"
           node_name: "localhost"
+  - job_name: 'amqbroker'
+    static_configs:
+      - targets: 
+          - "172.18.0.1:8161"
+        labels:
+          namespace: "amq"
+          kubernetes_pod_name: "amq-broker-local"
+          broker: "amq-broker-local"
+          kubernetes_namespace: "amq"
+          statefulset_kubernetes_io_pod_name: "amq-broker-local"
+          node_name: "localhost"
   - job_name: 'node'
     static_configs:
       - targets: 

@@ -267,3 +267,23 @@ docker push alainpham/messaging-tester:latest
 oc extract secret/event-broker-cluster-ca-cert --keys=ca.crt --to=- >tls/trusted-certs/event-broker-kafka.crt
 
 oc get secret kafka-user -o yaml | grep password | head -1 |  sed -E 's/.*password: (.*)/\1/'  | base64 -d
+
+
+rm tls/truststore.p12
+
+FILES=tls/trusted-certs/*
+for f in $FILES
+do
+    full="${f##*/}"
+    extension="${full##*.}"
+    filename="${full%.*}"
+    echo "importing $full in alias $filename"
+
+    keytool -import \
+        -alias $filename \
+        -storepass password\
+        -storetype PKCS12 \
+        -noprompt \
+        -keystore tls/truststore.p12 \
+        -file $f
+done

@@ -1,0 +1,16 @@
+apiVersion: kafka.strimzi.io/v1beta1
+kind: KafkaConnect
+metadata:
+  name: dbz-cluster
+  annotations: 
+    strimzi.io/use-connector-resources: "true"
+spec:
+  version: 2.6.0
+  replicas: 1
+  bootstrapServers: event-broker-kafka-bootstrap.amq-streams.svc.cluster.local:9092
+  image: image-registry.openshift-image-registry.svc:5000/cdc/dbz:latest
+  config:
+    group.id: dbz-group
+    offset.storage.topic: connect-cluster-offsets
+    config.storage.topic: connect-cluster-configs
+    status.storage.topic: connect-cluster-status

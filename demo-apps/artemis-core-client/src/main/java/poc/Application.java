@@ -13,8 +13,8 @@ public class Application {
 
         if (args[0].equals("send")) {
 
-            // Producer producer = new Producer("/home/workdrive/TAZONE/RECORDINGS/2020-04-25_18-11-42.mov");
-            Producer producer = new Producer("test.txt");
+             Producer producer = new Producer("/home/workdrive/TAZONE/RECORDINGS/tdf.mov");
+            // Producer producer = new Producer("test.txt");
             producer.start();
         }else{
             Consumer consumer = new Consumer();

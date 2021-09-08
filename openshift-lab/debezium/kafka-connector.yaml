@@ -1,0 +1,19 @@
+apiVersion: kafka.strimzi.io/v1alpha1
+kind: KafkaConnector
+metadata:
+  name: events-from-mysql
+  labels:
+    strimzi.io/cluster: dbz-cluster
+spec:
+  class: io.debezium.connector.mysql.MySqlConnector
+  tasksMax: 1
+  config:
+    database.hostname: mysql  
+    database.port: 3306
+    database.user: user
+    database.password: password
+    database.server.id: 184054  
+    database.server.name: mysqldbsvr 
+    database.include.list: sampledb  
+    database.history.kafka.bootstrap.servers: event-broker-kafka-bootstrap.amq-streams.svc.cluster.local:9092
+    database.history.kafka.topic: schema-changes.inventory

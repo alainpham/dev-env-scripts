@@ -108,6 +108,9 @@
         <setHeader headerName="CamelJmsDestinationName">
             <simple>${body[destination]}</simple>
         </setHeader>
+        <setHeader headerName="kafka.TOPIC">
+            <simple>${body[destination]}</simple>
+        </setHeader>
         <log message="message sent to ${headers.CamelJmsDestinationName}"></log>
         <marshal>
             <json library="Jackson"/>

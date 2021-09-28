@@ -62,7 +62,7 @@ public class MessagingTester implements WebSocketConfigurer{
 
     @Bean
     @ConditionalOnProperty(
-        value = InitialContext.INITIAL_CONTEXT_FACTORY,
+        value = "jms."+InitialContext.INITIAL_CONTEXT_FACTORY,
         matchIfMissing = false
     )
     CachingConnectionFactory cachingConnectionFactory() throws JMSException, NamingException {
@@ -86,7 +86,7 @@ public class MessagingTester implements WebSocketConfigurer{
 
     @Bean
     @ConditionalOnProperty(
-        value = InitialContext.INITIAL_CONTEXT_FACTORY,
+        value = "jms."+InitialContext.INITIAL_CONTEXT_FACTORY,
         matchIfMissing = false
     )
     public JmsComponent jms(CachingConnectionFactory cachingConnectionFactory) {

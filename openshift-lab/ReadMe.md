@@ -72,7 +72,7 @@ Set your user token or credentials and login
 export ocpuser="USR"
 export ocppwd="PASSWORD"
 export ocptoken="TOKEN"
-export ocpurl="https://api.cluster-968d.968d.example.opentlc.com:6443"
+export ocpurl="https://api.cluster-r7nwz.r7nwz.sandbox311.opentlc.com:6443"
 ```
 
 ```
@@ -88,8 +88,7 @@ oc login --token=${ocptoken} --server=${ocpurl}
 
 ## Import images
 ```
-BASEURL=https://raw.githubusercontent.com/jboss-fuse/application-templates/application-templates-${fuse_app_template_version}
-
+BASEURL=https://raw.githubusercontent.com/jboss-fuse/application-templates/master
 oc create -n openshift -f ${BASEURL}/fis-image-streams.json
 oc replace -n openshift -f ${BASEURL}/fis-image-streams.json
 ```
@@ -98,8 +97,8 @@ oc replace -n openshift -f ${BASEURL}/fis-image-streams.json
 
 ## Import images
 ```
-oc replace -n openshift  -f https://raw.githubusercontent.com/jboss-container-images/jboss-amq-7-broker-openshift-image/${amq_broker_image_version}/amq-broker-7-image-streams.yaml
-oc create -n openshift -f https://raw.githubusercontent.com/jboss-container-images/jboss-amq-7-broker-openshift-image/${amq_broker_image_version}/amq-broker-7-image-streams.yaml
+oc replace -n openshift  -f https://raw.githubusercontent.com/jboss-container-images/jboss-amq-7-broker-openshift-image/amq-broker-78-dev/amq-broker-7-image-streams.yaml
+oc create -n openshift -f https://raw.githubusercontent.com/jboss-container-images/jboss-amq-7-broker-openshift-image/amq-broker-78-dev/amq-broker-7-image-streams.yaml
 ```
 
 ## Install hotfix
@@ -899,6 +898,16 @@ oc delete -f apps/messaging-tester-route-b1-custom.yml  -n apps
 oc apply -f apps/messaging-tester-route-b1-custom.yml  -n apps
 
 ```
+
+The follwoing deployments connect directly to the AMQ 7 broker cluster through services
+```
+oc new-project apps
+
+oc delete -f apps/messaging-tester-service-a0.yml  -n apps
+oc apply -f apps/messaging-tester-service-a0.yml  -n apps
+
+```
+
 
 
 The follwoing deployments connect directly to the AMQ Interconnect Layer

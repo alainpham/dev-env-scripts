@@ -310,6 +310,7 @@ docker run \
     -e AMQ_PASSWORD="password" \
     -e AMQ_ROLE="admin" \
     -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_ENABLE_METRICS_PLUGIN="true" \
     -d --name amqbroker  \
     -d --net primenet --ip 172.18.0.115 \
     registry.redhat.io/amq7/amq-broker:latest

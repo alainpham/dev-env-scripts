@@ -43,6 +43,7 @@
         <to id="to-target" uri="{{endpoint.queue}}{{queue.perf}}"/>
     </route>
 
+
     <route id="receive-perf">
         <from uri="{{endpoint.queue}}{{queue.perf}}"/>
         <sample messageFrequency="1000">
@@ -117,6 +118,7 @@
         </marshal>
         <convertBodyTo type="java.lang.String"/>
         <inOnly uri="{{endpoint.queue}}{{queue.defaultapp.send}}"/>
+        <!-- <inOnly uri="jms:topic:{{queue.defaultapp.send}}"/> -->
         <log message="${headers}"/>
         <log message="${exchange.properties}"/>
     </route>

@@ -103,6 +103,15 @@ scrape_configs:
           kubernetes_namespace: "amq"
           statefulset_kubernetes_io_pod_name: "amq-broker-local"
           node_name: "localhost"
+      - targets: 
+          - "amqbroker:8161"
+        labels:
+          namespace: "amq"
+          kubernetes_pod_name: "amq-broker-single"
+          broker: "amq-broker-single"
+          kubernetes_namespace: "amq"
+          statefulset_kubernetes_io_pod_name: "amq-broker-single"
+          node_name: "localhost"
   - job_name: 'node'
     static_configs:
       - targets: 

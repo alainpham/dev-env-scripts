@@ -2,22 +2,22 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>demo</groupId>
-    <artifactId>messaging-tester</artifactId>
+    <groupId>poc</groupId>
+    <artifactId>cxfbasicauth</artifactId>
     <version>1.0-SNAPSHOT</version>
     <packaging>jar</packaging>
-    <name>messaging-tester</name>
-    <description>messaging-tester</description>
+    <name>cxfbasicauth</name>
+    <description>cxfbasicauth</description>
     <properties>
-        <fuse.version>7.8.0.fuse-sb2-780038-redhat-00001</fuse.version>
-		<version.org.apache.camel>2.23.2.fuse-sb2-780036-redhat-00001</version.org.apache.camel>
+        <fuse.version>7.9.0.fuse-sb2-790065-redhat-00001</fuse.version>
+		<version.org.apache.camel>2.23.2.fuse-790054-redhat-00001</version.org.apache.camel>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
-        <swagger.ui.version>3.40.0</swagger.ui.version>
-        <swagger.codegen.version>2.4.18</swagger.codegen.version>
+        <swagger.ui.version>4.0.1</swagger.ui.version>
+        <swagger.codegen.version>2.4.23</swagger.codegen.version>
         <logstash.encoder.version>6.6</logstash.encoder.version>
-        <webjars.locator.version>0.40</webjars.locator.version>
-        <jmx.prometheus.javaagent.version>0.14.0</jmx.prometheus.javaagent.version>
+        <webjars.locator.version>0.42</webjars.locator.version>
+        <jmx.prometheus.javaagent.version>0.16.1</jmx.prometheus.javaagent.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- PUT THE PROJECT AND REGISTRY WHERE THE IMAGE WILL BE -->
@@ -59,7 +59,10 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-undertow</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-security</artifactId>
+        </dependency>
         <dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-websocket</artifactId>
@@ -141,6 +144,16 @@
             <artifactId>camel-servlet-starter</artifactId>
         </dependency>
 
+        <!--Camel CXF starter -->
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-cxf-starter</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apache.camel</groupId>
+            <artifactId>camel-soap</artifactId>
+        </dependency>
 
         <!--Circuit breaker-->
         <dependency>
@@ -168,53 +181,6 @@
             <artifactId>camel-ahc-ws-starter</artifactId>
         </dependency>
 
-        <!-- AMQP -->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-amqp-starter</artifactId>
-        </dependency>
-
-        <!-- artemis -->
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jms-starter</artifactId>
-        </dependency>
-
-        <dependency>
-            <groupId>org.apache.activemq</groupId>
-            <artifactId>artemis-jms-client</artifactId>
-        </dependency> 
-
-
-        <dependency>
-            <groupId>javax.json</groupId>
-            <artifactId>javax.json-api</artifactId>
-          </dependency> 
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-jacksonxml-starter</artifactId>
-          </dependency>
-
-          <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-ognl-starter</artifactId>
-          </dependency>
-
-          <dependency>
-            <groupId>org.messaginghub</groupId>
-            <artifactId>pooled-jms</artifactId>
-          </dependency>
-          <!-- Hornet -->
-
-        <dependency>
-            <groupId>org.apache.camel</groupId>
-            <artifactId>camel-kafka-starter</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.kafka</groupId>
-            <artifactId>kafka-clients</artifactId>
-        </dependency> 
     </dependencies>
 
 
@@ -253,7 +219,7 @@
                 </executions>
                 <configuration>
                     <profiles>
-                        <profile>dev-core-simple</profile>
+                        <profile>dev</profile>
                     </profiles>
                     <jvmArguments>
                         -javaagent:${user.home}/.m2/repository/io/prometheus/jmx/jmx_prometheus_javaagent/${jmx.prometheus.javaagent.version}/jmx_prometheus_javaagent-${jmx.prometheus.javaagent.version}.jar=9779:${project.basedir}/src/main/fabric8-includes/prometheus-config.yml
@@ -361,6 +327,38 @@
             </build>
         </profile>
 
+         <!-- generate code from a wsdl -->
+        <profile>
+            <id>cxfgen</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.jboss.redhat-fuse</groupId>
+                        <artifactId>cxf-codegen-plugin</artifactId>
+                        <version>${fuse.version}</version>
+                        <executions>
+                            <execution>
+                                <id>generate-sources</id>
+                                <phase>generate-sources</phase>
+                                <goals>
+                                    <goal>wsdl2java</goal>
+                                </goals>
+                                <configuration>
+                                    <sourceRoot>${basedir}/src/main/java</sourceRoot>
+                                    <wsdlOptions>
+                                        <wsdlOption>
+                                            <wsdl>${basedir}/src/main/resources/api-definitions/contract.wsdl</wsdl>
+                                            <wsdlLocation>classpath:api-definitions/contract.wsdl</wsdlLocation>
+                                            <bareMethods></bareMethods>
+                                        </wsdlOption>
+                                    </wsdlOptions>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
     </profiles>
 
     <repositories>

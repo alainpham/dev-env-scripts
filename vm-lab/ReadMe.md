@@ -15,6 +15,7 @@
   - [prepare hosts](#prepare-hosts)
   - [setup masters and workers](#setup-masters-and-workers)
   - [setup different components](#setup-different-components)
+- [Setup SAP on a single VM](#setup-sap-on-a-single-vm)
 
 
 # Purpose of this repo 
@@ -63,7 +64,28 @@ ssh-keygen -f ~/.ssh/vm
 vmcreate master 4048 4 debian 10 40G debian10
 vmcreate node01 4048 4 debian 11 40G debian10
 vmcreate node02 4048 4 debian 12 40G debian10
+
+vmcreate-rhel vhcalnplci 10000 4 rhel-server-7.9-update-9-x86_64-kvm 13 60G rhel7-unknown $RHUSER $RHPWD $RHPOOLID
+
+
+
 ```
+
+for ocp
+
+```
+sudo virt-install -n ocp-dev --memory 65536 --vcpus=12 --os-variant=fedora-coreos-stable --accelerate -v --cpu host-passthrough,cache.mode=passthrough --disk path=/var/lib/libvirt/images/ocp-dev.qcow2,size=120 --network network=ocp-dev,mac=02:01:00:00:00:66 --cdrom /var/lib/libvirt/images/discovery_image.iso
+
+
+sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:20' name='thematrix' ip='192.168.122.20' />" --live --config
+
+sudo virt-install --name thematrix --ram 18432 --vcpus 6 --disk \
+    /home/workdrive/virt/runtime/thematrix.qcow2,format=qcow2,bus=virtio,size=50 --cdrom /home/workdrive/virt/images/discovery-image.iso --network \
+    bridge=virbr0,model=virtio,mac=52:54:00:00:00:20 --os-variant=rhel8-unknown --noautoconsole --cpu host-passthrough,cache.mode=passthrough
+
+  
+```
+
 
 # Delete vms example
 
@@ -71,7 +93,8 @@ vmcreate node02 4048 4 debian 12 40G debian10
 dvm master
 dvm node01
 dvm node02
-
+dvm sap
+dvm vhcalnplci
 ```
 
 # Run Ansible to install Kubernetes
@@ -225,4 +248,15 @@ ansible-playbook setup-node.yml
 ```
 ansible-playbook setup-master.yml
 ansible-playbook setup-node.yml
+```
+# Setup SAP on a single VM
+
+```
+sudo su
+yum -y update
+yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+
+yum -y install fuse-sshfs tcsh libaio uuidd
+yum -y install tcsh libaio uuidd
+password : Abap10
 ```

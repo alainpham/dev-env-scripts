@@ -50,6 +50,7 @@
 - [Getting a RHEL Compatible JDK8 container](#getting-a-rhel-compatible-jdk8-container)
 - [Getting CENTOS 7](#getting-centos-7)
 - [Getting debian](#getting-debian)
+- [Download https certificates](#download-https-certificates)
 
 # Purpose of this repo
 
@@ -802,3 +803,5 @@ docker exec -it centos /bin/bash
 docker run -it --name debian --net primenet --ip 172.18.0.122 --entrypoint "/bin/bash" debian:buster
 docker exec -it debian /bin/bash
 ```
+
+# Download https certificates

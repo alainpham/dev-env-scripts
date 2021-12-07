@@ -1,10 +1,10 @@
-apiVersion: kafka.strimzi.io/v1beta1
+apiVersion: kafka.strimzi.io/v1beta2
 kind: Kafka
 metadata:
   name: event-broker
 spec:
   kafka:
-    version: 2.6.0
+    version: 2.8.0
     replicas: 3
     listeners:
       - name: plain
@@ -36,18 +36,19 @@ spec:
       initialDelaySeconds: 15
       timeoutSeconds: 5
     config:
+      inter.broker.protocol.version: '2.8'
+      log.message.format.version: '2.8'
       offsets.topic.replication.factor: 3
-      transaction.state.log.replication.factor: 3
       transaction.state.log.min.isr: 2
-      log.message.format.version: "2.6"
-      inter.broker.protocol.version: "2.6"
+      transaction.state.log.replication.factor: 3
     storage:
-      type: jbod
-      volumes:
-      - id: 0
-        type: persistent-claim
-        size: 10Gi
-        deleteClaim: true
+      type: ephemeral
+      # type: jbod
+      # volumes:
+      # - id: 0
+      #   type: persistent-claim
+      #   size: 10Gi
+      #   deleteClaim: true
     metrics:
       # Inspired by config from Kafka 2.0.0 example rules:
       # https://github.com/prometheus/jmx_exporter/blob/master/example_configs/kafka-2_0_0.yml
@@ -192,9 +193,11 @@ spec:
       initialDelaySeconds: 15
       timeoutSeconds: 5
     storage:
-      type: persistent-claim
-      size: 10Gi
-      deleteClaim: false
+      type: ephemeral
+    # storage:
+    #   type: persistent-claim
+    #   size: 10Gi
+    #   deleteClaim: false
     metrics:
       # Inspired by Zookeeper rules
       # https://github.com/prometheus/jmx_exporter/blob/master/example_configs/zookeeper.yaml

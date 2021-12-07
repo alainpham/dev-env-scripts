@@ -142,6 +142,12 @@ oc apply -f openshift.yml
 oc start-build smoke-test-s2i --from-dir=deploy --follow
 ```
 
+## Build official image
+
+```
+docker build -t smoke-test-official -f Dockerfile .
+```
+
 ## Push on dockerhub
 
 ```

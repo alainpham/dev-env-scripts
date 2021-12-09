@@ -1,0 +1,41 @@
+apiVersion: "apps.openshift.io/v1"
+kind: "DeploymentConfig"
+metadata:
+  labels:
+    app: "empty"
+    group: "poc"
+  name: "empty"
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    app: "empty"
+    group: "poc"
+  strategy:
+    rollingParams:
+      timeoutSeconds: 3600
+    type: "Rolling"
+  template:
+    metadata:
+      labels:
+        app: "empty"
+        group: "poc"
+    spec:
+      containers:
+      - env:
+        image: "alainpham/empty:latest"
+        imagePullPolicy: "Always"
+        name: "spring-boot"
+        ports:
+        resources:
+          limits:
+            cpu: "2.0"
+            memory: "512Mi"
+          requests:
+            cpu: "0.2"
+            memory: "128Mi"
+        securityContext:
+          privileged: false
+  triggers:
+  - type: "ConfigChange"
+---

@@ -1,0 +1,27 @@
+<network xmlns:dnsmasq="http://libvirt.org/schemas/network/dnsmasq/1.0">
+    <name>ocp-dev</name>
+    <forward mode='nat'>
+      <nat>
+        <port start='1024' end='65535'/>
+      </nat>
+    </forward>
+    <bridge name='virbr1' stp='on' delay='0'/>
+    <ip address='192.168.123.1' netmask='255.255.255.0'>
+      <dhcp>
+        <range start='192.168.123.2' end='192.168.123.254'/>
+        <host mac="02:01:00:00:00:66" name="node.thevoid.ocp.alainpham.net" ip="192.168.123.5"/>
+      </dhcp>
+    </ip>
+    <dns>
+      <host ip="192.168.123.5"><hostname>api.thevoid.ocp.alainpham.net</hostname></host>
+    </dns>
+    <dnsmasq:options>
+      <!-- fix for the 5s timeout on DNS -->
+      <!-- see https://www.math.tamu.edu/~comech/tools/linux-slow-dns-lookup/ -->
+      <dnsmasq:option value="auth-server=thevoid.ocp.alainpham.net,"/><!-- yes, there is a trailing coma -->
+      <dnsmasq:option value="auth-zone=thevoid.ocp.alainpham.net"/>
+      <!-- Wildcard route -->
+      <dnsmasq:option value="host-record=lb.thevoid.ocp.alainpham.net,192.168.123.5"/>
+      <dnsmasq:option value="cname=*.apps.thevoid.ocp.alainpham.net,lb.thevoid.ocp.alainpham.net"/>
+    </dnsmasq:options>
+  </network>

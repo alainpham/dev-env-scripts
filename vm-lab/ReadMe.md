@@ -65,24 +65,55 @@ vmcreate master 4048 4 debian 10 40G debian10
 vmcreate node01 4048 4 debian 11 40G debian10
 vmcreate node02 4048 4 debian 12 40G debian10
 
+vmcreate vhcalnplci 24576 4 debian-10-genericcloud-amd64-20211011-792 13 40G debian10
+
+
 vmcreate-rhel vhcalnplci 10000 4 rhel-server-7.9-update-9-x86_64-kvm 13 60G rhel7-unknown $RHUSER $RHPWD $RHPOOLID
 
-
-
 ```
+
+
 
 for ocp
 
 ```
-sudo virt-install -n ocp-dev --memory 65536 --vcpus=12 --os-variant=fedora-coreos-stable --accelerate -v --cpu host-passthrough,cache.mode=passthrough --disk path=/var/lib/libvirt/images/ocp-dev.qcow2,size=120 --network network=ocp-dev,mac=02:01:00:00:00:66 --cdrom /var/lib/libvirt/images/discovery_image.iso
+sudo virt-install -n ocp-dev --memory 65536 --vcpus=12 --os-variant=fedora-coreos-stable --accelerate -v --cpu host-passthrough,cache.mode=passthrough --disk path=/var/lib/libvirt/images/ocp-dev.qcow2,size=250 --network network=ocp-dev,mac=02:01:00:00:00:66 --cdrom /var/lib/libvirt/images/discovery_image.iso
 
 
-sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:20' name='thematrix' ip='192.168.122.20' />" --live --config
+sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:20' name='ocp' ip='192.168.122.20' />" --live --config
 
-sudo virt-install --name thematrix --ram 18432 --vcpus 6 --disk \
-    /home/workdrive/virt/runtime/thematrix.qcow2,format=qcow2,bus=virtio,size=50 --cdrom /home/workdrive/virt/images/discovery-image.iso --network \
+sudo virt-install --name ocp --ram 235520 --vcpus 12 --disk \
+    /home/workdrive/virt/runtime/ocp.qcow2,format=qcow2,bus=virtio,size=300 --cdrom /home/workdrive/virt/images/discovery_image_ocp.iso --network \
     bridge=virbr0,model=virtio,mac=52:54:00:00:00:20 --os-variant=rhel8-unknown --noautoconsole --cpu host-passthrough,cache.mode=passthrough
 
+
+<network xmlns:dnsmasq="http://libvirt.org/schemas/network/dnsmasq/1.0">
+  <name>ocp-dev</name>
+  <forward mode='nat'>
+    <nat>
+      <port start='1024' end='65535'/>
+    </nat>
+  </forward>
+  <bridge name='virbr1' stp='on' delay='0'/>
+  <ip address='192.168.123.1' netmask='255.255.255.0'>
+    <dhcp>
+      <range start='192.168.123.2' end='192.168.123.254'/>
+      <host mac="02:01:00:00:00:66" name="node.itix-dev.ocp.itix" ip="192.168.123.5"/>
+    </dhcp>
+  </ip>
+  <dns>
+    <host ip="192.168.123.5"><hostname>api.itix-dev.ocp.itix</hostname></host>
+  </dns>
+  <dnsmasq:options>
+    <!-- fix for the 5s timeout on DNS -->
+    <!-- see https://www.math.tamu.edu/~comech/tools/linux-slow-dns-lookup/ -->
+    <dnsmasq:option value="auth-server=itix-dev.ocp.itix,"/><!-- yes, there is a trailing coma -->
+    <dnsmasq:option value="auth-zone=itix-dev.ocp.itix"/>
+    <!-- Wildcard route -->
+    <dnsmasq:option value="host-record=lb.itix-dev.ocp.itix,192.168.123.5"/>
+    <dnsmasq:option value="cname=*.apps.itix-dev.ocp.itix,lb.itix-dev.ocp.itix"/>
+  </dnsmasq:options>
+</network>
   
 ```
 
@@ -259,4 +290,11 @@ yum -y install https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarc
 yum -y install fuse-sshfs tcsh libaio uuidd
 yum -y install tcsh libaio uuidd
 password : Abap10
+```
+
+Docker approach
+```
+
+docker run --stop-timeout 3600 -it --memory="20Gi" --name a4h  -h vhcala4hci -p 3200:3200 -p 3300:3300 -p 8443:8443 -p 30213:30213 -p 50000:50000 -p 50001:50001 --sysctl kernel.shmmax=21474836480 --sysctl kernel.shmmni=32768 --sysctl kernel.shmall=5242880 --sysctl kernel.msgmni=1024 --sysctl kernel.sem="1250 256000 100 8192" --ulimit nofile=1048576:1048576 store/saplabs/abaptrial:1909 -agree-to-sap-license
+
 ```

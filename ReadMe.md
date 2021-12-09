@@ -130,7 +130,9 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.122 debian
 
 
-172.18.0.130 ems 
+172.18.0.130 ems
+
+172.18.0.140 smoke-test
 ```
 
 # Portainer

@@ -105,7 +105,7 @@ docker stop smoke-test
 docker rm smoke-test
 docker rmi smoke-test
 docker build -t smoke-test .
-docker run -d --net primenet --ip 172.18.0.10 --name smoke-test -e SPRING_PROFILES_ACTIVE=dev smoke-test
+docker run -d --net primenet --ip 172.18.0.140 --name smoke-test -e SPRING_PROFILES_ACTIVE=dev smoke-test
 ```
 
 Stop or launch multple instaces

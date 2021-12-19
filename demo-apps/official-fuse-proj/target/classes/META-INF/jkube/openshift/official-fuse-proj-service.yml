@@ -1,0 +1,30 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: master
+    prometheus.io/path: /metrics
+    jkube.io/git-branch: master
+    prometheus.io/port: "9779"
+    prometheus.io/scrape: "true"
+    jkube.io/git-url: git@github.com:alainpham/dev-env-scripts.git
+    app.openshift.io/vcs-uri: git@github.com:alainpham/dev-env-scripts.git
+    jkube.io/git-commit: 9d57f46e41d851503de8bddd632a7228e38248a2
+  labels:
+    expose: "true"
+    app: official-fuse-proj
+    provider: jkube
+    version: 1.0-SNAPSHOT
+    group: poc
+  name: official-fuse-proj
+spec:
+  ports:
+  - name: http
+    port: 8080
+    protocol: TCP
+    targetPort: 8080
+  selector:
+    app: official-fuse-proj
+    provider: jkube
+    group: poc

@@ -83,8 +83,8 @@ sudo virt-install -n ocp-dev --memory 65536 --vcpus=12 --os-variant=fedora-coreo
 sudo virsh net-update default add ip-dhcp-host "<host mac='52:54:00:00:00:20' name='ocp' ip='192.168.122.20' />" --live --config
 
 sudo virt-install --name ocp --ram 235520 --vcpus 12 --disk \
-    /home/workdrive/virt/runtime/ocp.qcow2,format=qcow2,bus=virtio,size=300 --cdrom /home/workdrive/virt/images/discovery_image_ocp.iso --network \
-    bridge=virbr0,model=virtio,mac=52:54:00:00:00:20 --os-variant=rhel8-unknown --noautoconsole --cpu host-passthrough,cache.mode=passthrough
+    /home/workdrive/virt/runtime/ocp.qcow2,format=qcow2,bus=virtio,size=300 --cdrom /home/workdrive/virt/images/discovery_image_ocp.iso --network network=ocp-dev,mac=02:01:00:00:00:66 \
+     --os-variant=rhel8-unknown --noautoconsole --cpu host-passthrough,cache.mode=passthrough
 
 
 <network xmlns:dnsmasq="http://libvirt.org/schemas/network/dnsmasq/1.0">

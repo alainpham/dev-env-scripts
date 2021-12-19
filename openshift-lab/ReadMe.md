@@ -53,6 +53,8 @@
   - [Creation and scaling of topics](#creation-and-scaling-of-topics)
   - [Deploy an consumer app](#deploy-an-consumer-app)
 - [Change Data Capture](#change-data-capture)
+- [Prometheus local](#prometheus-local)
+- [Nexus](#nexus)
 
 
 
@@ -60,7 +62,7 @@
 
 ## Currently used versions
 ```
-export fuse_app_template_version=2.1.0.fuse-sb2-780019-redhat-00005
+export fuse_app_template_version=2.1.0.fuse-sb2-7_10_0-00015-redhat-00001
 export amq_broker_image_version=78-7.8-12
 ```
 
@@ -88,7 +90,7 @@ oc login --token=${ocptoken} --server=${ocpurl}
 
 ## Import images
 ```
-BASEURL=https://raw.githubusercontent.com/jboss-fuse/application-templates/master
+BASEURL=https://raw.githubusercontent.com/jboss-fuse/application-templates/application-templates-${fuse_app_template_version}
 oc create -n openshift -f ${BASEURL}/fis-image-streams.json
 oc replace -n openshift -f ${BASEURL}/fis-image-streams.json
 ```
@@ -993,12 +995,25 @@ oc apply -f  amqstreams/event-broker.yaml
 oc apply -f amqstreams/kafka-user.yaml 
 ```
 
+```
+oc new-project amq-streams-dr
+oc apply -f  amqstreams/event-broker-dr.yaml 
+oc apply -f amqstreams/kafka-user-dr.yaml 
+```
+
+
 ## Kafdrop
 
 ```
 oc new-app obsidiandynamics/kafdrop --name=event-broker-kafdrop -e "KAFKA_BROKERCONNECT=event-broker-kafka-bootstrap:9092" -e SERVER_SERVLET_CONTEXTPATH="/" -e JVM_OPTS="-Xms32M -Xmx512M"
 oc expose deployment/event-broker-kafdrop --port=9000
 oc expose svc event-broker-kafdrop
+```
+
+```
+oc new-app obsidiandynamics/kafdrop --name=event-broker-dr-kafdrop -e "KAFKA_BROKERCONNECT=event-broker-dr-kafka-bootstrap:9092" -e SERVER_SERVLET_CONTEXTPATH="/" -e JVM_OPTS="-Xms32M -Xmx512M"
+oc expose deployment/event-broker-dr-kafdrop --port=9000
+oc expose svc event-broker-dr-kafdrop
 ```
 
 ## Creation and scaling of topics
@@ -1041,3 +1056,42 @@ INSERT INTO pet
 VALUES('jim', 'john', 'bird', 'm');
 ```
 
+# Prometheus local
+
+```
+oc apply -f prometheus-with-operator/prom.yml
+
+oc apply -f prometheus-with-operator/strimzi-pod-monitor.yaml
+```
+
+To install Grafana  go to follow instructions here
+
+# Nexus
+
+```
+oc new-app sonatype/nexus
+oc expose svc/nexus
+
+
+oc set probe deployment/nexus \
+	--liveness \
+	--failure-threshold 3 \
+	--initial-delay-seconds 30 \
+	-- echo ok
+
+oc set probe deployment/nexus \
+	--readiness \
+	--failure-threshold 3 \
+	--initial-delay-seconds 30 \
+	--get-url=http://:8081/nexus/content/groups/public
+
+
+oc set volume deployment/nexus --add \
+	--name 'nexus-volume-1' \
+	--type 'pvc' \
+	--mount-path '/sonatype-work/' \
+	--claim-name 'nexus-pv' \
+	--claim-size '9Gi' \
+	--overwrite
+
+```

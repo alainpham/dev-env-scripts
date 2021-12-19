@@ -1,0 +1,103 @@
+---
+apiVersion: apps.openshift.io/v1
+kind: DeploymentConfig
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: master
+    jkube.io/git-url: git@github.com:alainpham/dev-env-scripts.git
+    app.openshift.io/vcs-uri: git@github.com:alainpham/dev-env-scripts.git
+    jkube.io/git-commit: 9d57f46e41d851503de8bddd632a7228e38248a2
+    jkube.io/git-branch: master
+  labels:
+    app: official-fuse-proj
+    provider: jkube
+    version: 1.0-SNAPSHOT
+    group: poc
+  name: official-fuse-proj
+spec:
+  replicas: 1
+  revisionHistoryLimit: 2
+  selector:
+    app: official-fuse-proj
+    provider: jkube
+    group: poc
+  strategy:
+    rollingParams:
+      timeoutSeconds: 3600
+    type: Rolling
+  template:
+    metadata:
+      annotations:
+        app.openshift.io/vcs-ref: master
+        jkube.io/git-url: git@github.com:alainpham/dev-env-scripts.git
+        app.openshift.io/vcs-uri: git@github.com:alainpham/dev-env-scripts.git
+        jkube.io/git-commit: 9d57f46e41d851503de8bddd632a7228e38248a2
+        jkube.io/git-branch: master
+      labels:
+        rht.comp: spring-boot-camel-xml
+        com.company: Red_Hat
+        rht.prod_ver: "7.10"
+        rht.comp_ver: 7.10.0.fuse-sb2-7_10_0-00014-redhat-00001
+        rht.prod_name: Red_Hat_Integration
+        app: official-fuse-proj
+        provider: jkube
+        version: 1.0-SNAPSHOT
+        group: poc
+    spec:
+      containers:
+      - env:
+        - name: SPRING_APPLICATION_JSON
+          value: "{\"server\":{\"undertow\":{\"io-threads\":1, \"worker-threads\"\
+            :2 }}}"
+        - name: KUBERNETES_NAMESPACE
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.namespace
+        image: official-fuse-proj:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 180
+          successThreshold: 1
+        name: spring-boot
+        ports:
+        - containerPort: 8080
+          name: http
+          protocol: TCP
+        - containerPort: 9779
+          name: prometheus
+          protocol: TCP
+        - containerPort: 8778
+          name: jolokia
+          protocol: TCP
+        readinessProbe:
+          failureThreshold: 3
+          httpGet:
+            path: /actuator/health
+            port: 8081
+            scheme: HTTP
+          initialDelaySeconds: 10
+          successThreshold: 1
+        resources:
+          limits:
+            cpu: "1.0"
+            memory: 256Mi
+          requests:
+            cpu: "0.2"
+            memory: 256Mi
+        securityContext:
+          privileged: false
+  triggers:
+  - type: ConfigChange
+  - imageChangeParams:
+      automatic: true
+      containerNames:
+      - spring-boot
+      from:
+        kind: ImageStreamTag
+        name: official-fuse-proj:latest
+    type: ImageChange

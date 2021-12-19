@@ -159,4 +159,4 @@ curl --request POST -H "Content-Type: application/octet-stream"  --data-binary @
 
 get files 
 
-curl http://thiswebsite/camel/download?file=fileName  -v 
+curl http://thiswebsite/camel/download?file=fileName  -o fileName

@@ -51,6 +51,7 @@
 - [Getting CENTOS 7](#getting-centos-7)
 - [Getting debian](#getting-debian)
 - [Download https certificates](#download-https-certificates)
+- [Create Fuse projects with official archetype](#create-fuse-projects-with-official-archetype)
 
 # Purpose of this repo
 
@@ -807,3 +808,15 @@ docker exec -it debian /bin/bash
 ```
 
 # Download https certificates
+
+
+# Create Fuse projects with official archetype
+
+```
+
+mvn org.apache.maven.plugins:maven-archetype-plugin:2.4:generate \
+  -DarchetypeCatalog=https://maven.repository.redhat.com/ga/io/fabric8/archetypes/archetypes-catalog/2.2.0.fuse-sb2-7_10_0-00015-redhat-00001/archetypes-catalog-2.2.0.fuse-sb2-7_10_0-00015-redhat-00001-archetype-catalog.xml \
+  -DarchetypeGroupId=org.jboss.fuse.fis.archetypes \
+  -DarchetypeArtifactId=spring-boot-camel-xml-archetype \
+  -DarchetypeVersion=2.2.0.fuse-sb2-7_10_0-00015-redhat-00001
+```

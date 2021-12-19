@@ -1,0 +1,22 @@
+---
+apiVersion: route.openshift.io/v1
+kind: Route
+metadata:
+  annotations:
+    app.openshift.io/vcs-ref: master
+    jkube.io/git-url: git@github.com:alainpham/dev-env-scripts.git
+    app.openshift.io/vcs-uri: git@github.com:alainpham/dev-env-scripts.git
+    jkube.io/git-commit: 9d57f46e41d851503de8bddd632a7228e38248a2
+    jkube.io/git-branch: master
+  labels:
+    app: official-fuse-proj
+    provider: jkube
+    version: 1.0-SNAPSHOT
+    group: poc
+  name: official-fuse-proj
+spec:
+  port:
+    targetPort: 8080
+  to:
+    kind: Service
+    name: official-fuse-proj

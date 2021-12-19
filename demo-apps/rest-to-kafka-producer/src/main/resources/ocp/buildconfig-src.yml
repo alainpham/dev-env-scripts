@@ -1,0 +1,40 @@
+---
+kind: BuildConfig
+apiVersion: v1
+metadata:
+  name: "rest-to-kafka-producer-s2i"
+  labels:
+    group: "poc"
+    app: "rest-to-kafka-producer"
+spec:
+  triggers:
+  source:
+    git:
+      uri: https://github.com/alainpham/dev-env-scripts.git
+      ref: "master"
+    type: Git
+    contextDir: "demo-apps/rest-to-kafka-producer" 
+  strategy:
+    type: Source
+    sourceStrategy:
+      from:
+        kind: ImageStreamTag
+        namespace: "openshift"
+        name: fuse7-java11-openshift:1.10
+      forcePull: false
+      incremental: true
+      env:
+      - name: BUILD_LOGLEVEL
+        value: '5'
+      - name: ARTIFACT_DIR
+        value: ""
+      - name: MAVEN_ARGS
+        value: "package -DskipTests -e -B"
+      - name: MAVEN_ARGS_APPEND
+        value: ""
+      - name: MAVEN_MIRROR_URL
+        value: "http://nexus.nexus.svc.cluster.local:8081/nexus/content/groups/public"
+  output:
+    to:
+      kind: ImageStreamTag
+      name: "rest-to-kafka-producer:latest"

@@ -1,0 +1,27 @@
+<rests xmlns="http://camel.apache.org/schema/spring" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://camel.apache.org/schema/spring https://camel.apache.org/schema/spring/camel-spring.xsd">
+    <rest id="rest-svc" path="/restsvc">
+        <get id="get-ping" uri="/ping">
+            <route id="get-ping-route">
+                <setBody id="set-body-get-ping-route">
+                    <method ref="myTransformer" />
+                </setBody>
+            </route>
+        </get>
+        <post id="post-person" uri="person" type="poc.Person" outType="poc.Person"> 
+            <route id="post-person-route">
+                <bean ref="viewUpdate" method="upsertData(${body}, person, state-table)"/>
+                <bean ref="viewUpdate" method="appendData(${body}, person, log-table)"/>
+
+                <marshal>
+                    <json library="Jackson"/>
+                </marshal>
+
+                <to uri="kafka:business.data.people" pattern="InOnly"/>
+                
+                <unmarshal>
+                    <json library="Jackson"/>
+                </unmarshal>
+            </route>
+        </post>
+    </rest>
+</rests>

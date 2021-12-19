@@ -1,4 +1,13 @@
 ---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  labels:
+    component: "rest-to-kafka-producer"
+    app: "rest-to-kafka-producer"
+  name: "rest-to-kafka-producer"
+spec: {}
+---
 kind: BuildConfig
 apiVersion: build.openshift.io/v1
 metadata:

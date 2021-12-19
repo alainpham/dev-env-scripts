@@ -24,9 +24,9 @@ spec:
     spec:
       containers:
       - env:
-        - name: "AB_JMX_EXPORTER_CONFIG"
-          value: "prometheus-config.yml"
-        image: "alainpham/rest-to-kafka-producer:latest"
+        # - name: "AB_JMX_EXPORTER_CONFIG"
+        #   value: "prometheus-config.yml"
+        image: "image-registry.openshift-image-registry.svc:5000/applications/rest-to-kafka-producer:latest"
         imagePullPolicy: "Always"
         livenessProbe:
           failureThreshold: 3
@@ -162,6 +162,7 @@ stringData:
     #camel.component.kafka.configuration.security-protocol=SASL_SSL
     camel.component.kafka.configuration.sasl-mechanism=SCRAM-SHA-512
     camel.component.kafka.configuration.group-id=secure-group
+
 ---
 kind: Secret
 apiVersion: v1

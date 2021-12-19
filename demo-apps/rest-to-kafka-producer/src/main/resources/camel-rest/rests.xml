@@ -16,7 +16,7 @@
                     <json library="Jackson"/>
                 </marshal>
 
-                <to uri="kafka:business.data.people" pattern="InOnly"/>
+                <to uri="kafka:events.data.people" pattern="InOnly"/>
                 
                 <unmarshal>
                     <json library="Jackson"/>

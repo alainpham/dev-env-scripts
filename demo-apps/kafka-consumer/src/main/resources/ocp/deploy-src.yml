@@ -153,7 +153,7 @@ stringData:
 
     theme=main-dark-green
 
-    camel.component.kafka.configuration.brokers=event-broker-dr-kafka-bootstrap:9092
+    camel.component.kafka.configuration.brokers=event-broker-kafka-bootstrap:9092
     camel.component.kafka.configuration.ssl-truststore-location=tls/truststore.p12
     camel.component.kafka.configuration.ssl-truststore-password=password
     camel.component.kafka.configuration.ssl-truststore-type=PKCS12

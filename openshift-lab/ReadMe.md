@@ -50,6 +50,7 @@
     - [User Operator](#user-operator)
   - [Cluster creation](#cluster-creation)
   - [Kafdrop](#kafdrop)
+  - [Mirror Maker](#mirror-maker)
   - [Creation and scaling of topics](#creation-and-scaling-of-topics)
   - [Deploy an consumer app](#deploy-an-consumer-app)
 - [Change Data Capture](#change-data-capture)
@@ -1014,6 +1015,13 @@ oc expose svc event-broker-kafdrop
 oc new-app obsidiandynamics/kafdrop --name=event-broker-dr-kafdrop -e "KAFKA_BROKERCONNECT=event-broker-dr-kafka-bootstrap:9092" -e SERVER_SERVLET_CONTEXTPATH="/" -e JVM_OPTS="-Xms32M -Xmx512M"
 oc expose deployment/event-broker-dr-kafdrop --port=9000
 oc expose svc event-broker-dr-kafdrop
+```
+
+## Mirror Maker
+
+```
+oc apply -f amqstreams/kafka-mirror-maker-2-dr.yaml
+
 ```
 
 ## Creation and scaling of topics

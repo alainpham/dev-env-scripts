@@ -30,7 +30,7 @@
     </route>
 
     <route id="receive-from-kafka">
-        <from uri="kafka:business.data.people"/>
+        <from uri="kafka:events.data.people"/>
         <log message="${body}"/>
         <unmarshal>
             <json library="Jackson"/>

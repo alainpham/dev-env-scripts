@@ -147,5 +147,5 @@ oc start-build rest-to-kafka-producer-s2i --from-dir=deploy --follow
 ```
 docker login
 docker build -t rest-to-kafka-producer -f DockerfileCommunity .
-docker tag rest-to-kafka-producer:latest YOUR_REPO/rest-to-kafka-producer:latest
+docker tag rest-to-kafka-producer:latest alainpham/rest-to-kafka-producer:latest
 ```

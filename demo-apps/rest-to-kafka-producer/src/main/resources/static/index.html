@@ -32,18 +32,23 @@
             <div class="flex-item " >
                 <form id="data-form" class="flex-container-col">
                     <label>Id</label>
-                    <input type="text" id="id" value="xx" placeholder="Id">
-                    <label>Name</label>
-                    <input type="text" id="name" value="John" placeholder="Your name">
+                    <input type="number" id="id" value="1"  placeholder="Id">
+                    
                     <label>First Name</label>
-                    <input type="text" id="firstName" value="Doe" placeholder="Your first name">
-                    <label>Your vote</label>
-                    <select id="vote">
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                    </select>
-                    <label>Message content</label>
-                    <textarea id="text-area"></textarea>
+                    <input type="text" id="firstName" value="John" placeholder="Your first name">
+                    
+                    <label>Last Name</label>
+                    <input type="text" id="lastName" value="Doe" placeholder="Your last name">
+                    
+                    <label>Email</label>
+                    <input type="text" id="gender" value="jdoe@email.com" placeholder="yourname@email.com">
+                    
+                    <label>Gender</label>
+                    <input type="text" id="gender" value="male" placeholder="Gender">
+
+
+                    <label>IP Address</label>
+                    <input type="text" id="ipAddress" value="27.151.100.252" placeholder="Ip Address">
                 </form>
                 <button  id="send-button"
                     onclick="backEndRequest(null,'/camel/send-msg','post', formDataToJson('data-form'))">send</button>

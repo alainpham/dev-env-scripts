@@ -147,5 +147,5 @@ oc start-build kafka-consumer-s2i --from-dir=deploy --follow
 ```
 docker login
 docker build -t kafka-consumer -f DockerfileCommunity .
-docker tag kafka-consumer:latest YOUR_REPO/kafka-consumer:latest
+docker tag kafka-consumer:latest alainpham/kafka-consumer:latest
 ```

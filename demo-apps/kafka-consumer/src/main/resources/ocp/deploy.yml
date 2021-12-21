@@ -5,6 +5,7 @@ metadata:
   labels:
     app: "kafka-consumer"
     group: "poc"
+    tech: "apache-camel"
   name: "kafka-consumer"
 spec:
   replicas: 1
@@ -21,6 +22,7 @@ spec:
       labels:
         app: "kafka-consumer"
         group: "poc"
+        tech: "apache-camel"
     spec:
       containers:
       - env:
@@ -152,6 +154,16 @@ stringData:
     camelrest.apiversion=1.0-SNAPSHOT
 
     theme=main-dark-green
+
+    camel.component.kafka.configuration.brokers=event-broker-kafka-bootstrap:9092
+    camel.component.kafka.configuration.ssl-truststore-location=tls/truststore.p12
+    camel.component.kafka.configuration.ssl-truststore-password=password
+    camel.component.kafka.configuration.ssl-truststore-type=PKCS12
+    camel.component.kafka.configuration.sasl-jaas-config=org.apache.kafka.common.security.scram.ScramLoginModule required username="secure-topic-reader" password="mdG7macYfwwK";
+    camel.component.kafka.configuration.security-protocol=PLAINTEXT
+    #camel.component.kafka.configuration.security-protocol=SASL_SSL
+    camel.component.kafka.configuration.sasl-mechanism=SCRAM-SHA-512
+    camel.component.kafka.configuration.group-id=people-consumers
 
 ---
 kind: Secret

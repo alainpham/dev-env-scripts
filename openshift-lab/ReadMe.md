@@ -56,6 +56,7 @@
 - [Change Data Capture](#change-data-capture)
 - [Prometheus local](#prometheus-local)
 - [Nexus](#nexus)
+- [Allow pulling images from another NS](#allow-pulling-images-from-another-ns)
 
 
 
@@ -1067,6 +1068,11 @@ VALUES('jim', 'john', 'bird', 'm');
 # Prometheus local
 
 ```
+
+oc apply -f prometheus-with-operator/operator-group.yml
+oc apply -f prometheus-with-operator/prom-sub.yml
+
+
 oc apply -f prometheus-with-operator/prom.yml
 
 oc apply -f prometheus-with-operator/strimzi-pod-monitor.yaml
@@ -1102,4 +1108,12 @@ oc set volume deployment/nexus --add \
 	--claim-size '9Gi' \
 	--overwrite
 
+```
+
+# Allow pulling images from another NS
+
+```
+oc policy add-role-to-user \
+    system:image-puller system:serviceaccount:applications-dr:default \
+    -n applications
 ```

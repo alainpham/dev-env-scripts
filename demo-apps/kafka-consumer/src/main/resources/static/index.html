@@ -29,25 +29,6 @@
             <h1>kafka-consumer interface</h1>
         </div>
         <div class="flex-container">
-            <div class="flex-item " >
-                <form id="data-form" class="flex-container-col">
-                    <label>Id</label>
-                    <input type="text" id="id" value="xx" placeholder="Id">
-                    <label>Name</label>
-                    <input type="text" id="name" value="John" placeholder="Your name">
-                    <label>First Name</label>
-                    <input type="text" id="firstName" value="Doe" placeholder="Your first name">
-                    <label>Your vote</label>
-                    <select id="vote">
-                        <option value="yes">Yes</option>
-                        <option value="no">No</option>
-                    </select>
-                    <label>Message content</label>
-                    <textarea id="text-area"></textarea>
-                </form>
-                <button  id="send-button"
-                    onclick="backEndRequest(null,'/camel/send-msg','post', formDataToJson('data-form'))">send</button>
-            </div>
             <div class="flex-item flex-grow">
                 <div   class="flex-container">
                     <h2  >State Table</h2>

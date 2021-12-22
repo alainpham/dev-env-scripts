@@ -1020,7 +1020,20 @@ oc expose svc event-broker-dr-kafdrop
 
 ## Mirror Maker
 
+extract public certificates from first cluster
+
 ```
+oc extract secret/event-broker-cluster-ca-cert --keys=ca.crt --to=-
+```
+
+extract password
+
+```
+oc get secret kafka-user -o yaml | grep password | head -1 |  sed -E 's/.*password: (.*)/\1/'  | base64 -d
+```
+
+```
+
 oc apply -f amqstreams/kafka-mirror-maker-2-dr.yaml
 
 ```

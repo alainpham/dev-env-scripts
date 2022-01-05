@@ -235,7 +235,7 @@ sudo systemctl start teddycast.service
 ## Traefik
 
 ```
-docker run -d --name traefik  --net primenet --ip 172.18.0.43 -p 80:80 -p 8080:8080 -v /home/apham/apps/traefik/config/traefik.yml:/etc/traefik/traefik.yml -v /var/run/docker.sock:/var/run/docker.sock traefik:latest
+docker run -d --name traefik --restart=unless-stopped --net primenet --ip 172.18.0.43 -p 80:80 -p 8080:8080 -v /home/apham/apps/traefik/config/traefik.yml:/etc/traefik/traefik.yml -v /var/run/docker.sock:/var/run/docker.sock traefik:latest
 
 ```
 
@@ -248,7 +248,7 @@ sudo chown 65534:65534 /home/apham/apps/prometheus/data
 
 
 docker run \
-    -d --name prometheus --net primenet --ip 172.18.0.70 \
+    -d --name prometheus --restart=unless-stopped  --net primenet --ip 172.18.0.70 \
     -v /home/apham/apps/prometheus/data:/prometheus \
     -v /home/apham/apps/prometheus/config/prometheus.yml:/etc/prometheus/prometheus.yml \
     prom/prometheus
@@ -262,7 +262,7 @@ Go to https://github.com/alainpham/app-archetypes/tree/master/camel-monitoring t
 
 ```
 docker run -d --name grafana \
-    --net primenet --ip 172.18.0.71 \
+    --restart=unless-stopped  --net primenet --ip 172.18.0.71 \
     -v /home/apham/apps/grafana/config/grafana-datasources.yml:/etc/grafana/provisioning/datasources/grafana-datasources.yml \
     -v /home/apham/apps/grafana/config/dashboards:/etc/grafana/provisioning/dashboards \
     grafana/grafana:latest 
@@ -271,6 +271,6 @@ docker run -d --name grafana \
 ## Heimdall
 
 ```
-docker run --name=heimdall --net primenet --ip 172.18.0.44 -d -v /home/apham/apps/heimdall/config:/config -e PGID=1000 -e PUID=1000 linuxserver/heimdall
+docker run --name=heimdall --restart=unless-stopped  --net primenet --ip 172.18.0.44 -d -v /home/apham/apps/heimdall/config:/config -e PGID=1000 -e PUID=1000 linuxserver/heimdall
 
 ```

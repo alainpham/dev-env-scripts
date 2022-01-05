@@ -9,15 +9,15 @@
     <name>messaging-tester</name>
     <description>messaging-tester</description>
     <properties>
-        <fuse.version>7.8.0.fuse-sb2-780038-redhat-00001</fuse.version>
-		<version.org.apache.camel>2.23.2.fuse-sb2-780036-redhat-00001</version.org.apache.camel>
+        <fuse.version>7.10.0.fuse-sb2-7_10_0-00014-redhat-00001</fuse.version>
+		<version.org.apache.camel>2.23.2.fuse-7_10_0-00020-redhat-00001</version.org.apache.camel>
         <maven-compiler-plugin.version>3.8.1</maven-compiler-plugin.version>
         <maven-assembly-plugin.version>3.3.0</maven-assembly-plugin.version>
-        <swagger.ui.version>3.40.0</swagger.ui.version>
-        <swagger.codegen.version>2.4.18</swagger.codegen.version>
-        <logstash.encoder.version>6.6</logstash.encoder.version>
-        <webjars.locator.version>0.40</webjars.locator.version>
-        <jmx.prometheus.javaagent.version>0.14.0</jmx.prometheus.javaagent.version>
+        <swagger.ui.version>3.52.5</swagger.ui.version>
+        <swagger.codegen.version>2.4.24</swagger.codegen.version>
+        <logstash.encoder.version>7.0.1</logstash.encoder.version>
+        <webjars.locator.version>0.42</webjars.locator.version>
+        <jmx.prometheus.javaagent.version>0.16.1</jmx.prometheus.javaagent.version>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <!-- PUT THE PROJECT AND REGISTRY WHERE THE IMAGE WILL BE -->
@@ -172,6 +172,13 @@
         <dependency>
             <groupId>org.apache.camel</groupId>
             <artifactId>camel-amqp-starter</artifactId>
+        </dependency>
+
+        <!-- fixing failover bug when accessing through openshift route -->
+        <dependency>
+            <groupId>org.apache.qpid</groupId>
+            <artifactId>qpid-jms-client</artifactId>
+            <version>1.0.0.redhat-00001</version>
         </dependency>
 
         <!-- artemis -->

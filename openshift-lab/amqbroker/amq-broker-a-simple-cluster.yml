@@ -1,26 +1,29 @@
-apiVersion: broker.amq.io/v2alpha4
+apiVersion: broker.amq.io/v2alpha5
 kind: ActiveMQArtemis
 metadata:
   name: amq-broker-a
   application: amq-broker-a
 spec:
-  version: 7.8.0
+  version: 7.9.1
   deploymentPlan:
     # get 2 broker instances
     size: 2
-    image: registry.redhat.io/amq7/amq-broker:7.8
-    resources:
-      limits:
-        cpu: 1000m
-        memory: 1Gi
-      requests:
-        cpu: 1000m
-        memory: 1Gi
+    image: registry.redhat.io/amq7/amq-broker-rhel8:7.9
+    # resources:
+    #   limits:
+    #     cpu: 1000m
+    #     memory: 1Gi
+    #   requests:
+    #     cpu: 1000m
+    #     memory: 1Gi
     #require login for console & broker access
-    requireLogin: false 
+    requireLogin: true 
     persistenceEnabled: true
     journalType: nio
     messageMigration: true
+    jolokiaAgentEnabled: false
+    managementRBACEnabled: true
+    enableMetricsPlugin: true
   console:
     expose: true
     useClientAuth : false
@@ -38,30 +41,3 @@ spec:
       verifyHost: false
       expose: true
       amqpMinLargeMessageSize: 204800
-      anycastPrefix: jms.queue.
-      multicastPrefix: jms.topic.
-    - name: hornetq
-      protocols: hornetq
-      port: 5446
-      sslEnabled: true
-      needClientAuth: false
-      wantClientAuth: false
-      verifyHost: false
-      expose: true
-      anycastPrefix: jms.queue.
-      multicastPrefix: jms.topic.
-    - name: amqp
-      protocols: amqp
-      port: 5672
-      amqpMinLargeMessageSize: 204800
-  addressSettings:
-    applyRule: merge_all
-    addressSetting:
-      - match: '#'
-        autoCreateAddresses: true
-        autoCreateQueues: true
-        autoCreateJmsQueues: true
-        autoCreateJmsTopics: true
-      - match: 'app.#'
-        autoCreateAddresses: true
-        autoCreateQueues: true

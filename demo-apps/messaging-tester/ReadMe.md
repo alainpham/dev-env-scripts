@@ -71,7 +71,7 @@ Useful commands to download public keys from https sni servers
 ```
 mkdir tls/trusted-certs
 
-serverhost=amq-broker-a-generic-0-svc-rte-amq-messaging-a.apps.cluster-f646.f646.example.opentlc.com
+serverhost=amq-broker-a-generic-0-svc-rte-amq-messaging.apps.thevoid.ocp.alainpham.net
 serverport=443
 
 echo -n | openssl s_client -connect $serverhost:$serverport | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' > tls/trusted-certs/amq-broker.pem

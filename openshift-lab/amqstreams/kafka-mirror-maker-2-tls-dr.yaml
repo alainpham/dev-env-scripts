@@ -8,7 +8,7 @@ spec:
   connectCluster: "event-broker-dr"
   clusters:
   - alias: "event-broker"
-    bootstrapServers: event-broker-kafka-bootstrap.applications.svc.cluster.local:9092
+    bootstrapServers: SOURCECLUSTERROUTE:443
     tls:
       trustedCertificates:
         - secretName: event-broker-cluster-ca-cert

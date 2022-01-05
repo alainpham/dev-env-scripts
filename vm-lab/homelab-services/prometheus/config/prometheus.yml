@@ -1,0 +1,11 @@
+# my global config
+global:
+  scrape_interval: 15s 
+  evaluation_interval: 15s 
+scrape_configs:
+  # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+  - job_name: 'node'
+    static_configs:
+      - targets: 
+          - "asus:9100"
+          - "ampi:9100"

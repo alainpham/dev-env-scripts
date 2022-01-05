@@ -84,6 +84,8 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.40 portainer
 172.18.0.41 nexus
 172.18.0.42 registry
+172.18.0.43 traefik
+172.18.0.44 heimdall
 
 172.18.0.50 mysql
 172.18.0.51 oracle
@@ -629,10 +631,10 @@ Goto http://amqstreams-kafdrop:9000 for admin console
 
 docker stop prometheus
 docker rm prometheus
-docker rmi prom:v2.24.0
+docker rmi prom:latest
 
 cd prometheus
-docker build -t prom:v2.24.0 .
+docker build -t prom:latest .
 docker run -d --name prometheus --net primenet --ip 172.18.0.70 prom:v2.24.0
 cd ..
 ```
@@ -647,11 +649,11 @@ Goto http://prometheus:9090 for admin console
 ```
 docker stop grafana
 docker rm grafana
-docker rmi graf:7.3.7
+docker rmi graf:latest
 
 cd grafana
-docker build -t graf:7.3.7 .
-docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:7.3.7
+docker build -t graf:latest .
+docker run -d --name grafana --net primenet --ip 172.18.0.71 graf:latest
 cd ..
 ```
 

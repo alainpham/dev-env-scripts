@@ -1,0 +1,4 @@
+
+[rpi]
+ampi ansible_connection=ssh ansible_user=apham ansible_become=true
+

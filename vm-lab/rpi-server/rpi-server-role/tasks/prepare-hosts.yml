@@ -1,0 +1,26 @@
+---
+- name: Update all packages to the latest version
+  apt:
+    update_cache: yes
+    upgrade: dist
+
+- name: Install packages
+  apt:
+    name: 
+      - dnsmasq 
+      - git 
+      - ansible 
+      - docker.io 
+      - apparmor 
+      - haproxy 
+      - tmux 
+      - vim 
+      - maven 
+      - openjdk-11-jdk
+    state: present
+
+- name: adding existing user 'apham' to group sudo
+  user:
+    name: 'apham'
+    groups: docker
+    append: yes

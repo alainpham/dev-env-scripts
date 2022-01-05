@@ -54,7 +54,7 @@
   - [Creation and scaling of topics](#creation-and-scaling-of-topics)
   - [Deploy an consumer app](#deploy-an-consumer-app)
 - [Change Data Capture](#change-data-capture)
-- [Prometheus local](#prometheus-local)
+- [Prometheus & Grafana on local ocp project](#prometheus--grafana-on-local-ocp-project)
 - [Nexus](#nexus)
 - [Allow pulling images from another NS](#allow-pulling-images-from-another-ns)
 
@@ -1023,14 +1023,33 @@ oc expose svc event-broker-dr-kafdrop
 extract public certificates from first cluster
 
 ```
-oc extract secret/event-broker-cluster-ca-cert --keys=ca.crt --to=-
+mkdir -p amqstreams/tls
+oc extract secret/event-broker-cluster-ca-cert --keys=ca.crt --to=- > amqstreams/tls/ca.crt
+
+cat amqstreams/tls/ca.crt
 ```
 
 extract password
 
 ```
-oc get secret kafka-user -o yaml | grep password | head -1 |  sed -E 's/.*password: (.*)/\1/'  | base64 -d
+export kafkapass=`oc get secret kafka-user -o yaml | grep password | head -1 |  sed -E 's/.*password: (.*)/\1/'  | base64 -d`
+
+export kafkapass=`oc get secret kafka-user -o yaml | grep password | head -1 |  sed -E 's/.*password: (.*)/\1/'`
 ```
+
+connect to second cluster
+
+```
+oc create secret generic event-broker-cluster-ca-cert \
+--from-file=ca.crt=amqstreams/tls/ca.crt 
+
+cat amqstreams/kafka-user-password.yml | sed -E "s/KAFKAUSERPASSWORD/${kafkapass}/" | oc apply -f -
+
+oc apply -f amqstreams/kafka-mirror-maker-2-tls-dr.yaml
+
+```
+
+Alternative with no sercurity :
 
 ```
 
@@ -1078,10 +1097,12 @@ INSERT INTO pet
 VALUES('jim', 'john', 'bird', 'm');
 ```
 
-# Prometheus local
+# Prometheus & Grafana on local ocp project
+
+To install Prometheus & Grafana go to follow instructions [here](https://github.com/alainpham/app-archetypes#install-prometheus-and-grafana-kubernetesopenshift-namespace-for-monitoring)
+
 
 ```
-
 oc apply -f prometheus-with-operator/operator-group.yml
 oc apply -f prometheus-with-operator/prom-sub.yml
 
@@ -1089,9 +1110,10 @@ oc apply -f prometheus-with-operator/prom-sub.yml
 oc apply -f prometheus-with-operator/prom.yml
 
 oc apply -f prometheus-with-operator/strimzi-pod-monitor.yaml
+
+oc apply -f prometheus-with-operator/camel-pod-monitor.yml
 ```
 
-To install Grafana  go to follow instructions here
 
 # Nexus
 

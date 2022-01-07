@@ -1,4 +1,32 @@
 
+
+- [Common steps for all kinds of machines](#common-steps-for-all-kinds-of-machines)
+  - [Setup user and ssh on server](#setup-user-and-ssh-on-server)
+- [Pure Server](#pure-server)
+- [Workstation](#workstation)
+  - [Initial install](#initial-install)
+  - [Graphical Desktop Preferences](#graphical-desktop-preferences)
+    - [General](#general)
+    - [with Trackpad](#with-trackpad)
+  - [Konsole setup](#konsole-setup)
+  - [Configure Dolphine](#configure-dolphine)
+  - [Configure Panel](#configure-panel)
+  - [Install packages](#install-packages)
+    - [Main packages](#main-packages)
+    - [Apps packages](#apps-packages)
+    - [Optional packages to be reviewed if necessary](#optional-packages-to-be-reviewed-if-necessary)
+- [RPI Server](#rpi-server)
+- [Services & Apps](#services--apps)
+  - [Pihole](#pihole)
+  - [Plex](#plex)
+  - [Rentman](#rentman)
+  - [Teddycast](#teddycast)
+  - [Traefik](#traefik)
+  - [Prometheus](#prometheus)
+  - [Grafana](#grafana)
+  - [Heimdall](#heimdall)
+
+
 # Common steps for all kinds of machines
 
 ## Setup user and ssh on server
@@ -30,20 +58,17 @@ PasswordAuthentication no
 sudo systemctl restart ssh
 ```
 
-# Common installs
-
 ```
 
-docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet
 
 sudo adduser apham libvirt
 sudo groupadd docker
 sudo usermod -aG docker apham
 
+docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet
+
 sudo curl -L https://github.com/yt-dlp/yt-dlp/releases/latest/download/yt-dlp -o /usr/local/bin/yt-dlp
 sudo chmod a+rx /usr/local/bin/yt-dlp
-
-
 
 ```
 
@@ -54,19 +79,178 @@ Install base packages
 
 ```
 
-apt install qemu-system qemu-utils virtinst libvirt-clients libvirt-daemon-system bridge-utils dnsmasq git ansible docker.io apparmor haproxy tmux vim maven openjdk-11-jdk prometheus-node-exporter
+sudo apt install -y \
+    qemu-system \
+    qemu-utils \
+    virtinst \
+    libvirt-clients \
+    libvirt-daemon-system \
+    bridge-utils \
+    libosinfo-bin \
+    dnsmasq \
+    ncdu \
+    git \
+    ansible \
+    docker.io \
+    apparmor \
+    haproxy \
+    tmux \
+    vim \
+    maven \
+    openjdk-11-jdk \
+    prometheus-node-exporter \
+    htop \
+    curl \
+    lshw \
+    mediainfo \
+    linux-cpupower 
+    
 
 ```
 
 
 # Workstation
 
-```
-apt install vim vlc ffmpeg mpv curl lshw vdpauinfo vainfo mediainfo python-mutagen vim-gui-common linux-cpupower arandr v4l2loopback-utils ncdu openjdk-11-jdk curl mercurial vim flatpak ffmpeg qemu-system libvirt-clients libvirt-daemon-system docker.io jackd2 qjackctl pulseaudio-module-jack zita-ajbridge ardour v4l-utils  intel-microcode mesa-utils intel-media-va-driver-non-free virtinst  libosinfo-bin htop snapd firmware-linux intel-gpu-tools prometheus-node-exporter net-tools virt-manager qemu-kvm dnsutils gdb cmake lib32z1 libncurses5
+## Initial install
 
+* Install debian from scrach
+  * choose Graphics
+  * KDE Plasma
+  * SSH server
+  * Standard utils
+
+## Graphical Desktop Preferences
+
+### General
+
+Go to system settings
+
+* Appearance -> Global Theme
+  * Choose Breeze Dark
+* Workspace Behavior -> Virtual Desktop
+  * 2 rows, 4 Desktops
+* Workspace Behavior -> General Behavior
+  *  Double-click to open files and folders
+*  Start up and shutdown -> Login Screen
+   *  Choose Chilli for Plasma
+*  Start up and shutdown -> Desktop Session
+   *  Start with an empty
+*  Display and Monitor -> Compositor
+   *  disable "enable compositor on startup"
+*  (optional )Application Style -> Windows Decorations
+   *  Uncheck Use themes default border size
+   *  normal size
+
+### with Trackpad
+
+* Input Devices -> Touchpad
+  * Mouse Click Emulation
+
+## Konsole setup
+
+* create default profile
+  * General
+    * /bin/bash
+    * start in sale directory as current session
+    * size 150 30
+  * Appearance
+    * Green on Black
+    * Font Hack 12
+  * Scrolling
+    * Unlimited
+
+## Configure Dolphine
+
+* Startup
+  * Show on startup
+    * /home/apham
+  * Check Show full path inside location bar
+  * Uncheck Open new folders in tabs
+* Switch to detailed view
+* Add type column
+* Show terminal
+* Show infos
+
+## Configure Panel
+
+* Switch to task manger rather than icon only
+* height 60
+* always 2 rows
+
+## Install packages
+
+### Main packages
+```
+sudo apt install -y \
+    vlc \
+    ffmpeg \
+    mpv \
+    python3-mutagen \
+    arandr \
+    jackd2 \
+    qjackctl \
+    pulseaudio-module-jack  \
+    ardour \
+    v4l-utils \
+    flatpak \
+    snapd \
+    virt-manager \
+    krfb \
+    krdc \
+    mediainfo-gui
+
+sudo apt install -y v4l2loopback-utils
+
+sudo apt install -y vainfo intel-media-va-driver-non-free
+
+sudo apt -y remove termit
+
+```
+
+### Apps packages
+
+```
+
+wget https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+sudo apt install ./google-chrome-stable_current_amd64.deb
+sudo apt install easytag
 
 sudo snap install obs-studio
-Snap install dbeaver
+sudo snap install dbeaver-ce
+sudo snap install code --classic
+sudo snap install postman
+sudo snap install kdenlive
+sudo snap install telegram-desktop
+sudo snap install blender --classic
+sudo snap install sweethome3d-homedesign
+sudo snap install beekeeper-studio
+
+
+sudo sh -c "$(curl -L  https://github.com/alainpham/aaap/raw/master/mlvapp/install.sh )"
+sudo sh -c "$(curl -L  https://github.com/alainpham/aaap/raw/master/rawtherapee/install.sh )"
+sudo sh -c "$(curl -L  https://github.com/alainpham/aaap/raw/master/beeref/install.sh )"
+sudo sh -c "$(curl -L  https://github.com/alainpham/aaap/raw/master/viber/install.sh )"
+sudo sh -c "$(curl -L  https://github.com/alainpham/aaap/raw/master/plex-media-player/install.sh )"
+
+```
+
+### Optional packages to be reviewed if necessary
+
+```
+optional stuff :
+apt install \
+    vdpauinfo 
+    mesa-utils 
+    intel-media-va-driver-non-free
+    firmware-linux 
+    intel-microcode
+    intel-gpu-tools  
+
+
+
+
+
+
 ```
 
 # RPI Server

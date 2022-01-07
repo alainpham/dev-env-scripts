@@ -9,3 +9,5 @@ scrape_configs:
       - targets: 
           - "asus:9100"
           - "ampi:9100"
+          - "hpel:9100"
+          - "alaindeb:9100"

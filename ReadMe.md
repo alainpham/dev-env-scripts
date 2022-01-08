@@ -158,6 +158,16 @@ docker run --name nexus \
 docker run --name nexus  --restart always \
     -d --net primenet --ip 172.18.0.41 -p 8081:8081 \
 	sonatype/nexus3:3.28.1
+
+
+create proxy maven2 repos
+
+red-hat-ga-repository https://maven.repository.redhat.com/ga
+
+red-hat-early-access-repository https://maven.repository.redhat.com/earlyaccess/all
+
+add to maven-public group
+
 ```
 
 # Container Registry

@@ -25,6 +25,8 @@
   - [Prometheus](#prometheus)
   - [Grafana](#grafana)
   - [Heimdall](#heimdall)
+  - [Nexus](#nexus)
+  - [Docker registry](#docker-registry)
 
 
 # Common steps for all kinds of machines
@@ -311,8 +313,8 @@ docker run -d \
 -e DHCP_START=192.168.8.20 \
 -e DHCP_END=192.168.8.200 \
 -e DHCP_ROUTER=192.168.8.1 \
--v /home/apham/pihole/etc-pihole:/etc/pihole \
--v /home/apham/pihole/etc-dnsmasq.d:/etc/dnsmasq.d \
+-v /home/apham/apps/pihole/etc-pihole:/etc/pihole \
+-v /home/apham/apps/pihole/etc-dnsmasq.d:/etc/dnsmasq.d \
 pihole/pihole
 
 docker start pihole
@@ -419,6 +421,11 @@ sudo systemctl start teddycast.service
 ## Traefik
 
 ```
+
+mkdir -p /home/apham/apps/traefik/config/
+
+cat /home/apham/apps/traefik/config/traefik.template.yml | sed -E "s/HOSTNAME/${HOSTNAME}/">/home/apham/apps/traefik/config/traefik.yml
+
 docker run -d --name traefik --restart=unless-stopped --net primenet --ip 172.18.0.43 -p 80:80 -p 8080:8080 -v /home/apham/apps/traefik/config/traefik.yml:/etc/traefik/traefik.yml -v /var/run/docker.sock:/var/run/docker.sock traefik:latest
 
 ```
@@ -457,4 +464,141 @@ docker run -d --name grafana \
 ```
 docker run --name=heimdall --restart=unless-stopped  --net primenet --ip 172.18.0.44 -d -v /home/apham/apps/heimdall/config:/config -e PGID=1000 -e PUID=1000 linuxserver/heimdall
 
+```
+
+## Nexus
+
+```
+
+mkdir -p /home/apham/apps/nexus/data && chown -R 200 /home/apham/apps/nexus/data
+
+docker run --name nexus --restart=unless-stopped \
+    -d --net primenet --ip 172.18.0.41 -v /home/apham/apps/nexus/data:/nexus-data \
+	sonatype/nexus3
+
+
+curl -X 'POST' -u admin:admin \
+  "http://nexus.${HOSTNAME}.lan/service/rest/v1/repositories/maven/proxy" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "red-hat-ga-repository",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true
+  },
+  "proxy": {
+    "remoteUrl": "https://maven.repository.redhat.com/ga",
+    "contentMaxAge": 1440,
+    "metadataMaxAge": 1440
+  },
+  "negativeCache": {
+    "enabled": true,
+    "timeToLive": 1440
+  },
+  "httpClient": {
+    "blocked": false,
+    "autoBlock": true
+  },
+  "maven": {
+    "versionPolicy": "RELEASE",
+    "layoutPolicy": "STRICT",
+    "contentDisposition": "INLINE"
+  }
+}'
+
+curl -X 'POST' -u admin:admin \
+  "http://nexus.${HOSTNAME}.lan/service/rest/v1/repositories/maven/proxy" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '{
+  "name": "red-hat-early-access-repository",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true
+  },
+  "proxy": {
+    "remoteUrl": "https://maven.repository.redhat.com/earlyaccess/all",
+    "contentMaxAge": 1440,
+    "metadataMaxAge": 1440
+  },
+  "negativeCache": {
+    "enabled": true,
+    "timeToLive": 1440
+  },
+  "httpClient": {
+    "blocked": false,
+    "autoBlock": true
+  },
+  "maven": {
+    "versionPolicy": "RELEASE",
+    "layoutPolicy": "STRICT",
+    "contentDisposition": "INLINE"
+  }
+}'
+
+curl -X 'PUT' -v -u admin:admin \
+  "http://nexus.${HOSTNAME}.lan/service/rest/v1/repositories/maven/group/maven-public" \
+  -H 'accept: application/json' \
+  -H 'Content-Type: application/json' \
+  -d '
+      {
+        "name": "maven-public",
+        "online": true,
+        "storage": {
+          "blobStoreName": "default",
+          "strictContentTypeValidation": true
+        },
+        "group": {
+          "memberNames": [
+            "maven-releases",
+            "maven-snapshots",
+            "maven-central",
+            "red-hat-ga-repository",
+            "red-hat-early-access-repository"
+          ]
+        }
+      }'
+
+{
+  "name": "maven-public",
+  "format": "maven2",
+  "url": "http://nexus.hpel.lan/repository/maven-public",
+  "online": true,
+  "storage": {
+    "blobStoreName": "default",
+    "strictContentTypeValidation": true
+  },
+  "group": {
+    "memberNames": [
+      "maven-releases",
+      "maven-snapshots",
+      "maven-central"
+    ]
+  },
+  "type": "group"
+}
+
+
+for deleting
+
+curl -X 'DELETE' -u admin:admin \
+  "http://nexus.${HOSTNAME}.lan/service/rest/v1/repositories/red-hat-ga-repository" \
+  -H 'accept: application/json'
+
+curl -X 'DELETE' -u admin:admin \
+  "http://nexus.${HOSTNAME}.lan/service/rest/v1/repositories/red-hat-early-access-repository" \
+  -H 'accept: application/json'
+```
+
+## Docker registry
+
+```
+
+mkdir -p /home/apham/apps/registry/data
+docker run -d --net primenet --ip 172.18.0.42 --restart unless-stopped --name registry -v /home/apham/apps/registry/data:/var/lib/registry registry
+
+docker run -d --net primenet --ip 172.18.0.45 --restart unless-stopped --name regui -e REGISTRY_URL=http://registry:5000 -e DELETE_IMAGES=true joxit/docker-registry-ui
 ```

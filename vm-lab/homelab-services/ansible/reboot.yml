@@ -1,0 +1,10 @@
+---
+- name: update
+  hosts:
+    - selected
+  gather_facts: no
+  tasks:
+    - name: update
+      include_role:
+        name: home-lab-role
+        tasks_from: reboot

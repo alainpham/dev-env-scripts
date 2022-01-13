@@ -1,0 +1,12 @@
+galaxy_info:
+  author: Alain Pham
+  description: "Install Home Lab based on Debian 11 machines based on docker"
+  company:
+  license: license (Apache)
+  min_ansible_version: 2.2
+
+  galaxy_tags:
+    - debian
+    - docker
+
+dependencies: []

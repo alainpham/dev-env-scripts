@@ -1,0 +1,51 @@
+---
+x86:
+  hosts:
+    hpel.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      features:
+        - virtualization
+        - workstation
+        - intelgpu
+    asus.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      features:
+        - virtualization
+        - workstation
+        - intelgpu
+    alaindeb.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      features:
+        - virtualization
+        - workstation
+        - intelgpu
+    hppa.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      features:
+        - virtualization
+        - workstation
+        - intelgpu
+arm:
+  hosts:
+    ampi.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      features:
+
+      
+selected:
+  # children:
+  #   arm:
+  hosts:
+    hppa.lan:
+
+

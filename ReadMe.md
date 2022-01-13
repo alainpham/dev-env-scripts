@@ -86,6 +86,9 @@ This is to have some static name resolution docker containers we run locally
 172.18.0.42 registry
 172.18.0.43 traefik
 172.18.0.44 heimdall
+172.18.0.45 regui
+172.18.0.46 jenkins
+172.18.0.47 fileserver
 
 172.18.0.50 mysql
 172.18.0.51 oracle

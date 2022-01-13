@@ -1,0 +1,169 @@
+---
+- name: Base server packages
+  become: true
+  apt:
+    name: 
+      - ncdu
+      - git
+      - ansible
+      - docker.io
+      - docker-compose
+      - apparmor
+      - haproxy
+      - tmux
+      - vim
+      - openjdk-11-jdk
+      - maven
+      - prometheus-node-exporter
+      - htop
+      - curl
+      - lshw
+      - rsync
+      - mediainfo
+      - linux-cpupower 
+      - ffmpeg
+      - python3-mutagen
+    state: present
+
+- name: Virtualization packages
+  become: true
+  when: '"virtualization" in features'
+  apt:
+    name: 
+      - qemu-system
+      - qemu-utils
+      - virtinst
+      - libvirt-clients
+      - libvirt-daemon-system
+      - bridge-utils
+      - libosinfo-bin 
+      - dnsmasq
+    state: present
+  
+
+- name: Workstation packages packages
+  become: true
+  when: '"workstation" in features'
+  apt:
+    name: 
+      - vlc
+      - ffmpeg
+      - mpv
+      - arandr
+      - jackd2
+      - qjackctl
+      - pulseaudio-module-jack
+      - ardour
+      - v4l-utils
+      - flatpak
+      - snapd
+      - virt-manager
+      - krfb
+      - krdc
+      - mediainfo-gui
+      - v4l2loopback-utils
+      - easytag
+    state: present
+
+- name: Intel Graphical Drivers packages
+  become: true
+  when: '"workstation" in features and "intelgpu" in features'
+  apt:
+    name: 
+      - vainfo
+      - intel-media-va-driver-non-free
+    state: present
+
+- name: Create deb package folder
+  when: '"workstation" in features'
+  file:
+    path: /home/{{ ansible_user }}/debs/
+    state: directory
+    mode: '0755'
+
+- name: Download Chrome
+  when: '"workstation" in features'
+  get_url:
+    url: https://dl.google.com/linux/direct/google-chrome-stable_current_amd64.deb
+    dest: /home/{{ ansible_user }}/debs/google-chrome-stable_current_amd64.deb
+
+- name: Install Chrome
+  become: true
+  when: '"workstation" in features'
+  apt:
+    deb: /home/{{ ansible_user }}/debs/google-chrome-stable_current_amd64.deb
+
+- name: Install snaps
+  become: true
+  when: '"workstation" in features'
+  snap:
+    name:
+      - obs-studio
+      - dbeaver-ce
+      - postman
+      - kdenlive
+      - telegram-desktop
+      - sweethome3d-homedesign
+      - beekeeper-studio
+
+- name: Install snaps-classic
+  become: true
+  when: '"workstation" in features'
+  snap:
+    classic: yes
+    name:
+      - code
+      - blender
+
+- name: Download install app image scripts
+  when: '"workstation" in features'
+  become: true
+  get_url:
+    url: https://github.com/alainpham/appp/raw/master/{{ item }}.sh
+    dest: /usr/local/bin/{{ item }}
+    mode: '0755'
+  with_items: 
+    - install-appimage
+    - uninstall-appimage
+    - list-appimage
+
+- name: Create app image folder
+  when: '"workstation" in features'
+  become: true
+  file:
+    path: /opt/appimages/{{ item.name }}/
+    state: directory
+    mode: '0755'
+  with_items: "{{ appimages }}"
+
+- name: Download appimages
+  when: '"workstation" in features'
+  become: true
+  get_url: 
+    url: "{{ item.url }}"
+    dest: /opt/appimages/{{ item.name }}/{{ item.name }}.AppImage
+    mode: '0755'
+  with_items: "{{ appimages }}"
+
+- name: Download icons
+  when: '"workstation" in features'
+  become: true
+  get_url: 
+    url: "{{ item.icon }}"
+    dest: /opt/appimages/{{ item.name }}/{{ item.name }}.png
+  with_items: "{{ appimages }}"
+
+- name: Create shortcuts
+  become: true
+  shell: |
+    cat > /usr/share/applications/{{ item.name }}.desktop << _EOF_
+    [Desktop Entry]
+    Encoding=UTF-8
+    Type=Application
+    Name={{ item.name }}
+    Comment={{ item.name }}
+    Exec=/opt/appimages/{{ item.name }}/{{ item.name }}.AppImage
+    Icon=/opt/appimages/{{ item.name }}/{{ item.name }}.png
+    Terminal=false
+    _EOF_
+  with_items: "{{ appimages }}"

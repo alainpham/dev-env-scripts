@@ -1,0 +1,9 @@
+---
+- name: install
+  hosts:
+    - selected
+  tasks:
+    - name: install
+      include_role:
+        name: home-lab-role
+        tasks_from: user-groups

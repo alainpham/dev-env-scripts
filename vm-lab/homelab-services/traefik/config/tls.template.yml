@@ -1,0 +1,7 @@
+
+tls:
+  stores:
+    default:
+      defaultCertificate:
+          keyFile: "/certs/HOSTNAME.key"
+          certFile: "/certs/HOSTNAME.pem"

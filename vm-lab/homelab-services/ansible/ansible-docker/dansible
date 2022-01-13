@@ -1,0 +1,2 @@
+#!/bin/sh
+docker run -it --rm -v ~/.ssh/:/home/ansible/.ssh:ro -v ${PWD}:/home/ansible/source:ro ansible /bin/sh

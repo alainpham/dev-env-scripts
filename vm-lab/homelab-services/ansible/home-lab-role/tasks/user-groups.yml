@@ -1,0 +1,15 @@
+---
+- name: adding existing user '{{ ansible_user }}' to docker group
+  become: true
+  user:
+    name: '{{ ansible_user }}'
+    groups: docker
+    append: yes
+
+- name: adding existing user '{{ ansible_user }}' to libvirt group
+  become: true
+  when: '"virtualization" in features'
+  user:
+    name: '{{ ansible_user }}'
+    groups: libvirt
+    append: yes

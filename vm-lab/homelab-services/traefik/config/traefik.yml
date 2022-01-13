@@ -8,3 +8,6 @@ providers:
 # API and dashboard configuration
 api:
   insecure: true
+
+log:
+  level: DEBUG

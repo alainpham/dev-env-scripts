@@ -1,0 +1,16 @@
+- name: Configure docker
+  become: true
+  shell: |
+    cat > /etc/docker/daemon.json <<EOF
+    {
+        "insecure-registries" : ["{{ docker.registries | join('","') }}" ],
+        "dns": ["{{ docker.dns | join('","') }}"]
+    }
+    EOF
+
+- name: Restart Docker
+  become: true
+  systemd:
+    state: restarted
+    daemon_reload: yes
+    name: docker

@@ -143,6 +143,7 @@
     url: "{{ item.url }}"
     dest: /opt/appimages/{{ item.name }}/{{ item.name }}.AppImage
     mode: '0755'
+    checksum: "{{ item.hash }}"
   with_items: "{{ appimages }}"
 
 - name: Download icons

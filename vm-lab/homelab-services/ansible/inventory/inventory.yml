@@ -47,5 +47,7 @@ selected:
   #   arm:
   hosts:
     hppa.lan:
+    hpel.lan:
+
 
 

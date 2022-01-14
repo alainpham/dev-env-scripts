@@ -65,6 +65,8 @@
       - easytag
     state: present
 
+# TODO set real time priority for jackD2 audio group
+
 - name: Intel Graphical Drivers packages
   become: true
   when: '"workstation" in features and "intelgpu" in features'
@@ -155,6 +157,7 @@
   with_items: "{{ appimages }}"
 
 - name: Create shortcuts
+  when: '"workstation" in features'
   become: true
   shell: |
     cat > /usr/share/applications/{{ item.name }}.desktop << _EOF_

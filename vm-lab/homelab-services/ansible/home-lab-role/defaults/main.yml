@@ -31,3 +31,18 @@ appimages:
     url: https://download.cdn.viber.com/desktop/Linux/viber.AppImage
     hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
     icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
+
+ips:
+  rentman: 172.18.0.20 
+  bqueue: 172.18.0.21
+
+  registry: 172.18.0.42
+  regui: 172.18.0.45
+  traefik: 172.18.0.43
+
+  amqbroker: 172.18.0.115
+
+
+# states can absent present stopped started
+appstate: started
+recreate: false

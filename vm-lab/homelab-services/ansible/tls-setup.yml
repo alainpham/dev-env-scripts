@@ -1,9 +1,8 @@
 ---
-- name: update
-  hosts:
+- hosts:
     - selected
   tasks:
-    - name: update
+    - name: install
       include_role:
         name: home-lab-role
-        tasks_from: update-host
+        tasks_from: tls-setup

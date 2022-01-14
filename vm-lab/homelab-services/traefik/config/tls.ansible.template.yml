@@ -1,0 +1,7 @@
+#jinja2:variable_start_string:'{{[', variable_end_string:']}}'
+tls:
+  stores:
+    default:
+      defaultCertificate:
+          keyFile: "/certs/{{[ ansible_hostname ]}}.key"
+          certFile: "/certs/{{[ ansible_hostname ]}}.pem"

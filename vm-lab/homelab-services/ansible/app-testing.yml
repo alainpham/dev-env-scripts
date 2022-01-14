@@ -1,0 +1,14 @@
+---
+- name: traefik
+  hosts:
+    - hppa.lan
+    - hpel.lan
+    - asus.lan
+    - alaindeb.lan
+  vars:
+    appstate: started
+    recreate: false
+  tasks:
+    - include_role:
+        name: home-lab-role
+        tasks_from: app-traefik

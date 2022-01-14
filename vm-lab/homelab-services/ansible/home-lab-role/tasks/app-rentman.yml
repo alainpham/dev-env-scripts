@@ -1,0 +1,34 @@
+---
+- set_fact:
+    appname: rentman
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data
+    state: directory
+    owner: "1001"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Create {{appname}} labels's dictionary
+  set_fact:
+      traefiklbl: "{{ traefiklbl | default({}) | combine ({ item.key : item.value }) }}"
+  with_items:
+    - { 'key': 'traefik.http.routers.{{appname}}.entrypoints' , 'value': 'http'}
+
+- name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "{{appname}}"
+    image: registry.hpel.lan/rentman:latest
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    env:
+    labels: "{{traefiklbl}}"
+    volumes:
+      - "/home/{{ansible_user}}/apps/{{appname}}/data:/deployments/db:rw"
+    networks_cli_compatible: yes
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips[appname]}}"

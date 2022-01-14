@@ -8,6 +8,19 @@
     }
     EOF
 
+- name: Check primenet
+  become: true
+  shell: |
+    docker network inspect primenet --format {{ '{{' }}.Id{{ '}}' }}
+  ignore_errors: yes
+  register: networkinspect
+
+- name: Create primenetwork
+  become: true
+  shell: |
+    docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet
+  when: networkinspect.rc
+
 - name: Restart Docker
   become: true
   systemd:

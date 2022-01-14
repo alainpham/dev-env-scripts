@@ -1,0 +1,40 @@
+---
+- set_fact:
+    appname: regui
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+
+- name: Create {{appname}} labels's dictionary
+  set_fact:
+      traefiklbl: "{{ traefiklbl | default({}) | combine ({ item.key : item.value }) }}"
+  with_items:
+    - { key: "traefik.http.routers.{{appname}}.entrypoints" , value: 'http'}
+    - { key: "traefik.http.routers.{{appname}}.tls" , value: 'false'}
+    - { key: "traefik.http.routers.{{appname}}.rule", value: "Host(`{{appname}}.{{ansible_hostname}}.lan`)"}
+    - { key: "traefik.http.routers.{{appname}}.service", value : "{{appname}}"}
+
+- name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "{{appname}}"
+    image: joxit/docker-registry-ui:latest
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    env:
+      NGINX_PROXY_PASS_URL: "http://registry:5000"
+      DELETE_IMAGES: "true"
+      SINGLE_REGISTRY: "true"
+    labels: "{{traefiklbl}}"
+    volumes:
+    networks_cli_compatible: yes
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips[appname]}}"

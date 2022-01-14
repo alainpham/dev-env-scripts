@@ -462,7 +462,7 @@ docker start plex
 ## Rentman
 
 ```
-docker run -d --net primenet --restart=unless-stopped --ip 172.18.0.20 --name rentman rentman
+docker run -d --net primenet --restart=unless-stopped --ip 172.18.0.20 --name rentman registry.hpel.lan/rentman:latest
 
 ```
 

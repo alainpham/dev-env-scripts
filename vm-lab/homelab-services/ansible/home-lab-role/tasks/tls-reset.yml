@@ -1,0 +1,4 @@
+- name: Delete tls folder
+  file:
+    path: /home/{{ ansible_user }}/apps/tls
+    state: absent

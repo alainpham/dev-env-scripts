@@ -1,0 +1,9 @@
+---
+- name: update
+  hosts:
+    - selected
+  tasks:
+    - name: update
+      include_role:
+        name: home-lab-role
+        tasks_from: update

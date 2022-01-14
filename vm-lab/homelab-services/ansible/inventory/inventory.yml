@@ -48,6 +48,11 @@ selected:
   hosts:
     hppa.lan:
     hpel.lan:
+    asus.lan:
+    alaindeb.lan:
 
 
-
+nonvital:
+  hosts:
+    hpel.lan:
+    hppa.lan:

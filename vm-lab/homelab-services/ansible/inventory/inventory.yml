@@ -33,6 +33,14 @@ x86:
         - virtualization
         - workstation
         - intelgpu
+    leol.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      features:
+        - virtualization
+        - workstation
+        - intelgpu
 arm:
   hosts:
     ampi.lan:
@@ -46,10 +54,7 @@ selected:
   # children:
   #   arm:
   hosts:
-    hppa.lan:
-    hpel.lan:
-    asus.lan:
-    alaindeb.lan:
+    leol.lan:
 
 
 nonvital:

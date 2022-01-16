@@ -55,6 +55,9 @@ selected:
   #   arm:
   hosts:
     leol.lan:
+    # hppa.lan:
+    # alaindeb.lan:
+    # hpel.lan:
 
 
 nonvital:

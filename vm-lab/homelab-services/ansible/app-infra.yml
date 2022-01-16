@@ -1,9 +1,10 @@
 ---
+
 - name: registry
   hosts:
     - hpel.lan
   vars:
-    appstate: absent
+    appstate: started
     recreate: false
   tasks:
     - include_role:
@@ -14,7 +15,7 @@
   hosts:
     - hpel.lan
   vars:
-    appstate: absent
+    appstate: started
     recreate: false
   tasks:
     - include_role:
@@ -27,6 +28,7 @@
     - hpel.lan
     - asus.lan
     - alaindeb.lan
+    - leol.lan
   vars:
     appstate: started
     recreate: false
@@ -35,19 +37,7 @@
         name: home-lab-role
         tasks_from: app-traefik
 
-
-- name: rentman
-  hosts:
-    - asus.lan
-  vars:
-    appstate: started
-    recreate: false
-  tasks:
-    - include_role:
-        name: home-lab-role
-        tasks_from: app-rentman
-
-- name: amqbroker
+- name: fileserver
   hosts:
     - hpel.lan
   vars:
@@ -56,4 +46,5 @@
   tasks:
     - include_role:
         name: home-lab-role
-        tasks_from: app-amqbroker
+        tasks_from: app-fileserver
+

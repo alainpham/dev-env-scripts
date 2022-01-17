@@ -1,0 +1,170 @@
+- name: Copy theme
+  when: '"workstation" in features'
+  become: true
+  unarchive:
+    src: distrib/kdeconf/sddm-themes/plasma-chili.tar.gz
+    dest: /usr/share/sddm/themes
+
+- name: Create sddm config folder
+  when: '"workstation" in features'
+  become: true
+  file:
+    path: /etc/sddm.conf.d/
+    state: directory
+
+- name: Configure sddm theme
+  when: '"workstation" in features'
+  become: true
+  template:
+    src: distrib/kdeconf/sddm-themes/kde_settings.conf
+    dest: /etc/sddm.conf.d/kde_settings.conf
+    mode: '0644'
+
+
+
+
+- name: desktop wallpaper folder
+  when: '"workstation" in features'
+  file:
+    path: /home/{{ansible_user}}/wallpapers/
+    state: directory
+
+- name: Sync wallpapers
+  synchronize:
+    src: distrib/kdeconf/wallpapers/
+    dest: /home/{{ansible_user}}/wallpapers/
+
+- name: configure wallpaper
+  when: '"workstation" in features'
+  template:
+    src: distrib/kdeconf/homefolder/.config/plasmarc
+    dest: /home/{{ansible_user}}/.config/
+
+# - name: configure wallpaper apply
+#   when: '"workstation" in features'
+#   template:
+#     src: distrib/kdeconf/homefolder/.config/plasma-org.kde.plasma.desktop-appletsrc
+#     dest: /home/{{ansible_user}}/.config/
+
+- name: configure wallpaper apply
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
+    regexp: '^Image='
+    line: Image=file:///home/{{ansible_user}}/wallpapers/malte-schmidt-enGr5YbjQKQ-unsplash.jpg
+
+- name: configure theme
+  when: '"workstation" in features'
+  template:
+    src: distrib/kdeconf/homefolder/.config/kdeglobals
+    dest: /home/{{ansible_user}}/.config/
+
+- name: configure taskbar
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
+    regexp: 'plugin=org.kde.plasma.icontasks'
+    line: 'plugin=org.kde.plasma.taskmanager'
+
+
+- name: configure taskbar height
+  ansible.builtin.replace:
+    path: /home/{{ansible_user}}/.config/plasmashellrc
+    regexp: 'thickness=.*'
+    replace: 'thickness=60'
+
+- name: configure taskbar remove launchers
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
+    regexp: '.Containments..2..Applets..5..Configuration..General.'
+    line: '[Containments][2][Applets][5][Configuration][General]'
+
+- name: configure taskbar remove launchers
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
+    insertafter: '.Containments..2..Applets..5..Configuration..General.'
+    regexp: 'launchers=.*'
+    line: 'launchers='
+
+- name: configure 2 stripes
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
+    insertafter: '.Containments..2..Applets..5..Configuration..General.'
+    regexp: 'forceStripes=.*'
+    line: 'forceStripes=true'
+
+- name: configure login mode empty session
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/ksmserverrc
+    regexp: '.General.'
+    line: '[General]'
+
+- name: configure login mode empty session
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/ksmserverrc
+    insertafter: '.General.'
+    regexp: 'loginMode=.*'
+    line: 'loginMode=emptySession'
+
+- name: configure login mode empty session
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/kwinrc
+    regexp: '.Compositing.'
+    line: '[Compositing]'
+    create: yes
+
+- name: configure no compositing
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/kwinrc
+    insertafter: '.Compositing.'
+    regexp: 'Enabled=.*'
+    line: 'Enabled=false'
+
+- name: configure desktops
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/kwinrc
+    insertafter: '.Desktops.'
+    regexp: 'Number=.*'
+    line: 'Number=4'
+
+- name: configure desktops
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/kwinrc
+    insertafter: '.Desktops.'
+    regexp: 'Rows=.*'
+    line: 'Rows=2'
+
+- name: configure desktops
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/kwinrc
+    insertafter: '.Desktops.'
+    regexp: '{{item.id}}=.*'
+    line: '{{item.id}}={{item.value}}'
+  with_items:
+    - id: Id_4
+      value: f2df100e-30ac-415c-b718-e3334e5078a8
+    - id: Id_3
+      value: caf70734-05eb-42aa-9c35-e7e5a7100433
+    - id: Id_2
+      value: 95821948-2174-4749-b7ad-c33a7edb2230
+    - id: Id_1
+      value: e7f1f269-aa7c-455e-b8e7-7caae751e2a3
+
+- name: configure dolphin
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/dolphinrc
+    regexp: '.General.'
+    line: '[General]'
+    create: yes
+
+- name: configure dolphin
+  ansible.builtin.lineinfile:
+    path: /home/{{ansible_user}}/.config/dolphinrc
+    insertafter: .General.'
+    regexp: '{{item.id}}=.*'
+    line: '{{item.id}}={{item.value}}'
+  with_items:
+    - id: OpenExternallyCalledFolderInNewTab
+      value: "false"
+    - id: RememberOpenedTabs
+      value: "false"
+    - id: ShowFullPath
+      value: "true"

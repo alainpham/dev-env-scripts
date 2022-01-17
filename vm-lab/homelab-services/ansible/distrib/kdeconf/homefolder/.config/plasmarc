@@ -1,0 +1,5 @@
+[Theme]
+name=breeze-dark
+
+[Wallpapers]
+usersWallpapers=/home/{{ansible_user}}/wallpapers/malte-schmidt-enGr5YbjQKQ-unsplash.jpg

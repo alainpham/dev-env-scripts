@@ -8,35 +8,60 @@ docker:
 
 appimages:
   - name: beeref
-    localurl: http://fileserver.hpel.lan/camel/download?file=viber.AppImage 
+    url: http://fileserver.hpel.lan/camel/download?file=viber.AppImage 
+    hash: sha256:8e98dfd3b9783649805e067238b3f4df00c1da24b012b952e44757510cf241d2
+    icon: https://raw.githubusercontent.com/rbreu/beeref/main/beeref/assets/logo.png
+  - name: freac
+    url: http://fileserver.hpel.lan/camel/download?file=freac-1.1.5-linux-x86_64.AppImage
+    hash: sha256:db314a1eb46cf7e863587934e520a9499349ad0f4b6a2ac32f313b3797482c84
+    icon: https://github.com/alainpham/appp/raw/master/freac/icon.png
+  - name: mlvapp
+    url: http://fileserver.hpel.lan/camel/download?file=MLV.App.v1.13.Linux.x86_64.AppImage
+    hash: sha256:e765010c3b73254fad3ab907e88dbed07175f38deca7ab1d7a0484624dfcee09
+    icon: https://github.com/alainpham/appp/raw/master/mlvapp/icon.png
+  - name: plex-media-player
+    url: http://fileserver.hpel.lan/camel/download?file=Plex_Media_Player_2.58.1-ae73e074_x64.AppImage
+    hash: sha256:1cfcaac5eedf8d46fe5a35a13921f55c44862736cee043c03a31053e2d308eb4
+    icon: https://github.com/alainpham/appp/raw/master/plex-media-player/icon.png
+  - name: rawtherapee
+    url: http://fileserver.hpel.lan/camel/download?file=RawTherapee_5.8.AppImage
+    hash: sha256:c212b15f39d02bd8f8a54358045116cbac757ea155e5378e09d727a513895928
+    icon: https://github.com/alainpham/appp/raw/master/rawtherapee/icon.png
+  - name: viber
+    url: http://fileserver.hpel.lan/camel/download?file=viber.AppImage
+    hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
+    icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
+
+kdeconf:
+  sddmtheme:
+    name: plasma-chili
+
+appimagesweb:
+  - name: beeref
     url: https://github.com/rbreu/beeref/releases/download/v0.2.0/BeeRef-0.2.0-linux
     hash: sha256:8e98dfd3b9783649805e067238b3f4df00c1da24b012b952e44757510cf241d2
     icon: https://raw.githubusercontent.com/rbreu/beeref/main/beeref/assets/logo.png
   - name: freac
-    localurl: http://fileserver.hpel.lan/camel/download?file=freac-1.1.5-linux-x86_64.AppImage
     url: https://github.com/enzo1982/freac/releases/download/v1.1.5/freac-1.1.5-linux-x86_64.AppImage
     hash: sha256:db314a1eb46cf7e863587934e520a9499349ad0f4b6a2ac32f313b3797482c84
     icon: https://github.com/alainpham/appp/raw/master/freac/icon.png
   - name: mlvapp
-    localurl: http://fileserver.hpel.lan/camel/download?file=MLV.App.v1.13.Linux.x86_64.AppImage
     url: https://github.com/ilia3101/MLV-App/releases/download/QTv1.13/MLV.App.v1.13.Linux.x86_64.AppImage
     hash: sha256:e765010c3b73254fad3ab907e88dbed07175f38deca7ab1d7a0484624dfcee09
     icon: https://github.com/alainpham/appp/raw/master/mlvapp/icon.png
   - name: plex-media-player
-    localurl: http://fileserver.hpel.lan/camel/download?file=Plex_Media_Player_2.58.1-ae73e074_x64.AppImage
     url: https://knapsu.eu/data/plex/Plex_Media_Player_2.58.1-ae73e074_x64.AppImage
     hash: sha256:1cfcaac5eedf8d46fe5a35a13921f55c44862736cee043c03a31053e2d308eb4
     icon: https://github.com/alainpham/appp/raw/master/plex-media-player/icon.png
   - name: rawtherapee
-    localurl: http://fileserver.hpel.lan/camel/download?file=RawTherapee_5.8.AppImage
     url: https://rawtherapee.com/shared/builds/linux/RawTherapee_5.8.AppImage
     hash: sha256:c212b15f39d02bd8f8a54358045116cbac757ea155e5378e09d727a513895928
     icon: https://github.com/alainpham/appp/raw/master/rawtherapee/icon.png
   - name: viber
-    localurl: http://fileserver.hpel.lan/camel/download?file=viber.AppImage
     url: https://download.cdn.viber.com/desktop/Linux/viber.AppImage
     hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
     icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
+
 
 ips:
   rentman: 172.18.0.20 

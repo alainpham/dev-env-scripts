@@ -1,0 +1,9 @@
+---
+- name: install-appimages
+  hosts:
+    - selected
+  tasks:
+    - name: install-appimages
+      include_role:
+        name: home-lab-role
+        tasks_from: install-appimages

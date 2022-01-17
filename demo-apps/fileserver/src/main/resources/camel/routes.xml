@@ -44,6 +44,9 @@
 
     <route>
         <from uri="servlet:download?disableStreamCache=true"/>
+        <setHeader headerName="content-disposition">
+            <simple><![CDATA[ attachment; filename="${header.file}"]]></simple>
+        </setHeader>
         <bean ref="fileGrabber" method="grab(${header.file})"/>
     </route>
 

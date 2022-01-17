@@ -54,8 +54,8 @@
                     <button onclick="clearTable('state-table')">clear</button>
                     <button onclick="processSocketMsg(exampleStateEvent)">populate state example</button>
                 </div>
-                <p>put files curl --request PUT  --data-binary @700MB.csv http://thiswebsite/camel/upload  -v </p>
-                <p>get files curl http://thiswebsite/camel/download?file=fileName  -v </p>
+                <p>curl --request POST -H "Content-Type: application/octet-stream"  --data-binary @700MB.xml http://localhost:8090/camel/upload?file=test.zip  -v</p>
+                <p>get files curl -O http://localhost:8090/camel/download?file=test.zip  -v</p>
 
                 <table id="state-table"></table>
 

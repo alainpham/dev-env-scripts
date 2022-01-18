@@ -50,6 +50,8 @@
       - ffmpeg
       - mpv
       - arandr
+      - autorandr
+      - network-manager-openvpn
       - jackd2
       - qjackctl
       - pulseaudio-module-jack

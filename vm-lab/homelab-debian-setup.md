@@ -16,6 +16,7 @@
     - [Main packages](#main-packages)
     - [Apps packages](#apps-packages)
     - [Optional packages to be reviewed if necessary](#optional-packages-to-be-reviewed-if-necessary)
+    - [vscode plugins](#vscode-plugins)
 - [RPI Server](#rpi-server)
 - [Services & Apps](#services--apps)
   - [Pihole](#pihole)
@@ -339,12 +340,12 @@ apt install \
     intel-microcode
     intel-gpu-tools  
 
-
-
-
-
-
 ```
+
+### vscode plugins
+
+c++ cmmake cmake tools debugger for java docker eclipsekeymap extensionpackforjava hexeditor camelLanguagesupport javalanguagesupport markdown allin one maven fo java ,
+project manager for java
 
 # RPI Server
 

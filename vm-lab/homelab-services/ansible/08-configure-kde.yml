@@ -1,9 +1,0 @@
----
-- name: configure-kde
-  hosts:
-    - selected
-  tasks:
-    - name: configure-kde
-      include_role:
-        name: home-lab-role
-        tasks_from: configure-kde

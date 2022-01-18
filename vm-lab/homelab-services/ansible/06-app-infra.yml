@@ -27,7 +27,7 @@
     - hppa.lan
     - hpel.lan
     - asus.lan
-    - alaindeb.lan
+    - work.lan
     - leol.lan
   vars:
     appstate: started

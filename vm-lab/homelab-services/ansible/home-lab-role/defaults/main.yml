@@ -8,7 +8,7 @@ docker:
 
 appimages:
   - name: beeref
-    url: http://fileserver.hpel.lan/camel/download?file=viber.AppImage 
+    url: http://fileserver.hpel.lan/camel/download?file=BeeRef-0.2.0-linux 
     hash: sha256:8e98dfd3b9783649805e067238b3f4df00c1da24b012b952e44757510cf241d2
     icon: https://raw.githubusercontent.com/rbreu/beeref/main/beeref/assets/logo.png
   - name: freac

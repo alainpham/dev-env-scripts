@@ -17,7 +17,7 @@ x86:
         - virtualization
         - workstation
         - intelgpu
-    alaindeb.lan:
+    work.lan:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
@@ -54,9 +54,9 @@ selected:
   # children:
   #   arm:
   hosts:
-    leol.lan:
+    # leol.lan:
     # hppa.lan:
-    # alaindeb.lan:
+     work.lan:
     # hpel.lan:
 
 

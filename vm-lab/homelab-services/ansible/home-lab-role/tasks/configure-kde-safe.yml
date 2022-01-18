@@ -20,9 +20,6 @@
     dest: /etc/sddm.conf.d/kde_settings.conf
     mode: '0644'
 
-
-
-
 - name: desktop wallpaper folder
   when: '"workstation" in features'
   file:
@@ -40,30 +37,11 @@
     src: distrib/kdeconf/homefolder/.config/plasmarc
     dest: /home/{{ansible_user}}/.config/
 
-# - name: configure wallpaper apply
-#   when: '"workstation" in features'
-#   template:
-#     src: distrib/kdeconf/homefolder/.config/plasma-org.kde.plasma.desktop-appletsrc
-#     dest: /home/{{ansible_user}}/.config/
-
-- name: configure wallpaper apply
-  replace:
-    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
-    regexp: '^Image='
-    replace: Image=file:///home/{{ansible_user}}/wallpapers/malte-schmidt-enGr5YbjQKQ-unsplash.jpg
-
 - name: configure theme
   when: '"workstation" in features'
   template:
     src: distrib/kdeconf/homefolder/.config/kdeglobals
     dest: /home/{{ansible_user}}/.config/
-
-- name: configure taskbar
-  ansible.builtin.lineinfile:
-    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
-    regexp: 'plugin=org.kde.plasma.icontasks'
-    line: 'plugin=org.kde.plasma.taskmanager'
-
 
 - name: configure taskbar height
   ansible.builtin.replace:
@@ -71,25 +49,6 @@
     regexp: 'thickness=.*'
     replace: 'thickness=60'
 
-- name: configure taskbar remove launchers
-  ansible.builtin.lineinfile:
-    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
-    regexp: '.Containments..2..Applets..5..Configuration..General.'
-    line: '[Containments][2][Applets][5][Configuration][General]'
-
-- name: configure taskbar remove launchers
-  ansible.builtin.lineinfile:
-    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
-    insertafter: '.Containments..2..Applets..5..Configuration..General.'
-    regexp: 'launchers=.*'
-    line: 'launchers='
-
-- name: configure 2 stripes
-  ansible.builtin.lineinfile:
-    path: /home/{{ansible_user}}/.config/plasma-org.kde.plasma.desktop-appletsrc
-    insertafter: '.Containments..2..Applets..5..Configuration..General.'
-    regexp: 'forceStripes=.*'
-    line: 'forceStripes=true'
 
 - name: configure login mode empty session
   ansible.builtin.lineinfile:
@@ -104,7 +63,7 @@
     regexp: 'loginMode=.*'
     line: 'loginMode=emptySession'
 
-- name: configure login mode empty session
+- name: configure no compositing
   ansible.builtin.lineinfile:
     path: /home/{{ansible_user}}/.config/kwinrc
     regexp: '.Compositing.'

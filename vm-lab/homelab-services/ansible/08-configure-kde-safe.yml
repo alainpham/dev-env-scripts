@@ -1,0 +1,9 @@
+---
+- name: configure-kde-safe
+  hosts:
+    - selected
+  tasks:
+    - name: configure-kde-safe
+      include_role:
+        name: home-lab-role
+        tasks_from: configure-kde-safe

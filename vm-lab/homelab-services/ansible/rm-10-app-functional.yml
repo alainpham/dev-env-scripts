@@ -1,0 +1,35 @@
+- name: rentman
+  hosts:
+    - asus.lan
+  vars:
+    appstate: absent
+    recreate: false
+  tasks:
+    - include_role:
+        name: home-lab-role
+        tasks_from: app-rentman
+
+- name: amqbroker
+  hosts:
+    - hpel.lan
+  vars:
+    appstate: absent
+    recreate: false
+  tasks:
+    - include_role:
+        name: home-lab-role
+        tasks_from: app-amqbroker
+
+- name: bqueue
+  hosts:
+    - work.lan
+    - hpel.lan
+    - leol.lan
+    - hppa.lan
+  vars:
+    appstate: absent
+    recreate: false
+  tasks:
+    - include_role:
+        name: home-lab-role
+        tasks_from: app-bqueue

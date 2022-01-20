@@ -675,24 +675,6 @@ curl -X 'PUT' -v -u admin:admin \
         }
       }'
 
-{
-  "name": "maven-public",
-  "format": "maven2",
-  "url": "http://nexus.hpel.lan/repository/maven-public",
-  "online": true,
-  "storage": {
-    "blobStoreName": "default",
-    "strictContentTypeValidation": true
-  },
-  "group": {
-    "memberNames": [
-      "maven-releases",
-      "maven-snapshots",
-      "maven-central"
-    ]
-  },
-  "type": "group"
-}
 
 
 for deleting

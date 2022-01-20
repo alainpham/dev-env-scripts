@@ -1,35 +1,41 @@
 ---
 - set_fact:
-    appname: rentman
+    appname: loki
 
 - name: Create {{appname}} folders
   become: true
   file:
-    path: /home/{{ ansible_user }}/apps/{{appname}}/data
+    path: /home/{{ ansible_user }}/apps/{{appname}}/config/
     state: directory
-    owner: "1001"
+    owner: "{{ ansible_user }}"
     group: "{{ ansible_user }}"
     mode: '0755'
 
-
+- name: Copy config {{appname}} config
+  copy:
+    src: ./../{{appname}}/config/
+    dest: /home/{{ ansible_user }}/apps/{{appname}}/config/
+    mode: '0644'
 
 - name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
   docker_container:
     name: "{{appname}}"
-    image: registry.hpel.lan/rentman:latest
+    image: grafana/loki:2.4.2
     state: "{{appstate}}"
     recreate: "{{recreate}}"
     restart_policy: unless-stopped
     container_default_behavior: no_defaults
     detach: true
     env:
+    ports:
     labels: |
       {
         "traefik.http.routers.{{appname}}.entrypoints": "http",
         "traefik.http.routers.{{appname}}.tls": "false"
       }
+    command: "-config.file=/mnt/config/loki-config.yaml"
     volumes:
-      - "/home/{{ansible_user}}/apps/{{appname}}/data:/deployments/db:rw"
+      - /home/{{ ansible_user }}/apps/{{appname}}/config/:/mnt/config:ro
     networks_cli_compatible: yes
     network_mode: primenet
     networks:

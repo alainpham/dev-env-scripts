@@ -1,0 +1,9 @@
+---
+- name: install-sound
+  hosts:
+    - selected
+  tasks:
+    - name: install-sound
+      include_role:
+        name: home-lab-role
+        tasks_from: install-sound

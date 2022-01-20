@@ -30,6 +30,8 @@
     state: "{{appstate}}"
     recreate: "{{recreate}}"
     restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
     env:
     ports:
       - "80:80"
@@ -42,6 +44,7 @@
       - "/home/{{ansible_user}}/apps/tls:/certs:ro"
       - "/var/run/docker.sock:/var/run/docker.sock:ro"
     networks_cli_compatible: yes
+    network_mode: primenet
     networks:
       - name: primenet
         ipv4_address: "{{ips[appname]}}"

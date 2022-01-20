@@ -11,21 +11,6 @@
     group: "{{ ansible_user }}"
     mode: '0755'
 
-- name: Create {{appname}} labels's dictionary
-  set_fact:
-      traefiklbl: "{{ traefiklbl | default({}) | combine ({ item.key : item.value }) }}"
-  with_items:
-    - { key: "traefik.tcp.services.{{appname}}.loadbalancer.server.port", value: "61616"}
-    - { key: "traefik.tcp.routers.{{appname}}.entrypoints", value: "https"}
-    - { key: "traefik.tcp.routers.{{appname}}.tls", value: "true"}
-    - { key: "traefik.tcp.routers.{{appname}}.rule", value: "HostSNI(`{{appname}}.{{ansible_hostname}}.lan`)"}
-    - { key: "traefik.tcp.routers.{{appname}}.service", value: "{{appname}}"}
-    
-    - { key: "traefik.http.services.{{appname}}cons.loadbalancer.server.port", value: "8161"}
-    - { key: "traefik.http.routers.{{appname}}cons.entrypoints", value: "http"}
-    - { key: "traefik.http.routers.{{appname}}cons.tls", value: "false"}
-    - { key: "traefik.http.routers.{{appname}}cons.rule", value: "Host(`{{appname}}cons.{{ansible_hostname}}.lan`)"}
-    - { key: "traefik.http.routers.{{appname}}cons.service", value: "{{appname}}cons"}
 
 - name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
   docker_container:
@@ -33,6 +18,8 @@
     image: registry.hpel.lan/amq-broker:7.8.3
     state: "{{appstate}}"
     restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
     env:
       AMQ_USER: admin
       AMQ_PASSWORD: password
@@ -41,10 +28,23 @@
       AMQ_ENABLE_METRICS_PLUGIN: "true"
       AMQ_JOURNAL_TYPE: "nio"
       AMQ_DATA_DIR: /amqdata
-    labels: "{{traefiklbl}}"
+    labels: |
+      {
+        "traefik.tcp.services.{{appname}}.loadbalancer.server.port": "61616",
+        "traefik.tcp.routers.{{appname}}.entrypoints": "https",
+        "traefik.tcp.routers.{{appname}}.tls": "true",
+        "traefik.tcp.routers.{{appname}}.rule": "HostSNI(`{{appname}}.{{ansible_hostname}}.lan`)",
+        "traefik.tcp.routers.{{appname}}.service": "{{appname}}",
+        "traefik.http.services.{{appname}}cons.loadbalancer.server.port": "8161",
+        "traefik.http.routers.{{appname}}cons.entrypoints": "http",
+        "traefik.http.routers.{{appname}}cons.tls": "false",
+        "traefik.http.routers.{{appname}}cons.rule": "Host(`{{appname}}cons.{{ansible_hostname}}.lan`)",
+        "traefik.http.routers.{{appname}}cons.service": "{{appname}}cons"
+      }
     volumes:
       - "/home/{{ansible_user}}/apps/{{appname}}/data:/amqdata:rw"
     networks_cli_compatible: yes
+    network_mode: primenet
     networks:
       - name: primenet
         ipv4_address: "{{ips[appname]}}"

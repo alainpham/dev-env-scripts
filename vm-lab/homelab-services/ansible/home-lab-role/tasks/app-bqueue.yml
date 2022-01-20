@@ -12,29 +12,34 @@
     mode: '0755'
 
 
-- name: Create {{appname}} labels's dictionary
-  set_fact:
-      traefiklbl: "{{ traefiklbl | default({}) | combine ({ item.key : item.value }) }}"
-  with_items:
-    - { key: "traefik.http.routers.{{appname}}.entrypoints" , value: 'http'}
-    - { key: "traefik.http.routers.{{appname}}.tls" , value: 'false'}
-    - { key: "traefik.http.routers.{{appname}}.rule", value: "Host(`{{appname}}.{{ansible_hostname}}.lan`)"}
-    - { key: "traefik.http.routers.{{appname}}.service", value : "{{appname}}"}
-
 - name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
   docker_container:
     name: "{{appname}}"
-    image: registry.hpel.lan/bqueue:latest
+    image: registry.hpel.lan/bqueue:1.0
     state: "{{appstate}}"
     recreate: "{{recreate}}"
     restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    # log_driver: loki
+    # log_options: 
+    #   loki-url: "http://loki.hpel.lan/loki/api/v1/push"
+    #   loki-retries: "5"
+    #   loki-batch-size: "400"
     env:
+      QUARKUS_HTTP_PORT: "8080"
       QUARKUS_ARTEMIS_URL: "tcp://amqbroker.hpel.lan:443?consumerWindowSize=0&sslEnabled=true&trustAll=true"
       BLENDERQUEUE_HOSTNAME: "{{ansible_hostname}}"
-    labels: "{{traefiklbl}}"
+      QUARKUS_CAMEL_METRICS_ENABLE_ROUTE_POLICY: "true"
+    labels: |
+      {
+        "traefik.http.routers.{{appname}}.entrypoints": "http",
+        "traefik.http.routers.{{appname}}.tls": "false"
+      }
     volumes:
       - "/home/{{ansible_user}}/apps/{{appname}}/data:/deployments/data:rw"
     networks_cli_compatible: yes
+    network_mode: primenet
     networks:
       - name: primenet
         ipv4_address: "{{ips[appname]}}"

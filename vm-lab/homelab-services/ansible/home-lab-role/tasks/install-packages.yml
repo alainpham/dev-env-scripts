@@ -25,6 +25,13 @@
       - python3-mutagen
     state: present
 
+- name: Set JAVA HOME
+  when: '"workstation" in features'
+  become: true
+  copy:
+    src: distrib/java/java_home.sh
+    dest: /etc/profile.d/java_home.sh
+
 - name: Virtualization packages
   become: true
   when: '"virtualization" in features'
@@ -55,6 +62,8 @@
       - jackd2
       - qjackctl
       - pulseaudio-module-jack
+      - lsp-plugins-lv2
+      - calf-plugins
       - ardour
       - v4l-utils
       - flatpak
@@ -77,6 +86,13 @@
       - vainfo
       - intel-media-va-driver-non-free
     state: present
+
+- name: Configure tearfree driver
+  when: '"workstation" in features and "intelgpu" in features'
+  become: true
+  copy:
+    src: distrib/intelgraphics/20-intel.conf
+    dest: /etc/X11/xorg.conf.d/20-intel.conf
 
 - name: Create deb package folder
   when: '"workstation" in features'

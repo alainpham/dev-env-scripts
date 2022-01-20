@@ -1,0 +1,185 @@
+---
+- set_fact:
+    appname: nexus
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data
+    state: directory
+    owner: "200"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+
+- name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "{{appname}}"
+    image: sonatype/nexus3
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    env:
+    labels: |
+      {
+        "traefik.http.routers.{{appname}}.entrypoints": "http",
+        "traefik.http.routers.{{appname}}.tls": "false"
+      }
+    volumes:
+      - "/home/{{ansible_user}}/apps/{{appname}}/data:/nexus-data:rw"
+    networks_cli_compatible: yes
+    network_mode: primenet
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips[appname]}}"
+
+
+- name: Check if server is up
+  when: appstate == 'started'
+  uri:
+    url: "http://{{appname}}.{{ansible_hostname}}.lan/service/rest/v1/status"
+    method: GET
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 60
+  delay: 2
+
+
+- name: access password file
+  when: appstate == 'started'
+  stat:
+    path: "/home/{{ansible_user}}/apps/{{appname}}/data/admin.password"
+  register: passfile
+
+
+- name: Set variables
+  when: appstate == 'started' and passfile.stat.exists
+  set_fact:
+    nexus_user: "admin"
+
+- name: Find out what the remote machine's mounts are
+  when: appstate == 'started' and passfile.stat.exists
+  ansible.builtin.slurp:
+    src: /home/{{ansible_user}}/apps/{{appname}}/data/admin.password
+  register: adminpwd
+
+- name: Set variables
+  when: appstate == 'started' and passfile.stat.exists
+  set_fact:
+    nexus_password: "{{adminpwd.content | b64decode}}"
+
+- name: Print temp password 
+  when: appstate == 'started' and passfile.stat.exists
+  debug:
+    msg: "first nexus passwd : {{nexus_password}}"
+
+- name: Reset password
+  when: appstate == 'started' and passfile.stat.exists
+  uri:
+    url: "http://{{appname}}.{{ansible_hostname}}.lan/service/rest/v1/security/users/admin/change-password"
+    user: "admin"
+    password: "{{nexus_password}}"
+    method: PUT
+    body: 'admin'
+    force_basic_auth: yes
+    status_code: 204
+    headers:
+      Content-Type: text/plain
+      accept: application/json
+
+
+
+- name: Set new password as fact
+  when: appstate == 'started'
+  set_fact:
+    nexus_password: "admin"
+
+
+
+- name: Delete Proxy repos if they exist
+  when: appstate == 'started'
+  uri:
+    url: "http://{{appname}}.{{ansible_hostname}}.lan/service/rest/v1/repositories/{{ item }}"
+    user: "admin"
+    password: "{{nexus_password}}"
+    method: DELETE
+    force_basic_auth: yes
+    status_code: [204, 404]
+  with_items: 
+    - red-hat-ga-repository
+    - red-hat-early-access-repository
+  retries: 10
+  delay: 2
+
+- name: Proxy repos
+  when: appstate == 'started'
+  uri:
+    url: "http://{{appname}}.{{ansible_hostname}}.lan/service/rest/v1/repositories/maven/proxy"
+    user: "admin"
+    password: "{{nexus_password}}"
+    method: POST
+    force_basic_auth: yes
+    status_code: 201
+    body_format: json
+    body: |
+      {
+        "name": "{{item.name}}",
+        "online": true,
+        "storage": {
+          "blobStoreName": "default",
+          "strictContentTypeValidation": true
+        },
+        "proxy": {
+          "remoteUrl": "{{item.url}}",
+          "contentMaxAge": 1440,
+          "metadataMaxAge": 1440
+        },
+        "negativeCache": {
+          "enabled": true,
+          "timeToLive": 1440
+        },
+        "httpClient": {
+          "blocked": false,
+          "autoBlock": true
+        },
+        "maven": {
+          "versionPolicy": "RELEASE",
+          "layoutPolicy": "STRICT",
+          "contentDisposition": "INLINE"
+        }
+      }
+  with_items: 
+    - {name: red-hat-ga-repository, url: https://maven.repository.redhat.com/ga}
+    - {name: red-hat-early-access-repository, url: https://maven.repository.redhat.com/earlyaccess/all}
+
+- name: Update maven public group
+  when: appstate == 'started'
+  uri:
+    url: "http://{{appname}}.{{ansible_hostname}}.lan/service/rest/v1/repositories/maven/group/maven-public"
+    user: "admin"
+    password: "{{nexus_password}}"
+    method: PUT
+    force_basic_auth: yes
+    status_code: 204
+    body_format: json
+    body: |
+      {
+        "name": "maven-public",
+        "online": true,
+        "storage": {
+          "blobStoreName": "default",
+          "strictContentTypeValidation": true
+        },
+        "group": {
+          "memberNames": [
+            "maven-releases",
+            "maven-snapshots",
+            "maven-central",
+            "red-hat-ga-repository",
+            "red-hat-early-access-repository"
+          ]
+        }
+      }

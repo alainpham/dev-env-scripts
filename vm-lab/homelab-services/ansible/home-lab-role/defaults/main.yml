@@ -32,9 +32,6 @@ appimages:
     hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
     icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
 
-kdeconf:
-  sddmtheme:
-    name: plasma-chili
 
 appimagesweb:
   - name: beeref
@@ -62,15 +59,28 @@ appimagesweb:
     hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
     icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
 
+kdeconf:
+  sddmtheme:
+    name: plasma-chili
+
+jack:
+  - name: noise-repellent_0.1.5-1kxstudio2_amd64.deb
+    url: http://ppa.launchpad.net/kxstudio-debian/plugins/ubuntu/pool/main/n/noise-repellent/noise-repellent_0.1.5-1kxstudio2_amd64.deb
+
 
 ips:
   rentman: 172.18.0.20 
   bqueue: 172.18.0.21
-
+  
+  nexus: 172.18.0.41
   registry: 172.18.0.42
   regui: 172.18.0.45
   traefik: 172.18.0.43
   fileserver: 172.18.0.47
+
+  prometheus: 172.18.0.70
+  grafana: 172.18.0.71
+  loki: 172.18.0.72
 
   amqbroker: 172.18.0.115
   

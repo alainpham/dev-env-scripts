@@ -53,11 +53,13 @@ arm:
 selected:
   # children:
   #   arm:
-  hosts:
-    # leol.lan:
-    # hppa.lan:
-     work.lan:
-    # hpel.lan:
+  children:
+    x86:
+  # hosts:
+  #   leol.lan:
+  #   hppa.lan:
+  #   work.lan:
+  #   hpel.lan:
 
 
 nonvital:

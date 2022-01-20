@@ -1,0 +1,28 @@
+---
+- name: Create deb package folder
+  when: '"workstation" in features'
+  file:
+    path: /home/{{ ansible_user }}/debs/
+    state: directory
+    mode: '0755'
+
+- name: "Download {{item.name}}"
+  when: '"workstation" in features'
+  get_url:
+    url: "{{item.url}}"
+    dest: "/home/{{ ansible_user }}/debs/{{item.name}}"
+  with_items: "{{jack}}"
+
+- name: "Install {{item.name}}"
+  become: true
+  when: '"workstation" in features'
+  apt:
+    deb: "/home/{{ ansible_user }}/debs/{{item.name}}"
+  with_items: "{{jack}}"
+
+- name: Configure fixed sound card name
+  when: '"workstation" in features'
+  become: true
+  copy:
+    src: distrib/sound/70-my-sound-cards.rules
+    dest: /etc/udev/rules.d/

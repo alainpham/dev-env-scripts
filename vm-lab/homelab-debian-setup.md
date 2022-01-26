@@ -186,7 +186,7 @@ sudo apt install -y \
     git \
     ansible \
     docker.io \
-    docker-compose \
+    docker-compose \
     apparmor \
     haproxy \
     tmux \
@@ -802,7 +802,7 @@ docker run  --restart unless-stopped \
     -e AMQ_USER="adm" \
     -e AMQ_PASSWORD="password" \
     -e AMQ_ROLE="admin" \
-    -e AMQ_REQUIRE_LOGIN="false" \
+    -e AMQ_REQUIRE_LOGIN="false" \
     -e AMQ_ENABLE_METRICS_PLUGIN="true" \
     -d --name amqbroker  \
     -d --net primenet --ip 172.18.0.115 \
@@ -823,3 +823,5 @@ docker run  --restart unless-stopped \
 
 ## Blender
 docker run -d --net primenet --name bqueue -e QUARKUS_ARTEMIS_URL=tcp://amqbroker:61616?consumerWindowSize=0 -e BLENDERQUEUE_HOSTNAME=alpha bqueue
+
+

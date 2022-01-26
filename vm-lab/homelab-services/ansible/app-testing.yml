@@ -92,13 +92,92 @@
 #         name: home-lab-role
 #         tasks_from: app-registry
 
-- name: nexus
+# - name: nexus
+#   hosts:
+#     - hpel.lan
+#   vars:
+#     appstate: started
+#     recreate: false
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-nexus
+
+
+# - name: traefik
+#   hosts:
+#     - bbee.lan
+#   vars:
+#     appstate: started
+#     recreate: false
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-traefik
+
+# - name: plex
+#   hosts:
+#     - bbee.lan
+#   vars:
+#     appstate: started
+#     recreate: false
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-plex
+
+
+# - name: rentman
+#   hosts:
+#     - bbee.lan
+#   vars:
+#     appstate: started
+#     recreate: false
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-rentman
+
+# - name: teddycast
+#   hosts:
+#     - bbee.lan
+#   vars:
+#     appstate: started
+#     recreate: false
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-teddycast
+
+
+# - name: test
+#   hosts:
+#     - work.lan
+#   tasks: 
+#     - name: Copy custom scripts
+#       become: true
+#       when: '"virtualization" in features'
+#       copy:
+#         src: "./../../scripts/{{item}}"
+#         dest: /usr/local/bin/
+#         mode: "0755"
+#       with_items:
+#         - dvm
+#         - kvsh 
+#         - lsvm
+#         - vmcreate
+#         - vmcreate-rhel
+        
+- name: bqueue
   hosts:
+    - work.lan
     - hpel.lan
+    - leol.lan
+    - hppa.lan
   vars:
-    appstate: started
+    appstate: absent
     recreate: false
   tasks:
     - include_role:
         name: home-lab-role
-        tasks_from: app-nexus
+        tasks_from: app-bqueue

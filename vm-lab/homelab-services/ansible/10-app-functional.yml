@@ -1,6 +1,6 @@
 - name: rentman
   hosts:
-    - asus.lan
+    - bbee.lan
   vars:
     appstate: started
     recreate: false
@@ -8,6 +8,17 @@
     - include_role:
         name: home-lab-role
         tasks_from: app-rentman
+
+- name: teddycast
+  hosts:
+    - bbee.lan
+  vars:
+    appstate: started
+    recreate: false
+  tasks:
+    - include_role:
+        name: home-lab-role
+        tasks_from: app-teddycast
 
 - name: amqbroker
   hosts:

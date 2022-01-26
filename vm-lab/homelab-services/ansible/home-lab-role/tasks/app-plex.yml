@@ -1,0 +1,58 @@
+---
+- set_fact:
+    appname: plex
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data/
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Create {{appname}} config folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/config/
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "{{appname}}"
+    image: linuxserver/plex
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    env:
+      VERSION: latest
+      PLEX_UID: "1000"
+      PLEX_GID: "1000"
+      TZ: "Europe/Paris"
+    ports:
+      # - "32400:32400"
+    # labels: |
+    #   {
+    #     "traefik.http.routers.{{appname}}.entrypoints": "http",
+    #     "traefik.http.routers.{{appname}}.tls": "false",
+    #     "traefik.http.services.{{appname}}.loadbalancer.server.port": "32400"
+    #   }
+    volumes:
+      - "/home/{{ansible_user}}/apps/{{appname}}/config/:/config/:rw"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/tvshows:/data/tvshows"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/movies:/data/movies"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/music:/data/music"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/transcode:/data/transcode"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/videos/home-videos:/data/home-videos"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/videos/kids-videos:/data/kids-videos"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/videos/general-videos:/data/general-videos"
+    networks_cli_compatible: yes
+    network_mode: host
+    # networks:
+    #   - name: primenet
+    #     ipv4_address: "{{ips[appname]}}"

@@ -16,6 +16,8 @@
   - [setup masters and workers](#setup-masters-and-workers)
   - [setup different components](#setup-different-components)
 - [Setup SAP on a single VM](#setup-sap-on-a-single-vm)
+- [Setup Raspberry vm](#setup-raspberry-vm)
+  - [Run a raspbian virtual machine](#run-a-raspbian-virtual-machine)
 
 
 # Purpose of this repo 
@@ -298,3 +300,45 @@ Docker approach
 docker run --stop-timeout 3600 -it --memory="20Gi" --name a4h  -h vhcala4hci -p 3200:3200 -p 3300:3300 -p 8443:8443 -p 30213:30213 -p 50000:50000 -p 50001:50001 --sysctl kernel.shmmax=21474836480 --sysctl kernel.shmmni=32768 --sysctl kernel.shmall=5242880 --sysctl kernel.msgmni=1024 --sysctl kernel.sem="1250 256000 100 8192" --ulimit nofile=1048576:1048576 store/saplabs/abaptrial:1909 -agree-to-sap-license
 
 ```
+
+
+# Setup Raspberry vm
+
+## Run a raspbian virtual machine
+
+download kernels from here
+https://github.com/dhruvvyas90/qemu-rpi-kernel
+
+MAC=52:54:00:00:00:86
+name=rpi
+
+
+qemu-img convert -f raw -O qcow2 /home/workdrive/virt/images/raspbian/2021-10-30-raspios-bullseye-armhf-lite.img /home/workdrive/virt/images/raspbian/2021-10-30-raspios-bullseye-armhf-lite.qcow2
+
+qemu-img create -f qcow2 -F qcow2 -b /home/workdrive/virt/images/raspbian/2021-10-30-raspios-bullseye-armhf-lite.qcow2 /home/workdrive/virt/runtime/$name.qcow2 32G 
+
+qemu-img create -f qcow2 -o backing_file=/home/workdrive/virt/images/raspbian/2021-10-30-raspios-bullseye-armhf-lite.qcow2 /home/workdrive/virt/runtime/$name.qcow2 32G 
+
+sudo virsh net-update default add ip-dhcp-host "<host mac='$MAC' name='$name' ip='192.168.122.86' />" --live --config
+
+
+sudo virt-install \
+  --name $name \
+  --arch armv6l \
+  --machine versatilepb \
+  --cpu arm1176 \
+  --vcpus 1 \
+  --memory 256 \
+  --import \
+  --disk /home/workdrive/virt/runtime/$name.qcow2,format=qcow2,bus=virtio \
+  --network bridge=virbr0,model=virtio,mac=$MAC \
+  --rng device=/dev/urandom,model=virtio \
+  --boot 'dtb=/home/workdrive/virt/images/raspbian/versatile-pb-bullseye-5.10.63.dtb,kernel=/home/workdrive/virt/images/raspbian/kernel-qemu-5.10.63-bullseye,kernel_args=root=/dev/vda2 panic=1' \
+  --events on_reboot=destroy
+
+
+  to delete vm 
+
+sudo virsh destroy $name
+sudo virsh undefine $name
+sudo virsh net-update default delete ip-dhcp-host "<host name='$name' />" --live --config

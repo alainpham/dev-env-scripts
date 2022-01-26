@@ -71,7 +71,10 @@ jack:
 ips:
   rentman: 172.18.0.20 
   bqueue: 172.18.0.21
+  plex: 172.18.0.22
+  teddycast: 172.18.0.23
   
+
   nexus: 172.18.0.41
   registry: 172.18.0.42
   regui: 172.18.0.45

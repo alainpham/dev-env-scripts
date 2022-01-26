@@ -1,29 +1,71 @@
-- name: Configure docker
+- name: Configure docker registry /etc/docker/daemon.json
   become: true
-  shell: |
-    cat > /etc/docker/daemon.json <<EOF
-    {
-        "insecure-registries" : ["{{ docker.registries | join('","') }}" ],
-        "dns": ["{{ docker.dns | join('","') }}"]
-    }
-    EOF
+  ansible.builtin.template:
+    src: distrib/docker/daemon.json
+    dest: /etc/docker/daemon.json
 
-- name: Check primenet
+- name: Check primenet exists
   become: true
   shell: |
     docker network inspect primenet --format {{ '{{' }}.Id{{ '}}' }}
   ignore_errors: yes
   register: networkinspect
+  changed_when: false
+
+- debug:
+    msg: "primenet exists ? : {{ networkinspect.rc == 0 }}"
 
 - name: Create primenetwork
   become: true
   shell: |
     docker network create --driver=bridge --subnet=172.18.0.0/16 --gateway=172.18.0.1 primenet
-  when: networkinspect.rc
+  when: networkinspect.rc != 0
 
 - name: Restart Docker
   become: true
+  when: networkinspect.rc != 0
   systemd:
     state: restarted
     daemon_reload: yes
     name: docker
+
+- name: Configure containerd shim workaround
+  become: true
+  copy:
+    src: distrib/docker/containerd-shim-v2-workaround.service
+    dest: /etc/systemd/system/containerd-shim-v2-workaround.service
+
+- name: Make sure a service unit is running
+  become: true
+  ansible.builtin.systemd:
+    enabled: yes
+    state: started
+    name: containerd-shim-v2-workaround
+
+- name: setup dnsmasq
+  become: true
+  copy:
+    src: distrib/dnsmasq/00-use-dnsmasq.conf
+    dest: /etc/NetworkManager/conf.d/00-use-dnsmasq.conf
+
+- name: setup dnsmasq ip list
+  become: true
+  template:
+    src: distrib/dnsmasq/dev.conf
+    dest: /etc/NetworkManager/dnsmasq.d/dev.conf
+  register: dnschanged
+
+- name: disable dnsmasq service
+  become: true
+  ansible.builtin.systemd:
+    enabled: false
+    state: stopped
+    name: dnsmasq
+
+- name: restart NetworkManager when changed
+  become: true
+  when: dnschanged.changed
+  ansible.builtin.systemd:
+    state: restarted
+    name: NetworkManager
+

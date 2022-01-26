@@ -27,6 +27,7 @@
     state: directory
 
 - name: Sync wallpapers
+  when: '"workstation" in features'
   synchronize:
     src: distrib/kdeconf/wallpapers/
     dest: /home/{{ansible_user}}/wallpapers/

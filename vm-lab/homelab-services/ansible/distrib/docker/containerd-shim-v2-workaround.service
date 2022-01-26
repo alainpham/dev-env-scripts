@@ -1,0 +1,14 @@
+# /etc/systemd/system/containerd-shim-v2-workaround.service
+[Unit]
+Description=containerd-shim v2 workaround
+Before=docker.service
+Requires=containerd.service
+After=containerd.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStop=-/bin/sh -c '[ "$(systemctl is-system-running)" = "stopping" ] || exit 0; ctr -n moby tasks ls -q | xargs -r -L1 ctr -n moby tasks kill; ctr -n moby containers ls -q | xargs -r ctr -n moby containers rm'
+
+[Install]
+WantedBy=containerd.service

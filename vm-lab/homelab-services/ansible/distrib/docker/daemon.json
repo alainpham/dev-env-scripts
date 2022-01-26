@@ -1,0 +1,4 @@
+{
+    "insecure-registries" : ["{{ docker.registries | join('","') }}" ],
+    "dns": ["{{ docker.dns | join('","') }}"]
+}

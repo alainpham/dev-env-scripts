@@ -23,6 +23,7 @@
       - linux-cpupower 
       - ffmpeg
       - python3-mutagen
+      - iperf
     state: present
 
 - name: Set JAVA HOME
@@ -46,7 +47,20 @@
       - libosinfo-bin 
       - dnsmasq
     state: present
-  
+
+- name: Copy custom scripts
+  become: true
+  when: '"virtualization" in features'
+  copy:
+    src: "./../../scripts/{{item}}"
+    dest: /usr/local/bin/
+    mode: "0755"
+  with_items:
+    - dvm
+    - kvsh 
+    - lsvm
+    - vmcreate
+    - vmcreate-rhel
 
 - name: Workstation packages packages
   become: true
@@ -93,6 +107,12 @@
   copy:
     src: distrib/intelgraphics/20-intel.conf
     dest: /etc/X11/xorg.conf.d/20-intel.conf
+
+- name: Blacklist pc spkr beep
+  become: true
+  copy:
+    src: distrib/kernel/blacklist
+    dest: /etc/modprobe.d/blacklist
 
 - name: Create deb package folder
   when: '"workstation" in features'

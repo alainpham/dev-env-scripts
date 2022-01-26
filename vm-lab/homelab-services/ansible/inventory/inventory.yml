@@ -5,6 +5,7 @@ x86:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
+      arch: linux-amd64
       features:
         - virtualization
         - workstation
@@ -13,6 +14,7 @@ x86:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
+      arch: linux-amd64
       features:
         - virtualization
         - workstation
@@ -21,6 +23,7 @@ x86:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
+      arch: linux-amd64
       features:
         - virtualization
         - workstation
@@ -29,6 +32,7 @@ x86:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
+      arch: linux-amd64
       features:
         - virtualization
         - workstation
@@ -37,6 +41,7 @@ x86:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
+      arch: linux-amd64
       features:
         - virtualization
         - workstation
@@ -47,19 +52,28 @@ arm:
       ansible_connection: ssh
       ansible_user: apham
       ansible_python_interpreter: /usr/bin/python3
+      arch: linux-arm-v7
       features:
-
+        - none
+    bbee.lan:
+      ansible_connection: ssh
+      ansible_user: apham
+      ansible_python_interpreter: /usr/bin/python3
+      arch: linux-arm-v7
+      features:
+        - none
       
 selected:
   # children:
   #   arm:
-  children:
-    x86:
-  # hosts:
+  # children:
+  #   x86:
+  hosts:
   #   leol.lan:
   #   hppa.lan:
-  #   work.lan:
-  #   hpel.lan:
+    # work.lan:
+    # hpel.lan:
+    bbee.lan:
 
 
 nonvital:

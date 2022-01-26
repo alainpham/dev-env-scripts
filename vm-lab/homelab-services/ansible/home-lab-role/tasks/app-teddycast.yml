@@ -1,37 +1,27 @@
 ---
 - set_fact:
-    appname: rentman
-
-- name: Create {{appname}} folders
-  become: true
-  file:
-    path: /home/{{ ansible_user }}/apps/{{appname}}/data
-    state: directory
-    owner: "1000"
-    group: "1000"
-    mode: '0755'
-
+    appname: teddycast
 
 
 - name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
   docker_container:
     name: "{{appname}}"
-    image: "registry.hpel.lan/rentman:latest-{{arch}}"
+    image: "registry.hpel.lan/teddycast:latest-{{arch}}"
     state: "{{appstate}}"
     recreate: "{{recreate}}"
     restart_policy: unless-stopped
     container_default_behavior: no_defaults
     detach: true
-    # user: "1000:1000"
+    user: "1000:1000"
     env:
-      # QUARKUS_DATASOURCE_JDBC_URL: jdbc:h2:file:/db/data
     labels: |
       {
         "traefik.http.routers.{{appname}}.entrypoints": "http",
         "traefik.http.routers.{{appname}}.tls": "false"
       }
     volumes:
-      - "/home/{{ansible_user}}/apps/{{appname}}/data:/db:rw"
+      - /home/{{ ansible_user }}/apps/plex/data/videos/general-videos:/videos
+      - /home/{{ ansible_user }}/apps/plex/data/music:/music
     networks_cli_compatible: yes
     network_mode: primenet
     networks:

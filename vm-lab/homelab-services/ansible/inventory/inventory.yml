@@ -66,14 +66,14 @@ arm:
 selected:
   # children:
   #   arm:
-  # children:
   #   x86:
   hosts:
+    asus.lan
   #   leol.lan:
   #   hppa.lan:
     # work.lan:
     # hpel.lan:
-    bbee.lan:
+    # bbee.lan:
 
 
 nonvital:
@@ -81,3 +81,4 @@ nonvital:
     hpel.lan:
     hppa.lan:
     leol.lan:
+    asus.lan:

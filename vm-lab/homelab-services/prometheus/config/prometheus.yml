@@ -4,7 +4,14 @@ global:
   evaluation_interval: 12s 
 scrape_configs:
   # The job name is added as a label `job=<job_name>` to any timeseries scraped from this config.
+
   - job_name: 'node'
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+):(.+)'
+        target_label: node_name
+        replacement: $1
     static_configs:
       - targets: 
           - "asus:9100"
@@ -13,43 +20,63 @@ scrape_configs:
           - "work:9100"
           - "hppa:9100"
           - "leol:9100"
+          - "bbee:9100"
+
 
   - job_name: 'amqbroker'
+    relabel_configs:
+      - target_label: application
+        replacement: amq-broker
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+)\.(.+)\.(.+)'
+        target_label: node_name
+        replacement: $2
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+)\.(.+)\.(.+)'
+        target_label: kubernetes_pod_name
+        replacement: amq-broker-$2
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+)\.(.+)\.(.+)'
+        target_label: statefulset_kubernetes_io_pod_name
+        replacement: amq-broker-$2
+      - target_label: broker
+        replacement: amq-broker
+      - target_label: namespace
+        replacement: amq
     static_configs:
       - targets: 
-          - "amqbrokercons.hpel.lan:80"
-        labels:
-          namespace: "amq"
-          kubernetes_pod_name: "amq-broker-hpel"
-          broker: "amq-broker-hpel"
-          kubernetes_namespace: "amq"
-          statefulset_kubernetes_io_pod_name: "amq-broker-hpel"
-          node_name: "hpel"
+          - "amqbrokercons.hpel.lan"
 
 
   - job_name: 'camelquarkus'
+    metrics_path: /q/metrics
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+)\.(.+)\.(.+)'
+        target_label: application
+        replacement: $1
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+)\.(.+)\.(.+)'
+        target_label: node_name
+        replacement: $2
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+)\.(.+)\.(.+)'
+        target_label: kubernetes_pod_name
+        replacement: $1-$2
+      - target_label: namespace
+        replacement: camel
     static_configs:
       - targets: 
           - "bqueue.work.lan"
-        labels:
-          namespace: "camel"
-          kubernetes_pod_name: "bqueue-work"
-          node_name: "work"
-      - targets: 
           - "bqueue.hpel.lan"
-        labels:
-          namespace: "camel"
-          kubernetes_pod_name: "bqueue-hpel"
-          node_name: "hpel"
-      - targets: 
           - "bqueue.hppa.lan"
-        labels:
-          namespace: "camel"
-          kubernetes_pod_name: "bqueue-hppa"
-          node_name: "hppa"
-      - targets: 
           - "bqueue.leol.lan"
-        labels:
-          namespace: "camel"
-          kubernetes_pod_name: "bqueue-leol"
-          node_name: "leol"
+
+          - "rentman.bbee.lan"
+          - "teddycast.bbee.lan"

@@ -9,6 +9,7 @@
       - docker.io
       - docker-compose
       - apparmor
+      - network-manager-openvpn
       - haproxy
       - tmux
       - vim
@@ -24,6 +25,7 @@
       - ffmpeg
       - python3-mutagen
       - iperf
+      - dnsmasq
     state: present
 
 - name: Set JAVA HOME
@@ -45,7 +47,6 @@
       - libvirt-daemon-system
       - bridge-utils
       - libosinfo-bin 
-      - dnsmasq
     state: present
 
 - name: Copy custom scripts
@@ -72,7 +73,6 @@
       - mpv
       - arandr
       - autorandr
-      - network-manager-openvpn
       - jackd2
       - qjackctl
       - pulseaudio-module-jack

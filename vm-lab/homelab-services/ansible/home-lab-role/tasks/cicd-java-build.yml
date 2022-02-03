@@ -1,0 +1,104 @@
+
+# assumes that variable the following varibale is present
+
+- name: Create {{appname}} folders
+  when: item.cleanStart
+  file:
+    path: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/
+    state: absent
+  with_items: "{{apps}}"
+
+- name: Create {{appname}} folders
+  file:
+    path: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/
+    state: directory
+  with_items: "{{apps}}"
+
+- name: git clone
+  git: 
+    repo: "{{item.repo}}"
+    dest: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/
+    version: "{{item.version}}"
+  with_items: "{{apps}}"
+
+- name: create branch for version
+  when: '"SNAPSHOT" not in item.buildVersion'
+  shell: |
+    git checkout {{item.buildVersion}} || git checkout -b {{item.buildVersion}}
+  args:
+    chdir: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/{{item.subfolder}}/
+  with_items: "{{apps}}"
+
+- name: set version
+  shell: |
+    mvn versions:set -DgenerateBackupPoms=false -DnewVersion={{item.buildVersion}}
+  args:
+    chdir: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/{{item.subfolder}}/
+  with_items: "{{apps}}"
+
+- name: maven package
+  shell: |
+    mvn package -DskipTests
+  args:
+    chdir: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/{{item.subfolder}}/
+  with_items: "{{apps}}"
+
+- name: commit new version
+  when: '"SNAPSHOT" not in item.buildVersion'
+  shell: |
+    if [ -z "$(git status --porcelain)" ]; then 
+      echo "NOTHING_TO_COMMIT"
+    else 
+      # Uncommitted changes
+      git commit -a -m "new branch for {{item.buildVersion}}"
+    fi
+  args:
+    chdir: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/{{item.subfolder}}/
+  with_items: "{{apps}}"
+  register: result
+  changed_when: result.stdout != 'NOTHING_TO_COMMIT'
+
+- name: push branch
+  when: '"SNAPSHOT" not in item.buildVersion'
+  shell: git push origin {{item.buildVersion}}
+  args:
+    chdir: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/{{item.subfolder}}/
+  with_items: "{{apps}}"
+  register: pushresult
+  changed_when: 
+    - pushresult.rc == 0
+    - pushresult.stderr != 'Everything up-to-date'
+
+# - debug:
+#     msg: "{{pushresult}}"
+
+- name: build container image if tag does not exists locally or if its a snapshot
+  shell: |
+    docker image inspect {{item.artifactId}}:{{item.buildVersion}}-{{arch}}
+    if [ $? -ne 0 ] || [[ {{item.buildVersion}} == *"SNAPSHOT"* ]]; then
+      docker build -f {{item.dockerfile}} -t {{item.artifactId}}:{{item.buildVersion}}-{{arch}} .
+    else
+      echo "CONTAINER_EXISTS_ALREADY"
+    fi
+  args:
+    chdir: /home/{{ ansible_user }}/sources/{{item.groupId}}/{{item.artifactId}}/{{item.subfolder}}/
+  with_items: "{{apps}}"
+  register: containerbuidresult
+  changed_when: (containerbuidresult.stdout_lines | last) != 'CONTAINER_EXISTS_ALREADY'
+
+# - debug:
+#     msg: "{{containerbuidresult}}"
+
+# - name: print reg 
+#   debug: 
+#     msg: "{{item.1}}/{{item.0.artifactId}}:latest"
+#   with_subelements: 
+#     - "{{apps}}"
+#     - registries
+
+# - name: print repos
+#   shell: |
+#     docker tag {{artifactId}}:{{targetVersion}} 
+#   with_subelements: 
+#     - "{{apps}}"
+#     - registries

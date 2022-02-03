@@ -28,6 +28,8 @@
     - asus.lan
     - work.lan
     - leol.lan
+    - bbee.lan
+    - ampi.lan
   vars:
     appstate: started
     recreate: false

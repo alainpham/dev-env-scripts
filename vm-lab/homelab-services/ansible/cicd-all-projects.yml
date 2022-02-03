@@ -1,0 +1,36 @@
+---
+- name: all
+  hosts:
+    # - hpel.lan
+    - bbee.lan
+  vars:
+    apps: 
+      # - artifactId: rentman
+      #   groupId: com.itteddy
+      #   cleanStart: true
+      #   repo: git@github.com:itteddy/rentman.git
+      #   version: master
+      #   dockerfile: src/main/docker/Dockerfile.multiarch
+      #   buildVersion: "1.0.0"
+      #   nextVersion:
+      #   subfolder: 
+      #   registries: 
+      #     - registry.hpel.lan
+      - artifactId: teddycast
+        groupId: com.itteddy
+        cleanStart: true
+        repo: git@github.com:itteddy/teddycast.git
+        version: master
+        dockerfile: src/main/docker/Dockerfile.multiarch
+        buildVersion: "1.0.0"
+        nextVersion:
+        subfolder: 
+        registries: 
+          - registry.hpel.lan
+  tasks:
+    - include_role:
+        name: home-lab-role
+        tasks_from: cicd-java-build
+    - include_role:
+        name: home-lab-role
+        tasks_from: cicd-container-push

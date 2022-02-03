@@ -16,7 +16,7 @@
 - name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
   docker_container:
     name: "{{appname}}"
-    image: "registry.hpel.lan/rentman:latest-{{arch}}"
+    image: "registry.hpel.lan/rentman:1.0.0-{{arch}}"
     state: "{{appstate}}"
     recreate: "{{recreate}}"
     restart_policy: unless-stopped

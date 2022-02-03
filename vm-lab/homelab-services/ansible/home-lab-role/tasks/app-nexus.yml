@@ -183,3 +183,20 @@
           ]
         }
       }
+
+- name: Update maven public group
+  when: appstate == 'started'
+  uri:
+    url: "http://{{appname}}.{{ansible_hostname}}.lan/service/rest/v1/security/anonymous"
+    user: "admin"
+    password: "{{nexus_password}}"
+    method: PUT
+    force_basic_auth: yes
+    status_code: 200
+    body_format: json
+    body: |
+      {
+        "enabled": true,
+        "userId": "anonymous",
+        "realmName": "NexusAuthorizingRealm"
+      }

@@ -1,0 +1,23 @@
+
+# assumes that variable the following varibale is present
+
+- name: tag container images for registries
+  shell: | 
+    docker tag {{item.0.artifactId}}:{{item.0.buildVersion}}-{{arch}} {{item.1}}/{{item.0.artifactId}}:{{item.0.buildVersion}}-{{arch}}
+  with_subelements: 
+    - "{{apps}}"
+    - registries
+
+- name: push container images to registries
+  shell: | 
+    docker push {{item.1}}/{{item.0.artifactId}}:{{item.0.buildVersion}}-{{arch}}
+  with_subelements: 
+    - "{{apps}}"
+    - registries
+
+# - name: print repos
+#   shell: |
+#     docker tag {{artifactId}}:{{targetVersion}} 
+#   with_subelements: 
+#     - "{{apps}}"
+#     - registries

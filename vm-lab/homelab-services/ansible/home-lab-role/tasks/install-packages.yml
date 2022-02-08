@@ -14,7 +14,7 @@
       - tmux
       - vim
       - openjdk-11-jdk
-      - maven
+      # - maven
       - prometheus-node-exporter
       - htop
       - curl
@@ -152,5 +152,5 @@
   snap:
     classic: yes
     name:
-      - code
+      # - code
       - blender

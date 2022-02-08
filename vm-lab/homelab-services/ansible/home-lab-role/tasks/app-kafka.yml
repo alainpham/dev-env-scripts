@@ -85,8 +85,14 @@
     container_default_behavior: no_defaults
     detach: true
     user: "1000:1000"
-    command: | 
-      bin/kafka-server-start.sh config/server.properties --override listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093 --override advertised.listeners=PLAINTEXT://{{ips[appname]}}:9092,SSL://kafka.{{ansible_hostname}}.lan:443 --override ssl.keystore.location=/certs/{{ansible_hostname}}.p12 --override ssl.keystore.password=password --override ssl.key.password=password --override zookeeper.connect=zookeeper:2181
+    command: 
+      - bin/kafka-server-start.sh config/server.properties 
+      - --override listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093 
+      - --override advertised.listeners=PLAINTEXT://{{ips[appname]}}:9092,SSL://kafka.{{ansible_hostname}}.lan:443 
+      - --override ssl.keystore.location=/certs/{{ansible_hostname}}.p12 
+      - --override ssl.keystore.password=password 
+      - --override ssl.key.password=password 
+      - --override zookeeper.connect=zookeeper:2181
     env:
       LOG_DIR: /kafka-data
       KAFKA_OPTS: -javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.16.1.jar=9779:/config/kafka-metrics-config.yml

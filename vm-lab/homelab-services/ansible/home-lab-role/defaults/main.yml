@@ -32,6 +32,17 @@ appimages:
     hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
     icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
 
+rawpackages:
+  - name: mvn
+    url: http://fileserver.hpel.lan/camel/download?file=apache-maven-3.8.4-bin.tar.gz
+    hash: sha256:2cdc9c519427bb20fdc25bef5a9063b790e4abd930e7b14b4e9f4863d6f9f13c
+    executable: apache-maven-3.8.4/bin/mvn
+    recreate: false
+  - name: code
+    url: http://fileserver.hpel.lan/camel/download?file=vscode-1.62.3.tar.gz
+    hash: sha256:490eab158f6522cef0859138761caa35ea39ad90d3902567403691a77e5dc871
+    executable: VSCode-linux-x64/bin/code
+    recreate: true
 
 appimagesweb:
   - name: beeref
@@ -58,6 +69,14 @@ appimagesweb:
     url: https://download.cdn.viber.com/desktop/Linux/viber.AppImage
     hash: sha256:280ab109ec68b579cff6fd4db108c5d2af9fb60405cc0e566eaf54d24530e888
     icon: https://github.com/alainpham/appp/raw/master/viber/icon.png
+
+rawpackagesweb:
+  - name: maven
+    url: https://dlcdn.apache.org/maven/maven-3/3.8.4/binaries/apache-maven-3.8.4-bin.tar.gz
+    hash: sha256:2cdc9c519427bb20fdc25bef5a9063b790e4abd930e7b14b4e9f4863d6f9f13c
+    executable: 
+
+
 
 kdeconf:
   sddmtheme:

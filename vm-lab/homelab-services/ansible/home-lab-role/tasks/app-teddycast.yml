@@ -6,7 +6,7 @@
 - name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
   docker_container:
     name: "{{appname}}"
-    image: "registry.hpel.lan/teddycast:1.0.0-{{arch}}"
+    image: "registry.hpel.lan/teddycast:1.0.1-{{arch}}"
     state: "{{appstate}}"
     recreate: "{{recreate}}"
     restart_policy: unless-stopped

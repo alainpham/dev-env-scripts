@@ -1,0 +1,52 @@
+- name: Delete folder
+  become: true
+  when: item.recreate
+  file:
+    path: /opt/appimages/{{ item.name }}/
+    state: absent
+  with_items: "{{ rawpackages }}"
+
+- name: Delete link
+  become: true
+  when: item.recreate and item.executable != ""
+  file:
+    dest: /usr/local/bin/{{ item.name }}
+    state: absent
+  with_items: "{{ rawpackages }}"
+  
+- name: Create app image folder
+  become: true
+  file:
+    path: /opt/appimages/{{ item.name }}/
+    state: directory
+    mode: '0755'
+  with_items: "{{ rawpackages }}"
+
+# - name: Download appimages
+#   become: true
+#   get_url: 
+#     url: "{{ item.url }}"
+#     dest: /opt/appimages/{{ item.name }}/{{ item.name }}.tar.gz
+#     mode: '0755'
+#     checksum: "{{ item.hash }}"
+#   with_items: "{{ rawpackages }}"
+
+- name: Unarchive a file that needs to be downloaded
+  become: true
+  ansible.builtin.unarchive:
+    src: "{{ item.url }}"
+    owner: "root"
+    group: "root"
+    dest: /opt/appimages/{{ item.name }}/
+    
+    remote_src: yes
+  with_items: "{{ rawpackages }}"
+
+- name: Create a symbolic link
+  become: true
+  when: item.executable != ""
+  ansible.builtin.file:
+    src: /opt/appimages/{{ item.name }}/{{item.executable}}
+    dest: /usr/local/bin/{{ item.name }}
+    state: link
+  with_items: "{{ rawpackages }}"

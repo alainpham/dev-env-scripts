@@ -1,0 +1,145 @@
+---
+- set_fact:
+    appname: kafka
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data/zookeeper
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data/broker
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/config
+    state: directory
+    owner: "{{ ansible_user }}"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+- name: Copy config {{appname}} config
+  copy:
+    src: "./../{{appname}}/config/"
+    dest: /home/{{ ansible_user }}/apps/{{appname}}/config/
+    mode: '0644'
+
+- name: "Manage zookeeper container state - {{appstate}} - {{ips.zookeeper}}"
+  docker_container:
+    name: "zookeeper"
+    image: quay.io/strimzi/kafka:0.27.1-kafka-3.0.0
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    user: "1000:1000"
+    command: bin/zookeeper-server-start.sh config/zookeeper.properties
+    env:
+      LOG_DIR: /zookeper-data
+      KAFKA_OPTS: -javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.16.1.jar=9779:/config/zookeeper-metrics-config.yml
+    labels: |
+      {
+        "traefik.enable": "true",
+        "traefik.http.services.zookeeper-metrics.loadbalancer.server.port": "9779",
+        "traefik.http.routers.zookeeper-metrics.entrypoints": "http",
+        "traefik.http.routers.zookeeper-metrics.rule": "Host(`zookeeper-metrics.{{ansible_hostname}}.lan`)",
+        "traefik.http.routers.zookeeper-metrics.tls": "false",
+      }
+    volumes:
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/zookeeper:/zookeper-data:rw"
+      - "/home/{{ansible_user}}/apps/{{appname}}/config://config:ro"
+    networks_cli_compatible: yes
+    network_mode: primenet
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips.zookeeper}}"
+
+- name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "{{appname}}"
+    image: quay.io/strimzi/kafka:0.27.1-kafka-3.0.0
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    user: "1000:1000"
+    command: | 
+      bin/kafka-server-start.sh config/server.properties --override listeners=PLAINTEXT://0.0.0.0:9092,SSL://0.0.0.0:9093 --override advertised.listeners=PLAINTEXT://{{ips[appname]}}:9092,SSL://kafka.{{ansible_hostname}}.lan:443 --override ssl.keystore.location=/certs/{{ansible_hostname}}.p12 --override ssl.keystore.password=password --override ssl.key.password=password --override zookeeper.connect=zookeeper:2181
+    env:
+      LOG_DIR: /kafka-data
+      KAFKA_OPTS: -javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.16.1.jar=9779:/config/kafka-metrics-config.yml
+    labels: |
+      {
+        "traefik.enable": "true",
+
+        "traefik.tcp.services.{{appname}}.loadbalancer.server.port": "9093",
+        "traefik.tcp.routers.{{appname}}.entrypoints": "https",
+        "traefik.tcp.routers.{{appname}}.tls": "true",
+        "traefik.tcp.routers.{{appname}}.tls.passthrough": "true",
+        "traefik.tcp.routers.{{appname}}.rule": "HostSNI(`{{appname}}.{{ansible_hostname}}.lan`)",
+        "traefik.tcp.routers.{{appname}}.service": "{{appname}}",
+
+        "traefik.http.services.kafka-metrics.loadbalancer.server.port": "9779",
+        "traefik.http.routers.kafka-metrics.entrypoints": "http",
+        "traefik.http.routers.kafka-metrics.rule": "Host(`kafka-metrics.{{ansible_hostname}}.lan`)",
+        "traefik.http.routers.kafka-metrics.tls": "false",
+      }
+    volumes:
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/broker:/kafka-data:rw"
+      - "/home/{{ansible_user}}/apps/{{appname}}/config://config:ro"
+      - "/home/{{ansible_user}}/apps/tls:/certs:ro"
+    networks_cli_compatible: yes
+    network_mode: primenet
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips[appname]}}"
+
+
+- name: "Manage kafdrop container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "kafdrop"
+    image: obsidiandynamics/kafdrop:3.28.0
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    user: "1000:1000"
+    env:
+      KAFKA_BROKERCONNECT: "{{ips[appname]}}:9092"
+      JVM_OPTS: -Xms32M -Xmx128M
+      SERVER_SERVLET_CONTEXTPATH : "/"
+    labels: |
+      {
+        "traefik.http.services.kafdrop.loadbalancer.server.port": "9000",
+        "traefik.http.routers.kafdrop.entrypoints": "http",
+        "traefik.http.routers.kafdrop.tls": "false",
+      }
+    volumes:
+    networks_cli_compatible: yes
+    network_mode: primenet
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips.kafdrop}}"

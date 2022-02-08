@@ -32,13 +32,24 @@
 #         name: home-lab-role
 #         tasks_from: app-grafana
 
-- name: teddycast
+# - name: teddycast
+#   hosts:
+#     - bbee.lan
+#   vars:
+#     appstate: started
+#     recreate: false
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-teddycast
+
+- name: kafka
   hosts:
-    - bbee.lan
+    - work.lan
   vars:
     appstate: started
-    recreate: false
+    recreate: true
   tasks:
     - include_role:
         name: home-lab-role
-        tasks_from: app-teddycast
+        tasks_from: app-kafka

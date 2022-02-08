@@ -550,6 +550,13 @@ docker run -d --name kafka --net primenet --ip 172.18.0.62  \
   -e KAFKA_OPTS=-javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.12.0.jar=9404:/opt/kafka/custom-config/kafka-prometheus-config.yaml \
   kaf:0.18.0-kafka-2.5.0 \
   sh -c "bin/kafka-server-start.sh config/server.properties --override listeners=PLAINTEXT://0.0.0.0:9092 --override advertised.listeners=PLAINTEXT://kafka:9092 --override zookeeper.connect=zookeeper:2181"
+
+
+docker run -d --name zookeeper --net primenet --ip 172.18.0.61  \
+  -e LOG_DIR=/tmp/logs \
+  -e KAFKA_OPTS=-javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.16.1.jar=9404:/opt/kafka/custom-config/kafka-prometheus-config.yaml \
+  quay.io/strimzi/kafka:0.27.1-kafka-3.0.0 \
+  sh -c "bin/zookeeper-server-start.sh config/zookeeper.properties"
 ```
 
 ## Kafdrop
@@ -559,7 +566,7 @@ docker run -d --name kafdrop --net primenet --ip 172.18.0.63 \
     -e KAFKA_BROKERCONNECT=kafka:9092 \
     -e JVM_OPTS="-Xms32M -Xmx128M" \
     -e SERVER_SERVLET_CONTEXTPATH="/" \
-    obsidiandynamics/kafdrop:3.27.0
+    obsidiandynamics/kafdrop:3.28.0
 ```
 
 Goto http://kafdrop:9000 for admin console

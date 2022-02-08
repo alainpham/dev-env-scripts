@@ -81,6 +81,10 @@ ips:
   traefik: 172.18.0.43
   fileserver: 172.18.0.47
 
+  zookeeper: 172.18.0.61
+  kafka: 172.18.0.62
+  kafdrop: 172.18.0.63
+  
   prometheus: 172.18.0.70
   grafana: 172.18.0.71
   loki: 172.18.0.72

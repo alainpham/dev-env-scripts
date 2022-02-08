@@ -357,6 +357,7 @@
       "type": "stat"
     }
   ],
+  "refresh": "5s",
   "schemaVersion": 34,
   "style": "dark",
   "tags": [],
@@ -417,13 +418,13 @@
     ]
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-5m",
     "to": "now"
   },
   "timepicker": {},
   "timezone": "",
   "title": "Oversight",
   "uid": "xsjsoA-nk",
-  "version": 17,
+  "version": 18,
   "weekStart": ""
 }

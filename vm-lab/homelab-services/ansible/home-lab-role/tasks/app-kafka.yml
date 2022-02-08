@@ -54,9 +54,9 @@
     container_default_behavior: no_defaults
     detach: true
     user: "1000:1000"
-    command: bin/zookeeper-server-start.sh config/zookeeper.properties
+    command: bin/zookeeper-server-start.sh config/zookeeper.properties 
     env:
-      LOG_DIR: /zookeper-data
+      LOG_DIR: /tmp/logs
       KAFKA_OPTS: -javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.16.1.jar=9779:/config/zookeeper-metrics-config.yml
     labels: |
       {
@@ -67,7 +67,7 @@
         "traefik.http.routers.zookeeper-metrics.tls": "false",
       }
     volumes:
-      - "/home/{{ansible_user}}/apps/{{appname}}/data/zookeeper:/zookeper-data:rw"
+      - "/home/{{ansible_user}}/apps/{{appname}}/data/zookeeper:/tmp/zookeeper:rw"
       - "/home/{{ansible_user}}/apps/{{appname}}/config://config:ro"
     networks_cli_compatible: yes
     network_mode: primenet
@@ -93,8 +93,9 @@
       - --override ssl.keystore.password=password 
       - --override ssl.key.password=password 
       - --override zookeeper.connect=zookeeper:2181
+      - --override log.dirs=/kafka-data
     env:
-      LOG_DIR: /kafka-data
+      LOG_DIR: /tmp/logs
       KAFKA_OPTS: -javaagent:/opt/kafka/libs/jmx_prometheus_javaagent-0.16.1.jar=9779:/config/kafka-metrics-config.yml
     labels: |
       {
@@ -149,3 +150,29 @@
     networks:
       - name: primenet
         ipv4_address: "{{ips.kafdrop}}"
+
+
+- name: "Manage kafkaexporter container state - {{appstate}} - {{ips.kafkaexporter}}"
+  docker_container:
+    name: "kafkaexporter"
+    image: quay.io/strimzi/kafka:0.27.1-kafka-3.0.0
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    user: "1000:1000"
+    command: /opt/kafka-exporter/kafka_exporter --kafka.server=kafka:9092
+    env:
+    labels: |
+      {
+        "traefik.http.services.kafkaexporter.loadbalancer.server.port": "9308",
+        "traefik.http.routers.kafkaexporter.entrypoints": "http",
+        "traefik.http.routers.kafkaexporter.tls": "false",
+      }
+    volumes:
+    networks_cli_compatible: yes
+    network_mode: primenet
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips.kafkaexporter}}"

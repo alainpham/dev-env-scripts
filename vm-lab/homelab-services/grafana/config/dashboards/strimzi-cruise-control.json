@@ -1,4 +1,31 @@
 {
+
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.7"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": ""
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "1.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": ""
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -58,7 +85,7 @@
           "value": 2
         }
       ],
-      "maxDataPoints": 100,
+      "maxDataPoints": 1,
       "nullPointMode": "connected",
       "nullText": null,
       "options": {},
@@ -86,6 +113,7 @@
         {
           "expr": "kafka_cruisecontrol_loadmonitor_total_monitored_windows_value{namespace=\"$kubernetes_namespace\",strimzi_io_cluster=\"$strimzi_cluster_name\"}",
           "format": "time_series",
+          "instant": true,
           "hide": false,
           "intervalFactor": 1,
           "legendFormat": "",
@@ -144,7 +172,7 @@
           "value": 2
         }
       ],
-      "maxDataPoints": 100,
+      "maxDataPoints": 1,
       "nullPointMode": "connected",
       "nullText": null,
       "options": {},
@@ -170,6 +198,7 @@
         {
           "expr": "kafka_cruisecontrol_loadmonitor_valid_windows_value{namespace=\"$kubernetes_namespace\",strimzi_io_cluster=\"$strimzi_cluster_name\"}",
           "format": "time_series",
+          "instant": true,
           "hide": false,
           "intervalFactor": 1,
           "refId": "A"
@@ -227,7 +256,7 @@
           "value": 2
         }
       ],
-      "maxDataPoints": 100,
+      "maxDataPoints": 1,
       "nullPointMode": "connected",
       "nullText": null,
       "options": {},
@@ -253,6 +282,7 @@
         {
           "expr": "kafka_cruisecontrol_executor_ongoing_execution_non_kafka_assigner_value{namespace=\"$kubernetes_namespace\",strimzi_io_cluster=\"$strimzi_cluster_name\"}",
           "format": "time_series",
+          "instant": true,
           "hide": false,
           "intervalFactor": 1,
           "refId": "A"
@@ -310,7 +340,7 @@
           "value": 2
         }
       ],
-      "maxDataPoints": 100,
+      "maxDataPoints": 1,
       "nullPointMode": "connected",
       "nullText": null,
       "options": {},
@@ -336,6 +366,7 @@
         {
           "expr": "kafka_cruisecontrol_anomalydetector_balancedness_score_value{namespace=\"$kubernetes_namespace\",strimzi_io_cluster=\"$strimzi_cluster_name\"}",
           "format": "time_series",
+          "instant": true,
           "hide": false,
           "intervalFactor": 1,
           "refId": "A"
@@ -393,7 +424,7 @@
           "value": 2
         }
       ],
-      "maxDataPoints": 100,
+      "maxDataPoints": 1,
       "nullPointMode": "connected",
       "nullText": null,
       "options": {},
@@ -419,6 +450,7 @@
         {
           "expr": "kafka_cruisecontrol_loadmonitor_monitored_partitions_percentage_value{namespace=\"$kubernetes_namespace\",strimzi_io_cluster=\"$strimzi_cluster_name\"}",
           "format": "time_series",
+          "instant": true,
           "hide": false,
           "intervalFactor": 1,
           "refId": "A"
@@ -1756,7 +1788,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Kafka Broker Pods Memory Usage",
+      "description": "Kafka broker pods memory usage",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1848,7 +1880,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Aggregated Kafka Broker Pods CPU Usage",
+      "description": "Aggregated Kafka broker pods CPU usage",
       "fill": 1,
       "fillGradient": 0,
       "gridPos": {
@@ -1885,7 +1917,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_user_seconds_total{namespace=\"$kubernetes_namespace\",pod=~\"$strimzi_cluster_name-cruise-control-.*\",container=\"cruise-control\"}[5m])) by (pod)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$kubernetes_namespace\",pod=~\"$strimzi_cluster_name-cruise-control-.*\",container=\"cruise-control\"}[5m])) by (pod)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,

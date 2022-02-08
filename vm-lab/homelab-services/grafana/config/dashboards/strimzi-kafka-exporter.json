@@ -1,5 +1,26 @@
 {
   "_comment": "Based on https://grafana.com/grafana/dashboards/7589",
+
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.7"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "5.0.0"
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -80,7 +101,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(kafka_topic_partitions{topic=~\"$topic\"})",
+          "expr": "count(kafka_topic_partitions{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -161,7 +182,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kafka_topic_partitions{topic=~\"$topic\"})",
+          "expr": "sum(kafka_topic_partitions{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -242,7 +263,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kafka_topic_partition_replicas{topic=~\"$topic\"})",
+          "expr": "sum(kafka_topic_partition_replicas{topic=~\"$topic\", namespace=\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -323,7 +344,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kafka_topic_partition_in_sync_replica{topic=~\"$topic\"})",
+          "expr": "sum(kafka_topic_partition_in_sync_replica{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -404,7 +425,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kafka_topic_partition_under_replicated_partition{topic=~\"$topic\"})",
+          "expr": "sum(kafka_topic_partition_under_replicated_partition{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -434,7 +455,7 @@
         "#F2495C",
         "#d44a3a"
       ],
-      "description": "Number of partitions which are at their minimum in sync replica count (| ISR | == | min.insync.replicas |).",
+      "description": "Number of partitions which are at their minimum in sync replica count (| ISR | == | min.insync.replicas |)",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -486,7 +507,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kafka_cluster_partition_atminisr{topic=~\"$topic\"})",
+          "expr": "sum(kafka_cluster_partition_atminisr{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -495,7 +516,7 @@
       "thresholds": "1,2",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Partitions at mininimum ISR",
+      "title": "Partitions at minimum ISR",
       "type": "singlestat",
       "valueFontSize": "200%",
       "valueMaps": [
@@ -516,7 +537,7 @@
         "#F2495C",
         "#d44a3a"
       ],
-      "description": "Number of partitions which are under their minimum in sync replica count (| ISR | < | min.insync.replicas |).",
+      "description": "Number of partitions which are under their minimum in sync replica count (| ISR | < | min.insync.replicas |)",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -568,7 +589,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "sum(kafka_cluster_partition_underminisr{topic=~\"$topic\"})",
+          "expr": "sum(kafka_cluster_partition_underminisr{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"})",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -577,7 +598,7 @@
       "thresholds": "1,2",
       "timeFrom": null,
       "timeShift": null,
-      "title": "Partitions under mininimum ISR",
+      "title": "Partitions under minimum ISR",
       "type": "singlestat",
       "valueFontSize": "200%",
       "valueMaps": [
@@ -649,7 +670,7 @@
       "tableColumn": "",
       "targets": [
         {
-          "expr": "count(kafka_topic_partition_leader_is_preferred{topic=~\"$topic\"}<1)",
+          "expr": "sum(kafka_topic_partition_leader_is_preferred{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"} < bool 1)",
           "format": "time_series",
           "intervalFactor": 1,
           "refId": "A"
@@ -713,7 +734,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(kafka_topic_partition_current_offset{topic=~\"$topic\"}[1m])) by (topic)",
+          "expr": "sum(rate(kafka_topic_partition_current_offset{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}[1m])) by (topic)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{topic}}",
@@ -804,7 +825,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(delta(kafka_consumergroup_current_offset{consumergroup=~\"$consumergroup\",topic=~\"$topic\"}[1m])/60) by (consumergroup, topic)",
+          "expr": "sum(delta(kafka_consumergroup_current_offset{consumergroup=~\"$consumergroup\",topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}[1m])/60) by (consumergroup, topic)",
           "format": "time_series",
           "intervalFactor": 1,
           "legendFormat": "{{consumergroup}} (topic: {{topic}})",
@@ -894,7 +915,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(kafka_consumergroup_lag{consumergroup=~\"$consumergroup\",topic=~\"$topic\"}) by (consumergroup, topic) ",
+          "expr": "sum(kafka_consumergroup_lag{consumergroup=~\"$consumergroup\",topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}) by (consumergroup, topic) ",
           "format": "time_series",
           "instant": false,
           "interval": "",
@@ -1003,7 +1024,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(kafka_consumergroup_current_offset{consumergroup=~\"$consumergroup\",topic=~\"$topic\"}) by (consumergroup,partition,topic)",
+          "expr": "sum(kafka_consumergroup_current_offset{consumergroup=~\"$consumergroup\",topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}) by (consumergroup,partition,topic)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1076,7 +1097,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(kafka_consumergroup_lag{consumergroup=~\"$consumergroup\",topic=~\"$topic\"}) by (consumergroup,partition,topic)",
+          "expr": "sum(kafka_consumergroup_lag{consumergroup=~\"$consumergroup\",topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}) by (consumergroup,partition,topic)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1149,7 +1170,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(kafka_topic_partitions{topic=~\"$topic\"}) by (topic)",
+          "expr": "sum(kafka_topic_partitions{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}) by (topic)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1222,7 +1243,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(kafka_topic_partition_current_offset{topic=~\"$topic\"}) by (partition,topic)",
+          "expr": "sum(kafka_topic_partition_current_offset{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}) by (partition,topic)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1295,7 +1316,7 @@
       ],
       "targets": [
         {
-          "expr": "sum(kafka_topic_partition_oldest_offset{topic=~\"$topic\"}) by (partition,topic)",
+          "expr": "sum(kafka_topic_partition_oldest_offset{topic=~\"$topic\", namespace=~\"$kubernetes_namespace\"}) by (partition,topic)",
           "format": "table",
           "instant": true,
           "intervalFactor": 1,
@@ -1331,7 +1352,7 @@
         "multi": false,
         "name": "kubernetes_namespace",
         "options": [],
-        "query": "query_result(kafka_consumergroup_current_offset)",
+        "query": "query_result(kafka_exporter_build_info)",
         "refresh": 1,
         "regex": "/.*namespace=\"([^\"]*).*/",
         "skipUrlSync": false,
@@ -1353,7 +1374,7 @@
         "multi": false,
         "name": "strimzi_cluster_name",
         "options": [],
-        "query": "query_result(kafka_consumergroup_current_offset{namespace=\"$kubernetes_namespace\"})",
+        "query": "query_result(kafka_exporter_build_info{namespace=\"$kubernetes_namespace\"})",
         "refresh": 1,
         "regex": "/.*strimzi_io_cluster=\"([^\"]*).*/",
         "skipUrlSync": false,

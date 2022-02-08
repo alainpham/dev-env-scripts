@@ -1,4 +1,31 @@
 {
+
+  "__requires": [
+    {
+      "type": "grafana",
+      "id": "grafana",
+      "name": "Grafana",
+      "version": "7.3.7"
+    },
+    {
+      "type": "panel",
+      "id": "graph",
+      "name": "Graph",
+      "version": "5.0.0"
+    },
+    {
+      "type": "datasource",
+      "id": "prometheus",
+      "name": "Prometheus",
+      "version": "5.0.0"
+    },
+    {
+      "type": "panel",
+      "id": "singlestat",
+      "name": "Singlestat",
+      "version": "5.0.0"
+    }
+  ],
   "annotations": {
     "list": [
       {
@@ -28,7 +55,7 @@
         "#299c46"
       ],
       "datasource": "Prometheus",
-      "description": "Number of Brokers Online",
+      "description": "Number of brokers online",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -113,7 +140,7 @@
         "#bf1b00"
       ],
       "datasource": "Prometheus",
-      "description": "Number of active controllers in the cluster.",
+      "description": "Number of active controllers in the cluster",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -440,7 +467,7 @@
         "#bf1b00"
       ],
       "datasource": "Prometheus",
-      "description": "Number of partitions which are at their minimum in sync replica count (| ISR | == | min.insync.replicas |).",
+      "description": "Number of partitions which are at their minimum in sync replica count (| ISR | == | min.insync.replicas |)",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -500,7 +527,7 @@
         }
       ],
       "thresholds": "1,5",
-      "title": "Partitions at mininimum ISR",
+      "title": "Partitions at minimum ISR",
       "type": "singlestat",
       "valueFontSize": "200%",
       "valueMaps": [
@@ -522,7 +549,7 @@
         "#bf1b00"
       ],
       "datasource": "Prometheus",
-      "description": "Number of partitions which are under their minimum in sync replica count (| ISR | < | min.insync.replicas |).",
+      "description": "Number of partitions which are under their minimum in sync replica count (| ISR | < | min.insync.replicas |)",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -582,7 +609,7 @@
         }
       ],
       "thresholds": "1,1",
-      "title": "Partitions under mininimum ISR",
+      "title": "Partitions under minimum ISR",
       "type": "singlestat",
       "valueFontSize": "200%",
       "valueMaps": [
@@ -604,7 +631,7 @@
         "#bf1b00"
       ],
       "datasource": "Prometheus",
-      "description": "Number of partitions that don’t have an active leader and are hence not writable or readable.",
+      "description": "Number of partitions that don’t have an active leader and are hence not writable or readable",
       "format": "none",
       "gauge": {
         "maxValue": 100,
@@ -695,7 +722,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Kafka Broker Pods Memory Usage",
+      "description": "Kafka broker pods memory usage",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -783,7 +810,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Aggregated Kafka Broker Pods CPU Usage",
+      "description": "Aggregated Kafka broker pods CPU usage",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -816,7 +843,7 @@
       "steppedLine": false,
       "targets": [
         {
-          "expr": "sum(rate(container_cpu_user_seconds_total{namespace=\"$kubernetes_namespace\",pod=~\"$strimzi_cluster_name-$kafka_broker\",container=\"kafka\"}[5m])) by (pod)",
+          "expr": "sum(rate(container_cpu_usage_seconds_total{namespace=\"$kubernetes_namespace\",pod=~\"$strimzi_cluster_name-$kafka_broker\",container=\"kafka\"}[5m])) by (pod)",
           "format": "time_series",
           "hide": false,
           "intervalFactor": 1,
@@ -871,7 +898,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Kafka Broker Pods Disk Usage",
+      "description": "Kafka broker pods disk usage",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -1305,7 +1332,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "JVM Thread Count",
+      "description": "JVM thread count",
       "fill": 1,
       "gridPos": {
         "h": 7,
@@ -1396,7 +1423,7 @@
         "#299c46"
       ],
       "datasource": "Prometheus",
-      "description": "Total Incoming Byte Rate",
+      "description": "Total incoming byte rate",
       "format": "Bps",
       "gauge": {
         "maxValue": 100,
@@ -1480,7 +1507,7 @@
         "#299c46"
       ],
       "datasource": "Prometheus",
-      "description": "Total Outgoing Byte Rate",
+      "description": "Total outgoing byte rate",
       "format": "Bps",
       "gauge": {
         "maxValue": 100,
@@ -1564,7 +1591,7 @@
         "#299c46"
       ],
       "datasource": "Prometheus",
-      "description": "Incoming Messages Rate",
+      "description": "Incoming messages rate",
       "format": "wps",
       "gauge": {
         "maxValue": 100,
@@ -1648,7 +1675,7 @@
         "#299c46"
       ],
       "datasource": "Prometheus",
-      "description": "Total Produce Request Rate",
+      "description": "Total produce request rate",
       "format": "reqps",
       "gauge": {
         "maxValue": 100,
@@ -1728,7 +1755,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Byte Rate",
+      "description": "Byte rate",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -1918,7 +1945,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Produce Request Rate.",
+      "description": "Produce request rate",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -2013,7 +2040,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Fetch Request Rate",
+      "description": "Fetch request rate",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -2107,7 +2134,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Network Processor Avg Idle Percent",
+      "description": "Average percentage of time network processor is idle",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -2194,7 +2221,7 @@
       "dashLength": 10,
       "dashes": false,
       "datasource": "Prometheus",
-      "description": "Request Handler Avg Idle Percent",
+      "description": "Average percentage of time request handler threads are idle",
       "fill": 1,
       "gridPos": {
         "h": 8,
@@ -2694,7 +2721,7 @@
         "options": [],
         "query": "query_result(kafka_server_replicamanager_leadercount{namespace=\"$kubernetes_namespace\",strimzi_io_cluster=\"$strimzi_cluster_name\"})",
         "refresh": 1,
-        "regex": "/.*statefulset_kubernetes_io_pod_name=\"$strimzi_cluster_name-([^\"]*).*/",
+        "regex": "/.*pod_name=\"$strimzi_cluster_name-([^\"]*).*/",
         "skipUrlSync": false,
         "sort": 0,
         "tagValuesQuery": "",

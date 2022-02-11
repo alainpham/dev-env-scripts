@@ -64,16 +64,16 @@ arm:
         - none
       
 selected:
-  # children:
-  #   arm:
-  #   x86:
-  hosts:
-    asus.lan
+  children:
+    arm:
+    x86:
+  # hosts:
+  #   asus.lan:
   #   leol.lan:
   #   hppa.lan:
-    # work.lan:
-    # hpel.lan:
-    # bbee.lan:
+  #   work.lan:
+  #   hpel.lan:
+  #   bbee.lan:
 
 
 nonvital:

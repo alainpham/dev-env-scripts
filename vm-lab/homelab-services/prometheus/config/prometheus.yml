@@ -22,6 +22,21 @@ scrape_configs:
           - "leol:9100"
           - "bbee:9100"
 
+  - job_name: 'traefik'
+    relabel_configs:
+      - source_labels: [ __address__ ]
+        separator: ";"
+        regex: '(.+):(.+)'
+        target_label: node_name
+        replacement: $1
+    static_configs:
+      - targets: 
+          - "asus:8080"
+          - "hpel:8080"
+          - "work:8080"
+          - "hppa:8080"
+          - "leol:8080"
+          - "bbee:8080"
 
   - job_name: 'amqbroker'
     relabel_configs:

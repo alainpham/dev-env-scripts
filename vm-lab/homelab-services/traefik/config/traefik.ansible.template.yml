@@ -25,5 +25,11 @@ entryPoints:
   https:
     address: ":443"
 
+metrics:
+  prometheus:
+    addEntryPointsLabels: true
+    addRoutersLabels: true
+    addServicesLabels: true
+    
 # log:
 #   level: DEBUG

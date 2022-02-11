@@ -29,10 +29,10 @@
     - work.lan
     - leol.lan
     - bbee.lan
-    - ampi.lan
+    # - ampi.lan
   vars:
     appstate: started
-    recreate: false
+    recreate: true
   tasks:
     - include_role:
         name: home-lab-role

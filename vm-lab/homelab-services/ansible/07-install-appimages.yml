@@ -7,3 +7,12 @@
       include_role:
         name: home-lab-role
         tasks_from: install-appimages
+
+- name: install-rawpackages
+  hosts:
+    - selected
+  tasks:
+    - name: install-rawpackages
+      include_role:
+        name: home-lab-role
+        tasks_from: install-rawpackages

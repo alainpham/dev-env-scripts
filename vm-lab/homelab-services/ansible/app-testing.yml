@@ -10,27 +10,36 @@
 #         name: home-lab-role
 #         tasks_from: app-traefik
 
-- name: prometheus
+- name: install-rawpackages
   hosts:
-    - asus.lan
-  vars:
-    appstate: started
-    recreate: true
+    - work.lan
   tasks:
-    - include_role:
+    - name: install-rawpackages
+      include_role:
         name: home-lab-role
-        tasks_from: app-prometheus
+        tasks_from: install-rawpackages
 
-- name: grafana
-  hosts:
-    - asus.lan
-  vars:
-    appstate: started
-    recreate: true
-  tasks:
-    - include_role:
-        name: home-lab-role
-        tasks_from: app-grafana
+# - name: prometheus
+#   hosts:
+#     - asus.lan
+#   vars:
+#     appstate: started
+#     recreate: true
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-prometheus
+
+# - name: grafana
+#   hosts:
+#     - asus.lan
+#   vars:
+#     appstate: started
+#     recreate: true
+#   tasks:
+#     - include_role:
+#         name: home-lab-role
+#         tasks_from: app-grafana
 
 # - name: teddycast
 #   hosts:

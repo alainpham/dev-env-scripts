@@ -16,6 +16,7 @@
   
 - name: Create app image folder
   become: true
+  when: 'item.target != "" or item.target in features'
   file:
     path: /opt/appimages/{{ item.name }}/
     state: directory

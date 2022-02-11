@@ -28,8 +28,14 @@
       - dnsmasq
     state: present
 
+- name: Remove server packages
+  become: true
+  apt:
+    name: 
+      - maven
+    state: absent
+
 - name: Set JAVA HOME
-  when: '"workstation" in features'
   become: true
   copy:
     src: distrib/java/java_home.sh

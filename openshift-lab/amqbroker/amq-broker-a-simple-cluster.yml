@@ -4,19 +4,17 @@ metadata:
   name: amq-broker-a
   application: amq-broker-a
 spec:
-  version: 7.9.1
   deploymentPlan:
     # get 2 broker instances
     size: 2
-    image: registry.redhat.io/amq7/amq-broker-rhel8:7.9
-    # resources:
-    #   limits:
-    #     cpu: 1000m
-    #     memory: 1Gi
-    #   requests:
-    #     cpu: 1000m
-    #     memory: 1Gi
-    #require login for console & broker access
+    image: placeholder
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 1000m
+        memory: 1Gi
     requireLogin: true 
     persistenceEnabled: true
     journalType: nio
@@ -41,3 +39,6 @@ spec:
       verifyHost: false
       expose: true
       amqpMinLargeMessageSize: 204800
+    - name: mqtt
+      protocols: mqtt
+      port: 1883

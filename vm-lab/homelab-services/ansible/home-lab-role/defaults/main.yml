@@ -40,8 +40,8 @@ rawpackages:
     recreate: false
     target:
   - name: code
-    url: http://fileserver.hpel.lan/camel/download?file=vscode-1.59.1.tar.gz
-    hash: sha256:9b08d8e8f5e9a0dc143d5849d9de21f40dcb3254c7abc953d28a5d71f3b35744
+    url: http://fileserver.hpel.lan/camel/download?file=vscode-1.57.1.tar.gz
+    hash: sha256:a16f3dd0294b060a314ab6704cb9be7f018cc0d07f2f6771fed4e3732bb87432
     executable: VSCode-linux-x64/bin/code
     recreate: true
     target: workstation
@@ -96,6 +96,7 @@ ips:
   teddycast: 172.18.0.23
   
 
+  portainer: 172.18.0.40
   nexus: 172.18.0.41
   registry: 172.18.0.42
   regui: 172.18.0.45

@@ -29,7 +29,7 @@
   - [Deploy main cluster](#deploy-main-cluster)
   - [Deploy second cluster](#deploy-second-cluster)
   - [(alternative) Using config generation](#alternative-using-config-generation)
-- [Single AMQ Broker Cluster using operator](#single-amq-broker-cluster-using-operator)
+- [Single AMQ Broker Cluster using operator with ACLS](#single-amq-broker-cluster-using-operator-with-acls)
 - [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
   - [Self sign tls keys and import truststore](#self-sign-tls-keys-and-import-truststore)
   - [deploy main cluster](#deploy-main-cluster-1)
@@ -626,11 +626,16 @@ generateconfigs
 
 ```
 
-# Single AMQ Broker Cluster using operator 
+# Single AMQ Broker Cluster using operator with ACLS
+
+We assume operator is installed
 
 ```
 oc new-project amq-messaging
 
+oc apply -f amqbroker/amq-broker-simple-tls.yml
+oc apply -f amqbroker/amq-broker-simple-cluster.yml
+oc apply -f amqbroker/amq-broker-simple-security.yml
 ```
 
 # AMQ Broker Cluster using operator

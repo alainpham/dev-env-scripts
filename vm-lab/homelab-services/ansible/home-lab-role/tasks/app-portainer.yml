@@ -1,0 +1,38 @@
+---
+- set_fact:
+    appname: portainer
+
+- name: Create {{appname}} folders
+  become: true
+  file:
+    path: /home/{{ ansible_user }}/apps/{{appname}}/data
+    state: directory
+    owner: "1000"
+    group: "{{ ansible_user }}"
+    mode: '0755'
+
+
+- name: "Manage {{appname}} container state - {{appstate}} - {{ips[appname]}}"
+  docker_container:
+    name: "{{appname}}"
+    image: portainer/portainer-ce:2.11.1
+    state: "{{appstate}}"
+    recreate: "{{recreate}}"
+    restart_policy: unless-stopped
+    container_default_behavior: no_defaults
+    detach: true
+    env:
+    labels: |
+      {
+        "traefik.http.routers.{{appname}}.entrypoints": "http",
+        "traefik.http.routers.{{appname}}.tls": "false",
+        "traefik.http.services.{{appname}}.loadbalancer.server.port": "9000"
+      }
+    volumes:
+      - "/home/{{ansible_user}}/apps/{{appname}}/data:/data:rw"
+      - "/var/run/docker.sock:/var/run/docker.sock:rw"
+    networks_cli_compatible: yes
+    network_mode: primenet
+    networks:
+      - name: primenet
+        ipv4_address: "{{ips[appname]}}"

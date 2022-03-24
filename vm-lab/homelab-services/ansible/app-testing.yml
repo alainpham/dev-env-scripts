@@ -84,3 +84,59 @@
 #     - include_role:
 #         name: home-lab-role
 #         tasks_from: install-rawpackages
+
+
+#- name: portainer
+  #hosts:
+    #- work.lan
+  #vars:
+    #appstate: started
+    #recreate: true
+  #tasks:
+    #- include_role:
+        #name: home-lab-role
+        #tasks_from: app-portainer
+
+#- name: registry
+  #hosts:
+    #- work.lan
+  #vars:
+    #appstate: started
+    #recreate: false
+  #tasks:
+    #- include_role:
+        #name: home-lab-role
+        #tasks_from: app-registry
+
+#- name: regui
+  #hosts:
+    #- work.lan
+  #vars:
+    #appstate: started
+    #recreate: false
+  #tasks:
+    #- include_role:
+        #name: home-lab-role
+        #tasks_from: app-regui
+
+#- name: prometheus
+  #hosts:
+    #- work.lan
+  #vars:
+    #appstate: started
+    #recreate: false
+  #tasks:
+    #- include_role:
+        #name: home-lab-role
+        #tasks_from: app-prometheus
+
+#- name: grafana
+  #hosts:
+    #- work.lan
+  #vars:
+    #appstate: started
+    #recreate: false
+  #tasks:
+    #- include_role:
+        #name: home-lab-role
+        #tasks_from: app-grafana

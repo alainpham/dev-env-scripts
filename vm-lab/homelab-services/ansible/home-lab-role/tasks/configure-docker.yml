@@ -12,7 +12,9 @@
   register: networkinspect
   changed_when: false
 
-- debug:
+
+- name: debug msg
+  debug:
     msg: "primenet exists ? : {{ networkinspect.rc == 0 }}"
 
 - name: Create primenetwork

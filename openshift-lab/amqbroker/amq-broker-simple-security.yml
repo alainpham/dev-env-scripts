@@ -1,0 +1,91 @@
+apiVersion: broker.amq.io/v1alpha1
+kind: ActiveMQArtemisSecurity
+metadata:
+  name: amq-broker-security
+spec:
+  loginModules:
+    propertiesLoginModules:
+      - name: "prop-module"
+        users:
+          - name: "alloweduser"
+            password: "password"
+            roles:
+              - "allowedrole"
+          - name: "johndoe"
+            password: "password"
+            roles:
+              - "guest"
+  securityDomains:
+    brokerDomain:
+      name: "activemq"
+      loginModules:
+        - name: "prop-module"
+          flag: "sufficient"
+  securitySettings:
+    broker:
+      - match: "allowed.#"
+        permissions:
+          - operationType: "send"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "consume"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "createAddress"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "createDurableQueue"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "createNonDurableQueue"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "deleteAddress"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "deleteDurableQueue"
+            roles:
+              - "allowedrole"
+              - "admin"
+          - operationType: "deleteNonDurableQueue"
+            roles:
+              - "allowedrole"
+              - "admin"
+      - match: "#"
+        permissions:
+        - operationType: "send"
+          roles:
+            - "admin"
+        - operationType: "consume"
+          roles:
+            - "admin"
+        - operationType: "createAddress"
+          roles:
+            - "admin"
+        - operationType: "createDurableQueue"
+          roles:
+            - "admin"
+        - operationType: "createNonDurableQueue"
+          roles:
+            - "admin"
+        - operationType: "deleteAddress"
+          roles:
+            - "admin"
+        - operationType: "deleteDurableQueue"
+          roles:
+            - "admin"
+        - operationType: "deleteNonDurableQueue"
+          roles:
+            - "admin"
+        - operationType: "browse"
+          roles:
+            - "admin"
+        - operationType: "manage"
+          roles:
+            - "admin"

@@ -1,0 +1,47 @@
+apiVersion: broker.amq.io/v2alpha5
+kind: ActiveMQArtemis
+metadata:
+  name: amq-broker
+  application: amq-broker
+spec:
+  deploymentPlan:
+    # get 2 broker instances
+    size: 2
+    image: placeholder
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 1000m
+        memory: 1Gi
+    requireLogin: true 
+    persistenceEnabled: true
+    journalType: nio
+    messageMigration: true
+    jolokiaAgentEnabled: false
+    managementRBACEnabled: true
+    enableMetricsPlugin: true
+  console:
+    expose: true
+    useClientAuth : false
+  adminUser: admin
+  adminPassword: admin
+  acceptors:
+      # Generic tls acceptor for exposed outside of openshift connexions
+    - name: generic
+      protocols: all
+      port: 61619
+      sslEnabled: true
+      enabledProtocols: TLSv1,TLSv1.1,TLSv1.2
+      needClientAuth: false
+      wantClientAuth: false
+      verifyHost: false
+      expose: true
+      amqpMinLargeMessageSize: 204800
+    - name: mqtt
+      protocols: mqtt
+      port: 1883
+    - name: amqp
+      protocols: amqp
+      port: 5672

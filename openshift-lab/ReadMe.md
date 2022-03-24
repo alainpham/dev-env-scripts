@@ -29,6 +29,7 @@
   - [Deploy main cluster](#deploy-main-cluster)
   - [Deploy second cluster](#deploy-second-cluster)
   - [(alternative) Using config generation](#alternative-using-config-generation)
+- [Single AMQ Broker Cluster using operator](#single-amq-broker-cluster-using-operator)
 - [AMQ Broker Cluster using operator](#amq-broker-cluster-using-operator)
   - [Self sign tls keys and import truststore](#self-sign-tls-keys-and-import-truststore)
   - [deploy main cluster](#deploy-main-cluster-1)
@@ -622,6 +623,13 @@ export brokername
 export TMPL_FILE=amq-broker-custom-cluster.template.kube.yml
 
 generateconfigs
+
+```
+
+# Single AMQ Broker Cluster using operator 
+
+```
+oc new-project amq-messaging
 
 ```
 
